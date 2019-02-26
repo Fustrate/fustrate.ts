@@ -1,4 +1,4 @@
-import Fustrate from '..';
+import Fustrate from './fustrate';
 import GenericPage from './generic_page';
 import Pagination from './components/pagination';
 

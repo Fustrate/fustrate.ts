@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import moment from 'moment';
 
-import Fustrate from '..';
+import Fustrate from './fustrate';
 import BasicObject from './basic_object';
 
 class Record extends BasicObject {
