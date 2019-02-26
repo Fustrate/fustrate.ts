@@ -1,9 +1,9 @@
 import moment from 'moment';
 import $ from 'jquery';
 
-import Component from './fustrate/component';
+import Component from './component';
 
-require('./fustrate/prototypes');
+require('./prototypes');
 
 // const Rails = require('@rails/ujs');
 
@@ -108,7 +108,6 @@ class Fustrate {
       processData: false,
       contentType: false,
       dataType: 'script',
-      // beforeSend: Rails.CSRFProtection,
     });
   }
 
