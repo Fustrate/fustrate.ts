@@ -67,6 +67,4 @@ class Dropdown extends Component {
 
 Dropdown.locked = false;
 
-Component.register(Dropdown);
-
 export default Dropdown;

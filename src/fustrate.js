@@ -52,8 +52,6 @@ class Fustrate {
   }
 
   static initialize() {
-    Component.initialize();
-
     $.ajaxSetup({
       cache: false,
       // beforeSend: Rails.CSRFProtection,

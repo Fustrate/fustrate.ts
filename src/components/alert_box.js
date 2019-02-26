@@ -16,6 +16,4 @@ class AlertBox extends Component {
   }
 }
 
-Component.register(AlertBox);
-
 export default AlertBox;

@@ -15,6 +15,4 @@ class Disclosure extends Component {
   }
 }
 
-Component.register(Disclosure);
-
 export default Disclosure;

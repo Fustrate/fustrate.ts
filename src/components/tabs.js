@@ -42,6 +42,4 @@ class Tabs extends Component {
   }
 }
 
-Component.register(Tabs);
-
 export default Tabs;

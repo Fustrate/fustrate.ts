@@ -47,8 +47,6 @@ class Success extends Flash {
   }
 }
 
-Component.register(Flash);
-
 export {
   Flash,
   Success,

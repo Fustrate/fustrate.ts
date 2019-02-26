@@ -92,6 +92,4 @@ class Popover extends Component {
   }
 }
 
-Component.register(Popover);
-
 export default Popover;

@@ -95,6 +95,4 @@ class Tooltip extends Component {
   }
 }
 
-Component.register(Tooltip);
-
 export default Tooltip;
