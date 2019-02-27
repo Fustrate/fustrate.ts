@@ -1,8 +1,6 @@
 import moment from 'moment';
 import $ from 'jquery';
 
-import Component from './component';
-
 require('./prototypes');
 
 // const Rails = require('@rails/ujs');
