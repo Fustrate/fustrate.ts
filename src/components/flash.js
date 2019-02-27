@@ -47,9 +47,8 @@ class Success extends Flash {
   }
 }
 
-export {
-  Flash,
-  Success,
-  Warning,
-  Info,
-};
+Flash.Warning = Warning;
+Flash.Info = Info;
+Flash.Success = Success;
+
+export default Flash;
