@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import Fustrate from '../..';
+import Fustrate from '../fustrate';
 import Component from '../component';
 
 const defaultSettings = {
