@@ -338,7 +338,7 @@ class Modal extends Component {
   }
 
   closeButtonClicked() {
-    if (this.modal[0].classList.contains('locked')) {
+    if (!this.modal[0].classList.contains('locked')) {
       this.modal.trigger('close.modal');
     }
 
