@@ -41,7 +41,7 @@ class Record extends BasicObject {
     } else {
       this.extractFromData(attributes);
 
-      url = this.constructor.create_path({ format: 'json' });
+      url = this.constructor.createPath({ format: 'json' });
     }
 
     const recordAttributes = attributes;
