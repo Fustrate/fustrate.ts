@@ -44,21 +44,13 @@ class Record extends BasicObject {
       url = this.constructor.createPath({ format: 'json' });
     }
 
-    const recordAttributes = attributes;
-
     if (this.community && attributes.community_id === undefined) {
-      recordAttributes.community_id = this.community.id;
+      attributes.community_id = this.community.id;
     }
-
-    const formData = this.toFormData(
-      new FormData(),
-      recordAttributes,
-      this.constructor.paramKey(),
-    );
 
     return $.ajax({
       url,
-      data: formData,
+      data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey()),
       processData: false,
       contentType: false,
       method: this.id ? 'PATCH' : 'POST',
@@ -74,9 +66,7 @@ class Record extends BasicObject {
     return $.ajax(this.path({ format: 'json' }), { method: 'DELETE' });
   }
 
-  toFormData(object, namespace) {
-    const data = new FormData();
-
+  static toFormData(data, object, namespace) {
     Object.getOwnPropertyNames(object).forEach((field) => {
       if (!(typeof object[field] !== 'undefined')) {
         return;
@@ -96,7 +86,7 @@ class Record extends BasicObject {
     return data;
   }
 
-  appendObjectToFormData(data, key, value) {
+  static appendObjectToFormData(data, key, value) {
     if (value instanceof Array) {
       value.forEach((item) => {
         data.append(`${key}[]`, item);
