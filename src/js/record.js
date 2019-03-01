@@ -68,7 +68,7 @@ class Record extends BasicObject {
 
   static toFormData(data, object, namespace) {
     Object.getOwnPropertyNames(object).forEach((field) => {
-      if (!(typeof object[field] !== 'undefined')) {
+      if (typeof object[field] === 'undefined' || Number.isNaN(object[field])) {
         return;
       }
 
