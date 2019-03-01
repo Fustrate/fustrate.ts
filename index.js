@@ -21,7 +21,7 @@ export {
   default as Flash,
   InfoFlash,
   SuccessFlash,
-  WarningFlash,
+  ErrorFlash,
 } from './src/js/components/flash';
 
 export { default } from './src/js/fustrate';
