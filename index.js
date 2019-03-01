@@ -11,11 +11,17 @@ export { default as Disclosure } from './src/js/components/disclosure';
 export { default as DropZone } from './src/js/components/drop_zone';
 export { default as Dropdown } from './src/js/components/dropdown';
 export { default as FilePicker } from './src/js/components/file_picker';
-export { default as Flash } from './src/js/components/flash';
 export { default as Modal } from './src/js/components/modal';
 export { default as Pagination } from './src/js/components/pagination';
 export { default as Popover } from './src/js/components/popover';
 export { default as Tabs } from './src/js/components/tabs';
 export { default as Tooltip } from './src/js/components/tooltip';
+
+export {
+  default as Flash,
+  InfoFlash,
+  SuccessFlash,
+  WarningFlash,
+} from './src/js/components/flash';
 
 export { default } from './src/js/fustrate';

@@ -29,26 +29,24 @@ class Flash extends Component {
   }
 }
 
-class Warning extends Flash {
-  constructor(message, { icon } = {}) {
-    super(message, { type: 'error', icon });
-  }
-}
-
-class Info extends Flash {
+class InfoFlash extends Flash {
   constructor(message, { icon } = {}) {
     super(message, { type: 'info', icon });
   }
 }
 
-class Success extends Flash {
+class SuccessFlash extends Flash {
   constructor(message, { icon } = {}) {
     super(message, { type: 'success', icon });
   }
 }
 
-Flash.Warning = Warning;
-Flash.Info = Info;
-Flash.Success = Success;
+class WarningFlash extends Flash {
+  constructor(message, { icon } = {}) {
+    super(message, { type: 'error', icon });
+  }
+}
+
+export { InfoFlash, SuccessFlash, WarningFlash };
 
 export default Flash;
