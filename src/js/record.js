@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import moment from 'moment';
 
-import Fustrate from './fustrate';
 import BasicObject from './basic_object';
 
 class Record extends BasicObject {
@@ -95,7 +94,7 @@ class Record extends BasicObject {
       data.append(key, value);
     } else if (moment.isMoment(value)) {
       data.append(key, value.format());
-    } else if (!(value instanceof Fustrate.Record)) {
+    } else if (!(value instanceof Record)) {
       this.toFormData(data, value, key);
     }
   }
