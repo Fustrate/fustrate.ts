@@ -27,6 +27,10 @@ class Flash extends Component {
     flashes.id = 'flashes';
     document.body.appendChild(flashes);
   }
+
+  static show(message, { type, icon } = {}) {
+    return new this(message, { type, icon });
+  }
 }
 
 class InfoFlash extends Flash {
@@ -41,12 +45,12 @@ class SuccessFlash extends Flash {
   }
 }
 
-class WarningFlash extends Flash {
+class ErrorFlash extends Flash {
   constructor(message, { icon } = {}) {
     super(message, { type: 'error', icon });
   }
 }
 
-export { InfoFlash, SuccessFlash, WarningFlash };
+export { InfoFlash, SuccessFlash, ErrorFlash };
 
 export default Flash;
