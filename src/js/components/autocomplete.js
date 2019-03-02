@@ -38,7 +38,7 @@ class Autocomplete extends Component {
       return;
     }
 
-    this.awesomplete = new Awesomplete(, {
+    this.awesomplete = new Awesomplete(this.input, {
       minChars: 0,
       maxItems: 25,
       filter: () => true,
