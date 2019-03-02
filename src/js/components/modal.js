@@ -118,7 +118,7 @@ class Modal extends Component {
           </button>`);
       } else if (typeof button === 'object') {
         Object.keys(button).forEach((name) => {
-          list.push(constructor.createButton(name, button[name]));
+          list.push(this.constructor.createButton(name, button[name]));
         }, this);
       }
     }, this);
