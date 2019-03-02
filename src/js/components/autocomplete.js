@@ -48,10 +48,10 @@ class Autocomplete extends Component {
 
     $(this.input)
       .data('awesomplete', this)
-      .on('awesomplete-highlight', this.onHighlight)
-      .on('awesomplete-select', this.onSelect)
-      .on('keyup', this.onKeyup.debounce())
-      .on('focus', this.onFocus);
+      .on('awesomplete-highlight', this.onHighlight.bind(this))
+      .on('awesomplete-select', this.onSelect.bind(this))
+      .on('keyup', this.onKeyup.bind(this).debounce())
+      .on('focus', this.onFocus.bind(this));
   }
 
   blanked() {
