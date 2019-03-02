@@ -38,16 +38,24 @@ const template = `
   </div>`;
 
 class Modal extends Component {
+  static get settings() { return {}; }
+
   constructor({ content, settings } = {}) {
     super();
 
-    this.settings = Object.deepExtend({}, defaultSettings, settings != null ? settings : {});
+    this.settings = Object.deepExtend(
+      {},
+      defaultSettings,
+      this.constructor.settings != null ? this.constructor.settings : {},
+      settings != null ? settings : {},
+    );
+
     this.settings.previousModal = $();
     this.modal = this.createModal();
 
-    this.setTitle(this.constructor.title, { icon: this.constructor.icon });
+    this.setTitle(this.settings.title, { icon: this.settings.icon });
     this.setContent(content, false);
-    this.setButtons(this.constructor.buttons, false);
+    this.setButtons(this.settings.buttons, false);
     this.reloadUIElements();
     this.addEventListeners();
     this.initialize();
@@ -299,7 +307,7 @@ class Modal extends Component {
   }
 
   defaultClasses() {
-    return [this.constructor.size, this.constructor.type].filter(klass => klass !== null);
+    return [this.settings.size, this.settings.type].filter(klass => klass !== null);
   }
 
   static toggleBackground(visible = true) {
