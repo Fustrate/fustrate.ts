@@ -1,7 +1,7 @@
-import $ from 'jquery';	
-import Awesomplete from 'awesomplete';	
+import $ from 'jquery';
+import Awesomplete from 'awesomplete';
 
-import Component from '../component';	
+import Component from '../component';
 
 class Suggestion extends String {
   constructor(datum, displayValue) {
