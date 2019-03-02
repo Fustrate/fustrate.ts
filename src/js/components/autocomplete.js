@@ -1,3 +1,9 @@
+import $ from 'jquery';	
+import Awesomplete from 'awesomplete';	
+
+import Component from '../component';	
+
+Awesomplete.SORT_BYLENGTH = () => {};
 
 class Autocomplete extends Component {
   constructor(input, types) {
@@ -200,3 +206,5 @@ Autocomplete.types = {
     },
   },
 };
+
+export default Autocomplete;
