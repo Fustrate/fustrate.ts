@@ -42,7 +42,7 @@ class Autocomplete extends Component {
       minChars: 0,
       maxItems: 25,
       filter: () => true,
-      item: option => option, // Items are pre-rendered
+      item: suggestion => suggestion.label, // Items are pre-rendered in a Suggestion
       sort: false, // Items are fed in the intended order
     });
 
