@@ -58,7 +58,7 @@ class Record extends BasicObject {
         xhr.upload.onprogress = e => this.trigger('upload_progress', e);
         return xhr;
       },
-    }).done(this.extractFromData);
+    }).done(this.extractFromData.bind(this));
   }
 
   delete() {
