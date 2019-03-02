@@ -50,7 +50,7 @@ class Autocomplete extends Component {
       .data('awesomplete', this)
       .on('awesomplete-highlight', this.onHighlight.bind(this))
       .on('awesomplete-select', this.onSelect.bind(this))
-      .on('keyup', this.onKeyup.bind(this).debounce())
+      .on('keyup', this.onKeyup.debounce().bind(this))
       .on('focus', this.onFocus.bind(this));
   }
 
