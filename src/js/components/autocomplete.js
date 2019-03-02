@@ -1,9 +1,3 @@
-import $ from 'jquery';
-import Awesomplete from 'awesomplete';
-
-import Component from '../component';
-
-Awesomplete.SORT_BYLENGTH = () => {};
 
 class Autocomplete extends Component {
   constructor(input, types) {
@@ -50,7 +44,7 @@ class Autocomplete extends Component {
       .data('awesomplete', this)
       .on('awesomplete-highlight', this.onHighlight.bind(this))
       .on('awesomplete-select', this.onSelect.bind(this))
-      .on('keyup', this.onKeyup.debounce().bind(this))
+      .on('keyup', this.onKeyup.bind(this).debounce())
       .on('focus', this.onFocus.bind(this));
   }
 
@@ -206,5 +200,3 @@ Autocomplete.types = {
     },
   },
 };
-
-export default Autocomplete;
