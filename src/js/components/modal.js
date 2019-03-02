@@ -6,7 +6,7 @@ import Component from '../component';
 const defaultSettings = {
   size: 'tiny',
   type: null,
-  icon: null,
+  icon: undefined,
   title: null,
   buttons: [],
   fadeSpeed: 250,
