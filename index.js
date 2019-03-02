@@ -6,7 +6,6 @@ export { default as Listenable } from './src/js/listenable';
 export { default as Record } from './src/js/record';
 
 export { default as AlertBox } from './src/js/components/alert_box';
-export { default as Autocomplete } from './src/js/components/autocomplete';
 export { default as Disclosure } from './src/js/components/disclosure';
 export { default as DropZone } from './src/js/components/drop_zone';
 export { default as Dropdown } from './src/js/components/dropdown';
@@ -16,6 +15,11 @@ export { default as Pagination } from './src/js/components/pagination';
 export { default as Popover } from './src/js/components/popover';
 export { default as Tabs } from './src/js/components/tabs';
 export { default as Tooltip } from './src/js/components/tooltip';
+
+export {
+  default as Autocomplete,
+  Suggestion as AutocompleteSuggestion,
+} from './src/js/components/autocomplete';
 
 export {
   default as Flash,
