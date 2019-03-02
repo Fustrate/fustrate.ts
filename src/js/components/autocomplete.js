@@ -30,7 +30,7 @@ class Autocomplete extends Component {
       this.sources = [this.sources];
     }
 
-    const existing = this.input.data('awesomplete');
+    const existing = $(this.input).data('awesomplete');
 
     if (existing) {
       existing.sources = this.sources;
@@ -38,7 +38,7 @@ class Autocomplete extends Component {
       return;
     }
 
-    this.awesomplete = new Awesomplete(this.input[0], {
+    this.awesomplete = new Awesomplete(, {
       minChars: 0,
       maxItems: 25,
       filter: () => true,
@@ -49,7 +49,7 @@ class Autocomplete extends Component {
     this.id_field = this.awesomplete.container.querySelector('~ input:hidden[name*="_id"]');
     this.type_field = this.awesomplete.container.querySelector('~ input:hidden[name*="_type"]');
 
-    this.input
+    $(this.input)
       .data('awesomplete', this)
       .on('awesomplete-highlight', this.onHighlight)
       .on('awesomplete-select', this.onSelect)
@@ -58,7 +58,7 @@ class Autocomplete extends Component {
   }
 
   blanked() {
-    if (this.input.val().trim() !== '') {
+    if (this.input.value && this.input.value.trim() !== '') {
       return;
     }
 
@@ -72,12 +72,12 @@ class Autocomplete extends Component {
       this.type_field.value = null;
     }
 
-    this.input.trigger('blanked.autocomplete');
+    $(this.input).trigger('blanked.autocomplete');
   }
 
   onFocus() {
     this.items = [];
-    this.value = this.input.val().trim();
+    this.value = this.input.value && this.input.value.trim();
 
     this.sources.forEach((source) => {
       if (source.list == null) {
@@ -95,7 +95,7 @@ class Autocomplete extends Component {
   }
 
   onHighlight() {
-    const item = this.input[0].querySelector('+ ul li[aria-selected="true"]');
+    const item = this.input.querySelector('+ ul li[aria-selected="true"]');
 
     if (!item) {
       return;
@@ -123,14 +123,14 @@ class Autocomplete extends Component {
       this.type_field.value = datum.type;
     }
 
-    this.input.data({ datum }).trigger('finished.autocomplete');
+    $(this.input).data({ datum }).trigger('finished.autocomplete');
 
     return false;
   }
 
   onKeyup(e) {
     const keyCode = e.which || e.keyCode;
-    const value = this.input.val().trim();
+    const value = this.input.value && this.input.value.trim();
 
     if (value === '' && this.value !== '') {
       this.blanked();
