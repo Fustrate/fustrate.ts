@@ -122,7 +122,11 @@ function objectDeepExtend(out, ...rest) {
     .filter(obj => obj)
     .forEach((obj) => {
       Object.getOwnPropertyNames(obj).forEach((key) => {
-        out[key] = (typeof obj[key] === 'object') ? objectDeepExtend(out[key], obj[key]) : obj[key];
+        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+          out[key] = objectDeepExtend(out[key], obj[key]);
+        } else {
+          out[key] = obj[key];
+        }
       });
     });
 
