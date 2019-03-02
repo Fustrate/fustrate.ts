@@ -3,7 +3,31 @@ import Awesomplete from 'awesomplete';
 
 import Component from '../component';	
 
-Awesomplete.SORT_BYLENGTH = () => {};
+class Suggestion extends String {
+  constructor(datum, displayValue) {
+    super(displayValue);
+
+    this.datum = datum;
+  }
+
+  item(value, index) {
+    return Awesomplete.$.create('li', {
+      innerHTML: this.highlightedHTML(value),
+      role: 'option',
+      'aria-selected': 'false',
+      id: `awesomplete_list_${this.count}_item_${index}`,
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  highlight(input, text) {
+    if (input.trim() === '') {
+      return text;
+    }
+
+    return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
+  }
+}
 
 class Autocomplete extends Component {
   constructor(input, types) {
@@ -41,15 +65,16 @@ class Autocomplete extends Component {
     this.awesomplete = new Awesomplete(this.input, {
       minChars: 0,
       maxItems: 25,
+      data: data => data,
       filter: () => true,
-      item: suggestion => suggestion.label, // Items are pre-rendered in a Suggestion
+      item: (suggestion, value, index) => suggestion.item(value, index),
       sort: false, // Items are fed in the intended order
+      replace: suggestion => suggestion.label,
+      suggestion: data => data,
     });
 
     $(this.input)
       .data('awesomplete', this)
-      .on('awesomplete-highlight', this.onHighlight.bind(this))
-      .on('awesomplete-select', this.onSelect.bind(this))
       .on('keyup', this.onKeyup.bind(this).debounce())
       .on('focus', this.onFocus.bind(this));
   }
@@ -68,45 +93,17 @@ class Autocomplete extends Component {
     this.items = [];
     this.value = this.input.value && this.input.value.trim();
 
-    this.sources.forEach((source) => {
-      if (source.list == null) {
-        return;
-      }
-
-      source.list.forEach((datum) => {
-        if (source.filter(datum, this.value)) {
-          this.items.push(this.createListItem(datum, source));
-        }
+    this.sources
+      .filter(source => source.list !== undefined)
+      .forEach((source) => {
+        source.list.forEach((datum) => {
+          if (source.filter(datum, this.value)) {
+            this.items.push(source.suggestion(datum));
+          }
+        }, this);
       }, this);
-    }, this);
 
     this.awesomplete.list = this.items;
-  }
-
-  onHighlight() {
-    const item = this.input.querySelector('+ ul li[aria-selected="true"]');
-
-    if (!item) {
-      return;
-    }
-
-    item.scrollIntoView(false);
-
-    this.replace(item.dataset.datum.displayValue);
-  }
-
-  onSelect(e) {
-    // aria-selected isn't set on click
-    const item = e.originalEvent.origin.closest('li');
-    const datum = item.data('datum');
-
-    this.replace(datum.displayValue);
-
-    this.awesomplete.close();
-
-    $(this.input).data({ datum }).trigger('finished.autocomplete');
-
-    return false;
   }
 
   onKeyup(e) {
@@ -138,7 +135,7 @@ class Autocomplete extends Component {
       } else if (source.list != null) {
         source.list.forEach((datum) => {
           if (source.filter(datum, this.value)) {
-            this.items.push(this.createListItem(datum, source));
+            this.items.push(source.suggestion(datum));
           }
         }, this);
 
@@ -148,28 +145,14 @@ class Autocomplete extends Component {
   }
 
   performSearch(source) {
-    $.get(source.url({
-      search: this.value,
-      commit: 1,
-      format: 'json',
-    })).done((response) => {
-      response.forEach((item) => {
-        this.items.push(this.createListItem(item, source));
-      }, this);
+    $.get(source.url({ search: this.value, commit: 1, format: 'json' }))
+      .done((response) => {
+        response.forEach((item) => {
+          this.items.push(source.suggestion(item));
+        }, this);
 
-      this.awesomplete.list = this.items;
-    });
-  }
-
-  createListItem(datum, source) {
-    const listItemDatum = datum;
-
-    listItemDatum.displayValue = datum[source.displayKey];
-    listItemDatum.type = source.type;
-
-    const listItem = source.item.call(this, listItemDatum, this.value);
-
-    return $(listItem).data({ listItemDatum }).get(0);
+        this.awesomplete.list = this.items;
+      });
   }
 
   highlight(text) {
@@ -180,8 +163,8 @@ class Autocomplete extends Component {
     return text.replace(RegExp(`(${this.value.split(/\s+/).join('|')})`, 'gi'), '<mark>$&</mark>');
   }
 
-  replace(text) {
-    this.awesomplete.replace(text);
+  replace(suggestion) {
+    this.awesomplete.replace(suggestion);
   }
 
   static addType(name, func) {
@@ -206,5 +189,7 @@ Autocomplete.types = {
     },
   },
 };
+
+export { Suggestion };
 
 export default Autocomplete;
