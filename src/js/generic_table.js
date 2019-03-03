@@ -3,12 +3,17 @@ import GenericPage from './generic_page';
 import Pagination from './components/pagination';
 
 class GenericTable extends GenericPage {
-  initialize() {
-    super.initialize();
+  constructor(root, table) {
+    super(root);
 
+    this.table = table;
     this.tbody = this.table.querySelector('tbody');
     this.loadingRow = this.tbody.querySelector('tr.loading');
     this.noRecordsRow = this.tbody.querySelector('tr.no-records');
+  }
+
+  initialize() {
+    super.initialize();
 
     this.reloadTable();
   }
