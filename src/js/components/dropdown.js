@@ -12,28 +12,29 @@ class Dropdown extends Component {
     let right;
     let top;
 
-    Dropdown.hide();
+    // Hide any visible dropdowns before showing this one
+    this.hide();
 
     const button = event.currentTarget;
     const dropdown = button.nextElementSibling;
 
-    Dropdown.locked = true;
+    this.locked = true;
 
-    if (button.offsetTop > (Dropdown.body.height() / 2)) {
+    if (button.offsetTop > (document.body.offsetHeight / 2)) {
       top = button.offsetTop - dropdown.offsetHeight - 2;
     } else {
       top = button.offsetTop + button.offsetHeight + 2;
     }
 
-    if (button.offsetLeft > (Dropdown.body.width() / 2)) {
+    if (button.offsetLeft > (document.body.offsetWidth / 2)) {
       left = 'inherit';
-      right = Dropdown.body.width() - button.offsetLeft - button.offsetWidth;
+      right = document.body.offsetWidth - button.offsetLeft - button.offsetWidth;
     } else {
       right = 'inherit';
       left = button.offsetLeft;
     }
 
-    Dropdown.showDropdown(dropdown, { left, top, right });
+    this.showDropdown(dropdown, { left, top, right });
 
     return false;
   }
@@ -47,24 +48,24 @@ class Dropdown extends Component {
     dropdown.style.right = css.right;
 
     $(dropdown).fadeIn(200, () => {
-      Dropdown.locked = false;
-      Dropdown.body.one('click', Dropdown.hide);
+      this.locked = false;
+      $(document.body).one('click', this.hide);
     });
   }
 
   static hide() {
-    if (Dropdown.locked) {
+    if (this.locked) {
       return;
     }
 
     const visibleDropdown = document.querySelector('.dropdown.visible');
 
-    visibleDropdown.classList.remove('visible');
+    if (visibleDropdown) {
+      visibleDropdown.classList.remove('visible');
+    }
 
     $(visibleDropdown).fadeOut(200);
   }
 }
-
-Dropdown.locked = false;
 
 export default Dropdown;
