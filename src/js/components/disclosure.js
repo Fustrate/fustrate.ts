@@ -1,17 +1,21 @@
 import $ from 'jquery';
 
 import Component from '../component';
+import { triggerEvent } from '../utilities';
 
 class Disclosure extends Component {
   static initialize() {
-    return $('body').on('click', '.disclosure-title', (event) => {
-      const disclosure = $(event.currentTarget).closest('.disclosure');
-      const isOpen = disclosure.hasClass('open');
+    $('body').on('click', '.disclosure-title', this.toggleDisclosure);
+  }
 
-      disclosure.toggleClass('open').trigger(`${(isOpen ? 'closed' : 'opened')}.disclosure`);
+  static toggleDisclosure(event) {
+    const disclosure = event.currentTarget.closest('.disclosure');
+    const isOpen = disclosure.classList.contains('open');
 
-      return false;
-    });
+    disclosure.classList.toggle('open');
+    triggerEvent(disclosure, `${(isOpen ? 'closed' : 'opened')}.disclosure`);
+
+    return false;
   }
 }
 

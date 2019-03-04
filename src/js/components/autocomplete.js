@@ -150,6 +150,10 @@ class Autocomplete extends Component {
       this.addType(name, types[name]);
     }, this);
   }
+
+  static create(input, types) {
+    return new this(input, types);
+  }
 }
 
 Autocomplete.types = {

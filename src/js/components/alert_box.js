@@ -6,13 +6,15 @@ const fadeSpeed = 300;
 
 class AlertBox extends Component {
   static initialize() {
-    return $('.alert-box').on('click', '.close', (e) => {
-      const alertBox = $(e.currentTarget).closest('.alert-box');
+    $('.alert-box').on('click', '.close', this.closeAlertBox);
+  }
 
-      alertBox.fadeOut(fadeSpeed, alertBox.remove);
+  static closeAlertBox(event) {
+    const alertBox = event.currentTarget.closest('.alert-box');
 
-      return false;
-    });
+    $(alertBox).fadeOut(fadeSpeed, alertBox.remove);
+
+    return false;
   }
 }
 

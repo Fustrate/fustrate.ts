@@ -1,0 +1,18 @@
+{
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.rulers": [100],
+  },
+  "[scss]": {
+    "editor.tabSize": 2,
+    "editor.rulers": [80],
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.rulers": [80],
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+}

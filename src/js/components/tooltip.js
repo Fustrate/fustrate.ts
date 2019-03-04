@@ -86,12 +86,8 @@ class Tooltip extends Component {
     };
   }
 
-  static initialize() {
-    $('[data-tooltip]').each((index, elem) => new Tooltip(elem));
-
-    $.fn.extend({
-      tooltip: () => this.each((index, element) => new Tooltip(element)),
-    });
+  static create(element) {
+    return new Tooltip(element);
   }
 }
 

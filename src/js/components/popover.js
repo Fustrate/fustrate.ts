@@ -2,10 +2,11 @@ import $ from 'jquery';
 
 import Component from '../component';
 
+const cache = {};
+
 class Popover extends Component {
   static initialize() {
-    this.cache = {};
-    this.container = $('.container-content > .row');
+    this.container = document.body;
 
     $('[data-popover-url]').click(this.togglePopover);
 
@@ -15,16 +16,12 @@ class Popover extends Component {
   static togglePopover(event) {
     const path = event.currentTarget.dataset.popoverUrl;
     // Hide if the url is the same, hide and show a new one if it's different
-    const createNew = (!Popover.popover) || (Popover.popover.data('popover-url') !== path);
+    const createNew = (!this.popover) || (this.popover.data('popover-url') !== path);
 
-    if (Popover.popover != null) {
-      Popover.popover.hide().remove();
-    }
-
-    Popover.popover = undefined;
+    this.hidePopover(event);
 
     if (createNew) {
-      Popover.createPopover(event);
+      this.createPopover(event);
     }
 
     return false;
@@ -33,62 +30,60 @@ class Popover extends Component {
   static createPopover(event) {
     const path = event.currentTarget.dataset.popoverUrl;
 
-    Popover.popover = $('<div class="popover"></div>')
-      .appendTo('body')
-      .data('popover-url', path);
+    this.popover = document.createElement('div');
+    this.popover.classList.add('popover');
+    this.popover.dataset.popoverUrl = path;
 
-    if (Popover.cache[path]) {
-      Popover.setContent(Popover.cache[path], event);
-      Popover.popover.fadeIn(100);
+    document.body.appendChild(this.popover);
+
+    if (cache[path]) {
+      this.setContent(cache[path], event);
+      $(this.popover).fadeIn(100);
     } else {
       $.get(path).done((html) => {
-        Popover.cache[path] = html;
-        Popover.setContent(html, event);
+        cache[path] = html;
+        this.setContent(html, event);
       });
     }
   }
 
   static setContent(html, event) {
-    Popover.popover.html(html);
+    this.popover.innerHTML = html;
 
-    const target = $(event.currentTarget);
+    const rect = event.currentTarget.getBoundingClientRect();
+    const containerRect = this.container.getBoundingClientRect();
 
-    const css = {
-      left: Popover.container.offset().left + 20,
-      right: $(window).width() - target.offset().left + 10,
-      overflow: 'scroll',
-    };
+    const windowHeight = document.body.offsetHeight;
+    const offsetTop = rect.top + document.body.scrollTop;
+    const height = event.currentTarget.offsetHeight;
+    const distanceFromTop = offsetTop - document.body.scrollTop;
+    const distanceFromBottom = windowHeight + document.body.scrollTop - offsetTop - height;
 
-    const windowHeight = $(window).height();
-    // Distance scrolled from top of page
-    const scrollTop = $(window).scrollTop();
-    const offsetTop = target.offset().top;
-    const height = target.outerHeight();
-    const distanceFromTop = offsetTop - scrollTop;
-    const distanceFromBottom = windowHeight + scrollTop - offsetTop - height;
+    this.popover.style.left = containerRect.left + document.body.scrollLeft + 20;
+    this.popover.style.right = document.body.offsetWidth - rect.left - document.body.scrollLeft
+      + 10;
+    this.popover.style.overflow = 'scroll';
+
     if (distanceFromTop < distanceFromBottom) {
-      css.top = offsetTop - Math.min(distanceFromTop, 0) + 10;
-      css.maxHeight = distanceFromBottom + height - 20;
+      this.popover.style.top = offsetTop - Math.min(distanceFromTop, 0) + 10;
+      this.popover.style.maxHeight = distanceFromBottom + height - 20;
     } else {
-      css.bottom = windowHeight - target.position().top - height
+      this.popover.style.bottom = windowHeight - event.currentTarget.offsetTop - height
         - Math.min(distanceFromBottom, 0) - 40;
-      css.maxHeight = distanceFromTop - 10;
+      this.popover.style.maxHeight = distanceFromTop - 10;
     }
-    Popover.popover.css(css);
   }
 
   static hidePopover(event) {
-    if (!Popover.popover) {
+    // If there is no popover, or we're inside a popover, ignore this event.
+    if (!this.popover || event.target.closest('.popover')) {
       return;
     }
 
-    if ($(event.target).parents('.popover').length > 0) {
-      return;
-    }
+    this.popover.style.display = 'none';
+    this.popover.remove();
 
-    Popover.popover.hide().remove();
-
-    Popover.popover = undefined;
+    this.popover = undefined;
   }
 }
 

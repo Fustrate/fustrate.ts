@@ -22,12 +22,6 @@ class Flash extends Component {
       .fadeOut(settings.fadeOutSpeed, () => bar.remove());
   }
 
-  static initialize() {
-    const flashes = document.createElement('div');
-    flashes.id = 'flashes';
-    document.body.appendChild(flashes);
-  }
-
   static show(message, { type, icon } = {}) {
     return new this(message, { type, icon });
   }
