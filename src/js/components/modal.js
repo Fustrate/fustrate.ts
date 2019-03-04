@@ -7,6 +7,7 @@ const defaultSettings = {
   size: 'tiny',
   type: null,
   icon: undefined,
+  content: undefined,
   title: null,
   buttons: [],
   fadeSpeed: 250,
@@ -24,7 +25,6 @@ const defaultSettings = {
       display: 'none',
     },
   },
-  cachedHeight: undefined,
 };
 
 const template = `
@@ -40,7 +40,7 @@ const template = `
 class Modal extends Component {
   static get settings() { return {}; }
 
-  constructor({ content, settings } = {}) {
+  constructor({ settings } = {}) {
     super();
 
     this.settings = Object.deepExtend(
@@ -54,7 +54,7 @@ class Modal extends Component {
     this.modal = this.createModal();
 
     this.setTitle(this.settings.title, { icon: this.settings.icon });
-    this.setContent(content, false);
+    this.setContent(this.settings.content, false);
     this.setButtons(this.settings.buttons, false);
     this.reloadUIElements();
     this.addEventListeners();
