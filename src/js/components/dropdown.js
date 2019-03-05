@@ -4,7 +4,7 @@ import Component from '../component';
 
 class Dropdown extends Component {
   static initialize() {
-    $(document.body).on('click.dropdowns', '.has-dropdown', this.open);
+    $(document.body).on('click.dropdowns', '.has-dropdown', this.open.bind(this));
   }
 
   static open(event) {
