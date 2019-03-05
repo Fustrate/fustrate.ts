@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import Rails from './components/rails';
+import Rails from './src/js/components/rails';
 
 const entityMap = {
   '&': '&amp;',
@@ -26,22 +26,6 @@ function hms(seconds, zero) {
   ];
 
   return `${seconds < 0 ? '-' : ''}${parts.join(':')}`;
-}
-
-function recordPreview({
-  title, link, label, info,
-} = {}) {
-  const infoBlocks = Object.keys(info)
-    .filter(key => info[key] && !info[key].isBlank())
-    .map(key => `<dt>${key}</dt><dd>${info[key]}</dd>`);
-
-  return `
-    <h5>
-      <a target='_blank' rel='noopener' href='${link}'>${title}</a>
-      <div class='right'>${label}</div>
-    </h5>
-    <hr>
-    <dl>${infoBlocks.join('')}</dl>`;
 }
 
 function postRedirectTo(href) {
@@ -235,7 +219,6 @@ export {
   linkTo,
   multilineEscapeHTML,
   postRedirectTo,
-  recordPreview,
   redirectTo,
   triggerEvent,
 };
