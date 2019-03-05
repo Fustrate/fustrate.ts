@@ -6,10 +6,12 @@ export { default as Listenable } from './src/js/listenable';
 export { default as Record } from './src/js/record';
 
 export { default as AlertBox } from './src/js/components/alert_box';
+export { default as Autocomplete } from './src/js/components/autocomplete';
 export { default as Disclosure } from './src/js/components/disclosure';
 export { default as DropZone } from './src/js/components/drop_zone';
 export { default as Dropdown } from './src/js/components/dropdown';
 export { default as FilePicker } from './src/js/components/file_picker';
+export { default as Flash } from './src/js/components/flash';
 export { default as Modal } from './src/js/components/modal';
 export { default as Pagination } from './src/js/components/pagination';
 export { default as Popover } from './src/js/components/popover';
@@ -17,19 +19,7 @@ export { default as Rails } from './src/js/components/rails';
 export { default as Tabs } from './src/js/components/tabs';
 export { default as Tooltip } from './src/js/components/tooltip';
 
-export {
-  default as Autocomplete,
-  Source as AutocompleteSource,
-  Suggestion as AutocompleteSuggestion,
-  PlainSource as PlainAutocompleteSource,
-  PlainSuggestion as PlainAutocompleteSuggestion,
-} from './src/js/components/autocomplete';
-
-export {
-  default as Flash,
-  InfoFlash,
-  SuccessFlash,
-  ErrorFlash,
-} from './src/js/components/flash';
+export * from './src/js/components/autocomplete';
+export * from './src/js/components/flash';
 
 export { default } from './src/js/fustrate';

@@ -4,7 +4,7 @@ import Awesomplete from 'awesomplete';
 import Component from '../component';
 import { triggerEvent } from '../utilities';
 
-class Suggestion extends String {
+class AutocompleteSuggestion extends String {
   constructor(datum, displayValue) {
     super(displayValue);
 
@@ -29,7 +29,7 @@ class Suggestion extends String {
   }
 }
 
-class Source {
+class AutocompleteSource {
   /* eslint-disable no-unused-vars, class-methods-use-this */
   matches(datum) {
     return true;
@@ -40,7 +40,7 @@ class Source {
   }
 
   suggestion(datum) {
-    return new Suggestion(datum);
+    return new AutocompleteSuggestion(datum);
   }
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
@@ -81,7 +81,7 @@ class Autocomplete extends Component {
     if (options.sources) {
       this.sources = options.sources;
     } else if (options.list) {
-      this.sources = [new Source({ list: options.list })];
+      this.sources = [new AutocompleteSource({ list: options.list })];
     }
   }
 
@@ -220,7 +220,7 @@ class Autocomplete extends Component {
   }
 }
 
-class PlainSuggestion extends Suggestion {
+class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
   constructor(datum) {
     super(datum, datum);
   }
@@ -230,7 +230,7 @@ class PlainSuggestion extends Suggestion {
   }
 }
 
-class PlainSource extends Source {
+class PlainAutocompleteSource extends AutocompleteSource {
   constructor(list) {
     super();
 
@@ -241,14 +241,14 @@ class PlainSource extends Source {
     return suggestion.value.toLowerCase().indexOf(userInput) >= 0;
   }
 
-  static suggestion(datum) { return new PlainSuggestion(datum); }
+  static suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
 }
 
 export {
-  Suggestion,
-  Source,
-  PlainSuggestion,
-  PlainSource,
+  AutocompleteSuggestion,
+  AutocompleteSource,
+  PlainAutocompleteSuggestion,
+  PlainAutocompleteSource,
 };
 
 export default Autocomplete;
