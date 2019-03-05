@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Awesomplete from 'awesomplete';
 
 import Component from '../component';
-import { triggerEvent } from '../utilities';
+import { triggerEvent } from '../../../utilities';
 
 class Suggestion extends String {
   constructor(datum, displayValue) {
