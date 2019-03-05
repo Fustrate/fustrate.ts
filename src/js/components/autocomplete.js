@@ -43,6 +43,14 @@ class Source {
     return new Suggestion(datum);
   }
   /* eslint-enable no-unused-vars, class-methods-use-this */
+
+  matchingData(searchTerm) {
+    if (!this.list) {
+      return [];
+    }
+
+    return this.list.filter(datum => this.filter(datum, searchTerm), this);
+  }
 }
 
 class Autocomplete extends Component {
@@ -104,25 +112,25 @@ class Autocomplete extends Component {
   }
 
   onFocus() {
-    this.items = [];
-    this.value = this.input.value && this.input.value.trim();
+    this.value = this.input.value ? this.input.value.trim() : '';
 
+    const items = [];
+    const searchTerm = this.value.toLowerCase();
+
+    // If we have plain text sources, show them immediately
     this.sources
       .filter(source => source.list !== undefined)
       .forEach((source) => {
-        source.list.forEach((datum) => {
-          if (source.filter(datum, this.value)) {
-            this.items.push(datum);
-          }
-        }, this);
-      }, this);
+        items.concat(source.matchingData(searchTerm));
+      });
 
-    this.awesomplete.list = this.items;
+    this.items = items;
+    this.awesomplete.list = items;
   }
 
   onKeyup(e) {
     const keyCode = e.which || e.keyCode;
-    const value = this.input.value && this.input.value.trim();
+    const value = this.input.value ? this.input.value.trim() : '';
 
     if (value === '' && this.value !== '') {
       this.blanked();
@@ -143,15 +151,13 @@ class Autocomplete extends Component {
     this.value = value;
     this.items = [];
 
+    const searchTerm = this.value.toLowerCase();
+
     this.sources.forEach((source) => {
       if (source.url) {
         this.performSearch(source);
       } else if (source.list) {
-        source.list.forEach((datum) => {
-          if (source.filter(datum, this.value)) {
-            this.items.push(datum);
-          }
-        }, this);
+        this.items.concat(source.matchingData(searchTerm));
 
         this.awesomplete.list = this.items;
       }
@@ -216,11 +222,11 @@ class Autocomplete extends Component {
 
 class PlainSuggestion extends Suggestion {
   constructor(datum) {
-    super(datum, datum.value);
+    super(datum, datum);
   }
 
   highlightedHTML(value) {
-    return this.highlight(value, this.datum.value);
+    return this.highlight(value, this.datum);
   }
 }
 
@@ -231,8 +237,8 @@ class PlainSource extends Source {
     this.list = list;
   }
 
-  static filter(datum, userInput) {
-    return datum.value.toLowerCase().indexOf(userInput.trim().toLowerCase()) >= 0;
+  static filter(suggestion, userInput) {
+    return suggestion.value.toLowerCase().indexOf(userInput) >= 0;
   }
 
   static suggestion(datum) { return new PlainSuggestion(datum); }
