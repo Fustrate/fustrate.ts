@@ -30,25 +30,19 @@ class Suggestion extends String {
 }
 
 class Source {
-  constructor(options) {
-    this.options = options;
-  }
-
+  /* eslint-disable no-unused-vars, class-methods-use-this */
   matches(datum) {
-    return this.options.matches(datum);
+    return true;
   }
 
   filter(datum, value) {
-    return this.options.filter ? this.options.filter(datum, value) : true;
+    return true;
   }
 
   suggestion(datum) {
-    return this.options.suggestion(datum);
+    return new Suggestion(datum);
   }
-
-  get url() { return this.options.url; }
-
-  get list() { return this.options.list; }
+  /* eslint-enable no-unused-vars, class-methods-use-this */
 }
 
 class Autocomplete extends Component {
@@ -215,20 +209,40 @@ class Autocomplete extends Component {
     }, this);
   }
 
-  static create(input, types) {
-    return new this(input, types);
+  static create(input, options) {
+    return new this(input, options);
   }
 }
 
-Autocomplete.types = {
-  plain: new Source({
-    item: object => `<li>${this.highlight(object.value)}</li>`,
-    matches: () => true,
-    filter: (object, userInput) => object.value.toLowerCase()
-      .indexOf(userInput.trim().toLowerCase()) >= 0,
-  }),
-};
+class PlainSuggestion extends Suggestion {
+  constructor(datum) {
+    super(datum, datum.value);
+  }
 
-export { Suggestion, Source };
+  highlightedHTML(value) {
+    return this.highlight(value, this.datum.value);
+  }
+}
+
+class PlainSource extends Source {
+  constructor(list) {
+    super();
+
+    this.list = list;
+  }
+
+  static filter(datum, userInput) {
+    return datum.value.toLowerCase().indexOf(userInput.trim().toLowerCase()) >= 0;
+  }
+
+  static suggestion(datum) { return new PlainSuggestion(datum); }
+}
+
+export {
+  Suggestion,
+  Source,
+  PlainSuggestion,
+  PlainSource,
+};
 
 export default Autocomplete;
