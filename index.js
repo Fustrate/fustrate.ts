@@ -21,6 +21,8 @@ export {
   default as Autocomplete,
   Source as AutocompleteSource,
   Suggestion as AutocompleteSuggestion,
+  PlainSource as PlainAutocompleteSource,
+  PlainSuggestion as PlainAutocompleteSuggestion,
 } from './src/js/components/autocomplete';
 
 export {
