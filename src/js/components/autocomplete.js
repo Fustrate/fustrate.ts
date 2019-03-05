@@ -244,11 +244,23 @@ class PlainAutocompleteSource extends AutocompleteSource {
   static suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
 }
 
-export {
-  AutocompleteSuggestion,
-  AutocompleteSource,
-  PlainAutocompleteSuggestion,
-  PlainAutocompleteSource,
-};
+class PlainAutocomplete extends Autocomplete {
+  static create(input) {
+    return super.create(input, { sources: [new PlainAutocompleteSource()] });
+  }
 
-export default Autocomplete;
+  onSelect(event) {
+    super.onSelect(event);
+
+    this.input.value = event.originalEvent.text.toString();
+  }
+}
+
+export {
+  Autocomplete,
+  AutocompleteSource,
+  AutocompleteSuggestion,
+  PlainAutocomplete,
+  PlainAutocompleteSource,
+  PlainAutocompleteSuggestion,
+};

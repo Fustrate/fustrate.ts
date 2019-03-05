@@ -45,6 +45,9 @@ class ErrorFlash extends Flash {
   }
 }
 
-export { InfoFlash, SuccessFlash, ErrorFlash };
-
-export default Flash;
+export {
+  Flash,
+  InfoFlash,
+  SuccessFlash,
+  ErrorFlash,
+};
