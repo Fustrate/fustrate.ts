@@ -134,17 +134,19 @@ class Autocomplete extends Component {
   }
 
   onFocus() {
-    this.awesomplete.list = [];
     this.value = this.input.value ? this.input.value.trim() : '';
 
+    let list = [];
     const searchTerm = this.value.toLowerCase();
 
     // If we have plain text sources, show them immediately
     this.sources
       .filter(source => source.list)
       .forEach((source) => {
-        this.addValuesToList(source.matchingData(searchTerm));
+        list = list.concat(source.matchingData(searchTerm));
       }, this);
+
+    this.awesomplete.list = list;
   }
 
   onKeyup(e) {
@@ -164,23 +166,23 @@ class Autocomplete extends Component {
     }
 
     this.value = value;
-    this.awesomplete.list = [];
+    let list = [];
 
     this.sources.forEach((source) => {
       if (source.url) {
-        $.get(source.url({ search: this.value, commit: 1, format: 'json' })).done((response) => {
-          this.addValuesToList(response);
+        $.get(source.url({ search: value, commit: 1, format: 'json' })).done((response) => {
+          list = list.concat(response);
+
+          this.awesomplete.list = list;
         });
       } else if (source.list) {
-        const searchTerm = this.value.toLowerCase();
+        const searchTerm = value.toLowerCase();
 
-        this.addValuesToList(source.matchingData(searchTerm));
+        list = list.concat(source.matchingData(searchTerm));
       }
     }, this);
-  }
 
-  addValuesToList(values) {
-    this.awesomplete.list = this.awesomplete.list.concat(values);
+    this.awesomplete.list = list;
   }
 
   highlight(text) {
