@@ -13,11 +13,13 @@ export { default as FilePicker } from './src/js/components/file_picker';
 export { default as Modal } from './src/js/components/modal';
 export { default as Pagination } from './src/js/components/pagination';
 export { default as Popover } from './src/js/components/popover';
+export { default as Rails } from './src/js/components/rails';
 export { default as Tabs } from './src/js/components/tabs';
 export { default as Tooltip } from './src/js/components/tooltip';
 
 export {
   default as Autocomplete,
+  Source as AutocompleteSource,
   Suggestion as AutocompleteSuggestion,
 } from './src/js/components/autocomplete';
 

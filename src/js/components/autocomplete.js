@@ -11,15 +11,6 @@ class Suggestion extends String {
     this.datum = datum;
   }
 
-  item(value, index) {
-    return Awesomplete.$.create('li', {
-      innerHTML: this.highlightedHTML(value),
-      role: 'option',
-      'aria-selected': 'false',
-      id: `awesomplete_list_${this.count}_item_${index}`,
-    });
-  }
-
   // eslint-disable-next-line class-methods-use-this
   highlight(input, text) {
     if (input.trim() === '') {
@@ -28,6 +19,36 @@ class Suggestion extends String {
 
     return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
   }
+
+  item(text) {
+    return Awesomplete.$.create('li', {
+      innerHTML: this.highlightedHTML(text),
+      role: 'option',
+      'aria-selected': 'false',
+    });
+  }
+}
+
+class Source {
+  constructor(options) {
+    this.options = options;
+  }
+
+  matches(datum) {
+    return this.options.matches(datum);
+  }
+
+  filter(datum, value) {
+    return this.options.filter ? this.options.filter(datum, value) : true;
+  }
+
+  suggestion(datum) {
+    return this.options.suggestion(datum);
+  }
+
+  get url() { return this.options.url; }
+
+  get list() { return this.options.list; }
 }
 
 class Autocomplete extends Component {
@@ -46,10 +67,7 @@ class Autocomplete extends Component {
       };
     }
 
-    this.sources = Object.keys(defaultTypes).map((key) => {
-      const options = defaultTypes[key];
-      return Object.deepExtend({}, this.constructor.types[key], options);
-    });
+    this.sources = Object.keys(defaultTypes).map(key => this.constructor.types[key]);
 
     if (this.sources.length === undefined) {
       this.sources = [this.sources];
@@ -71,7 +89,8 @@ class Autocomplete extends Component {
       item: (suggestion, value, index) => suggestion.item(value, index),
       sort: false, // Items are fed in the intended order
       replace: suggestion => suggestion.label,
-      suggestion: Suggestion,
+      // eslint-disable-next-line new-cap
+      suggestion: datum => this.sourceForDatum(datum).suggestion(datum),
     });
 
     $(this.input)
@@ -79,6 +98,14 @@ class Autocomplete extends Component {
       .on('awesomplete-selectcomplete', this.onSelect.bind(this))
       .on('keyup', this.onKeyup.bind(this).debounce())
       .on('focus', this.onFocus.bind(this));
+  }
+
+  sourceForDatum(datum) {
+    if (this.sources.length === 1) {
+      return this.sources[0];
+    }
+
+    return this.sources.find(source => source.matches(datum));
   }
 
   blanked() {
@@ -92,9 +119,9 @@ class Autocomplete extends Component {
   }
 
   onSelect(event) {
-    triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text })
+    triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text });
   }
-  
+
   onFocus() {
     this.items = [];
     this.value = this.input.value && this.input.value.trim();
@@ -104,7 +131,7 @@ class Autocomplete extends Component {
       .forEach((source) => {
         source.list.forEach((datum) => {
           if (source.filter(datum, this.value)) {
-            this.items.push(source.suggestion(datum));
+            this.items.push(datum);
           }
         }, this);
       }, this);
@@ -136,12 +163,12 @@ class Autocomplete extends Component {
     this.items = [];
 
     this.sources.forEach((source) => {
-      if (source.url != null) {
+      if (source.url) {
         this.performSearch(source);
-      } else if (source.list != null) {
+      } else if (source.list) {
         source.list.forEach((datum) => {
           if (source.filter(datum, this.value)) {
-            this.items.push(source.suggestion(datum));
+            this.items.push(datum);
           }
         }, this);
 
@@ -154,7 +181,7 @@ class Autocomplete extends Component {
     $.get(source.url({ search: this.value, commit: 1, format: 'json' }))
       .done((response) => {
         response.forEach((item) => {
-          this.items.push(source.suggestion(item));
+          this.items.push(item);
         }, this);
 
         this.awesomplete.list = this.items;
@@ -173,6 +200,24 @@ class Autocomplete extends Component {
     this.awesomplete.replace(suggestion);
   }
 
+  resetValue(event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const value = this.awesomplete.container.parentElement.querySelector('.autocomplete-value');
+
+    if (value) {
+      value.remove();
+    }
+
+    this.input.value = '';
+    this.awesomplete.container.style.display = '';
+
+    this.input.focus();
+
+    return false;
+  }
+
   static addType(name, func) {
     Autocomplete.types[name] = func;
   }
@@ -189,17 +234,14 @@ class Autocomplete extends Component {
 }
 
 Autocomplete.types = {
-  plain: {
-    displayKey: 'value',
+  plain: new Source({
     item: object => `<li>${this.highlight(object.value)}</li>`,
-    filter: (object, userInput) => {
-      const search = userInput.trim().toLowerCase();
-
-      return object.value.toLowerCase().indexOf(search) >= 0;
-    },
-  },
+    matches: () => true,
+    filter: (object, userInput) => object.value.toLowerCase()
+      .indexOf(userInput.trim().toLowerCase()) >= 0,
+  }),
 };
 
-export { Suggestion };
+export { Suggestion, Source };
 
 export default Autocomplete;
