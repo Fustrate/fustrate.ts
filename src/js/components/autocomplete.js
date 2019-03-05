@@ -27,15 +27,15 @@ class AutocompleteSuggestion extends String {
       'aria-selected': 'false',
     });
   }
+
+  highlightedHTML(value) {
+    return this.highlight(value, this.toString());
+  }
 }
 
 class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
   constructor(datum) {
     super(datum, datum);
-  }
-
-  highlightedHTML(value) {
-    return this.highlight(value, this.datum);
   }
 }
 
@@ -70,11 +70,13 @@ class PlainAutocompleteSource extends AutocompleteSource {
     this.list = list;
   }
 
-  static filter(suggestion, userInput) {
+  /* eslint-disable class-methods-use-this */
+  filter(suggestion, userInput) {
     return suggestion.value.toLowerCase().indexOf(userInput) >= 0;
   }
 
-  static suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
+  suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
+  /* eslint-enable class-methods-use-this */
 }
 
 class Autocomplete extends Component {
