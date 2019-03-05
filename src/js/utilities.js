@@ -194,7 +194,7 @@ const redirectTo = (href) => {
   }, 750);
 };
 
-const triggerEvent = (element, name, data) => {
+const triggerEvent = (element, name, data = {}) => {
   let event;
 
   if (window.CustomEvent) {

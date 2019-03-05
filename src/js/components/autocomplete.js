@@ -92,11 +92,9 @@ class Autocomplete extends Component {
       suggestion: datum => this.suggestionForDatum(datum),
     });
 
-    $(this.input)
-      .data('awesomplete', this)
-      .on('awesomplete-selectcomplete', this.onSelect.bind(this))
-      .on('keyup', this.onKeyup.bind(this).debounce())
-      .on('focus', this.onFocus.bind(this));
+    this.input.addEventListener('awesomplete-selectcomplete', this.onSelect.bind(this));
+    this.input.addEventListener('keyup', this.onKeyup.bind(this).debounce());
+    this.input.addEventListener('focus', this.onFocus.bind(this));
   }
 
   extractOptions(options) {
@@ -136,7 +134,7 @@ class Autocomplete extends Component {
   }
 
   onFocus() {
-    this.items = [];
+    this.awesomplete.list = [];
     this.value = this.input.value ? this.input.value.trim() : '';
 
     const searchTerm = this.value.toLowerCase();
@@ -145,10 +143,8 @@ class Autocomplete extends Component {
     this.sources
       .filter(source => source.list)
       .forEach((source) => {
-        this.items = this.items.concat(source.matchingData(searchTerm));
+        this.addValuesToList(source.matchingData(searchTerm));
       }, this);
-
-    this.awesomplete.list = this.items;
   }
 
   onKeyup(e) {
@@ -161,41 +157,30 @@ class Autocomplete extends Component {
       return;
     }
 
-    // Ignore: Tab, Enter, Esc, Left, Up, Right, Down
-    if ([9, 13, 27, 37, 38, 39, 40].includes(keyCode)) {
-      return;
-    }
-
-    // Don't perform the same search twice in a row
-    if (value === this.value || value.length < 3) {
+    // Don't perform the same search twice in a row, and ignore:
+    //   Tab, Enter, Esc, Left, Up, Right, Down
+    if (value === this.value || value.length < 3 || [9, 13, 27, 37, 38, 39, 40].includes(keyCode)) {
       return;
     }
 
     this.value = value;
-    this.items = [];
-
-    const searchTerm = this.value.toLowerCase();
+    this.awesomplete.list = [];
 
     this.sources.forEach((source) => {
       if (source.url) {
-        this.performSearch(source);
+        $.get(source.url({ search: this.value, commit: 1, format: 'json' })).done((response) => {
+          this.addValuesToList(response);
+        });
       } else if (source.list) {
-        this.items.concat(source.matchingData(searchTerm));
+        const searchTerm = this.value.toLowerCase();
 
-        this.awesomplete.list = this.items;
+        this.addValuesToList(source.matchingData(searchTerm));
       }
     }, this);
   }
 
-  performSearch(source) {
-    $.get(source.url({ search: this.value, commit: 1, format: 'json' }))
-      .done((response) => {
-        response.forEach((item) => {
-          this.items.push(item);
-        }, this);
-
-        this.awesomplete.list = this.items;
-      });
+  addValuesToList(values) {
+    this.awesomplete.list = this.awesomplete.list.concat(values);
   }
 
   highlight(text) {
