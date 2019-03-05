@@ -112,20 +112,19 @@ class Autocomplete extends Component {
   }
 
   onFocus() {
+    this.items = [];
     this.value = this.input.value ? this.input.value.trim() : '';
 
-    const items = [];
     const searchTerm = this.value.toLowerCase();
 
     // If we have plain text sources, show them immediately
     this.sources
-      .filter(source => source.list !== undefined)
+      .filter(source => source.list)
       .forEach((source) => {
-        items.concat(source.matchingData(searchTerm));
-      });
+        this.items = this.items.concat(source.matchingData(searchTerm));
+      }, this);
 
-    this.items = items;
-    this.awesomplete.list = items;
+    this.awesomplete.list = this.items;
   }
 
   onKeyup(e) {
