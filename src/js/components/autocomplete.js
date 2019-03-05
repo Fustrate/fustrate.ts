@@ -3,6 +3,32 @@ import Awesomplete from 'awesomplete';
 
 import Component from '../component';
 
+class Suggestion extends String {
+  constructor(datum, displayValue) {
+    super(displayValue);
+
+    this.datum = datum;
+  }
+
+  item(value, index) {
+    return Awesomplete.$.create('li', {
+      innerHTML: this.highlightedHTML(value),
+      role: 'option',
+      'aria-selected': 'false',
+      id: `awesomplete_list_${this.count}_item_${index}`,
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  highlight(input, text) {
+    if (input.trim() === '') {
+      return text;
+    }
+
+    return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
+  }
+}
+
 class Autocomplete extends Component {
   constructor(input, types) {
     super();
@@ -44,7 +70,7 @@ class Autocomplete extends Component {
       item: (suggestion, value, index) => suggestion.item(value, index),
       sort: false, // Items are fed in the intended order
       replace: suggestion => suggestion.label,
-      suggestion: data => data,
+      suggestion: Suggestion,
     });
 
     $(this.input)
@@ -167,32 +193,6 @@ Autocomplete.types = {
     },
   },
 };
-
-class Suggestion extends String {
-  constructor(datum, displayValue) {
-    super(displayValue);
-
-    this.datum = datum;
-  }
-
-  item(value, index) {
-    return Awesomplete.$.create('li', {
-      innerHTML: this.highlightedHTML(value),
-      role: 'option',
-      'aria-selected': 'false',
-      id: `awesomplete_list_${this.count}_item_${index}`,
-    });
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  highlight(input, text) {
-    if (input.trim() === '') {
-      return text;
-    }
-
-    return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
-  }
-}
 
 export { Suggestion };
 
