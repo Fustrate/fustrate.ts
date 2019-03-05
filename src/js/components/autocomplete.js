@@ -45,7 +45,7 @@ class AutocompleteSource {
     return true;
   }
 
-  filter(datum, value) {
+  filter(suggestion, value) {
     return true;
   }
 
@@ -53,14 +53,6 @@ class AutocompleteSource {
     return new AutocompleteSuggestion(datum);
   }
   /* eslint-enable no-unused-vars, class-methods-use-this */
-
-  matchingData(searchTerm) {
-    if (!this.list) {
-      return [];
-    }
-
-    return this.list.filter(datum => this.filter(datum, searchTerm), this);
-  }
 }
 
 class PlainAutocompleteSource extends AutocompleteSource {
@@ -72,11 +64,15 @@ class PlainAutocompleteSource extends AutocompleteSource {
 
   /* eslint-disable class-methods-use-this */
   filter(suggestion, userInput) {
-    return suggestion.value.toLowerCase().indexOf(userInput) >= 0;
+    return suggestion.toLowerCase().indexOf(userInput) >= 0;
   }
 
   suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
   /* eslint-enable class-methods-use-this */
+
+  matchingData(searchTerm) {
+    return this.list.filter(datum => this.filter(datum, searchTerm), this);
+  }
 }
 
 class Autocomplete extends Component {
