@@ -21,17 +21,17 @@ class Dropdown extends Component {
     this.locked = true;
 
     if (button.offsetTop > (document.body.offsetHeight / 2)) {
-      top = button.offsetTop - dropdown.offsetHeight - 2;
+      top = `${button.offsetTop - dropdown.offsetHeight - 2}px`;
     } else {
-      top = button.offsetTop + button.offsetHeight + 2;
+      top = `${button.offsetTop + button.offsetHeight + 2}px`;
     }
 
     if (button.offsetLeft > (document.body.offsetWidth / 2)) {
       left = 'inherit';
-      right = document.body.offsetWidth - button.offsetLeft - button.offsetWidth;
+      right = `${document.body.offsetWidth - button.offsetLeft - button.offsetWidth}px`;
     } else {
       right = 'inherit';
-      left = button.offsetLeft;
+      left = `${button.offsetLeft}px`;
     }
 
     this.showDropdown(dropdown, { left, top, right });
@@ -39,13 +39,13 @@ class Dropdown extends Component {
     return false;
   }
 
-  static showDropdown(dropdown, css) {
+  static showDropdown(dropdown, { left, top, right }) {
     dropdown.classList.add('visible');
 
     dropdown.style.display = 'none';
-    dropdown.style.left = css.left;
-    dropdown.style.top = css.top;
-    dropdown.style.right = css.right;
+    dropdown.style.left = left;
+    dropdown.style.top = top;
+    dropdown.style.right = right;
 
     $(dropdown).fadeIn(200, () => {
       this.locked = false;
