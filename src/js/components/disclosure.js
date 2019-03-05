@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import Component from '../component';
-import { triggerEvent } from '../../../utilities';
+import { triggerEvent } from '../utilities';
 
 class Disclosure extends Component {
   static initialize() {
