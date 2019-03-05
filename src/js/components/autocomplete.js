@@ -52,45 +52,20 @@ class Source {
 }
 
 class Autocomplete extends Component {
-  constructor(input, types) {
+  constructor(input, options = {}) {
     super();
 
     this.input = input;
-
-    let defaultTypes = types;
-
-    if (Array.isArray(types)) {
-      defaultTypes = {
-        plain: {
-          list: types.map(value => ({ value })),
-        },
-      };
-    }
-
-    this.sources = Object.keys(defaultTypes).map(key => this.constructor.types[key]);
-
-    if (this.sources.length === undefined) {
-      this.sources = [this.sources];
-    }
-
-    const existing = $(this.input).data('awesomplete');
-
-    if (existing) {
-      existing.sources = this.sources;
-
-      return;
-    }
+    this.extractOptions(options);
 
     this.awesomplete = new Awesomplete(this.input, {
       minChars: 0,
       maxItems: 25,
-      data: data => data,
       filter: () => true,
       item: (suggestion, value, index) => suggestion.item(value, index),
       sort: false, // Items are fed in the intended order
       replace: suggestion => suggestion.label,
-      // eslint-disable-next-line new-cap
-      suggestion: datum => this.sourceForDatum(datum).suggestion(datum),
+      suggestion: datum => this.suggestionForDatum(datum),
     });
 
     $(this.input)
@@ -100,12 +75,24 @@ class Autocomplete extends Component {
       .on('focus', this.onFocus.bind(this));
   }
 
+  extractOptions(options) {
+    if (options.sources) {
+      this.sources = options.sources;
+    } else if (options.list) {
+      this.sources = [new Source({ list: options.list })];
+    }
+  }
+
   sourceForDatum(datum) {
     if (this.sources.length === 1) {
       return this.sources[0];
     }
 
     return this.sources.find(source => source.matches(datum));
+  }
+
+  suggestionForDatum(datum) {
+    this.sourceForDatum(datum).suggestion(datum);
   }
 
   blanked() {
