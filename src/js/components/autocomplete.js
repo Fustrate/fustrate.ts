@@ -244,8 +244,8 @@ class PlainAutocompleteSource extends AutocompleteSource {
 }
 
 class PlainAutocomplete extends Autocomplete {
-  static create(input) {
-    return super.create(input, { sources: [new PlainAutocompleteSource()] });
+  static create(input, { sources }) {
+    return super.create(input, { sources: sources || [new PlainAutocompleteSource()] });
   }
 
   onSelect(event) {
