@@ -92,7 +92,7 @@ class Autocomplete extends Component {
   }
 
   suggestionForDatum(datum) {
-    this.sourceForDatum(datum).suggestion(datum);
+    return this.sourceForDatum(datum).suggestion(datum);
   }
 
   blanked() {
