@@ -1,6 +1,6 @@
-import Fustrate from './fustrate';
 import GenericPage from './generic_page';
 import Pagination from './components/pagination';
+import { elementFromString } from './utilities';
 
 class GenericTable extends GenericPage {
   constructor(root, table) {
@@ -21,7 +21,7 @@ class GenericTable extends GenericPage {
   reloadTable() {} // eslint-disable-line class-methods-use-this
 
   createRow(item) {
-    return this.constructor.updateRow(Fustrate.elementFromString(this.constructor.blankRow), item);
+    return this.constructor.updateRow(elementFromString(this.constructor.blankRow), item);
   }
 
   static sortRows(rows, sortFunction = () => {}) {

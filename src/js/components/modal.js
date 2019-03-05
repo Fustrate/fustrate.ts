@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
-import Fustrate from '../fustrate';
 import Component from '../component';
+import { escapeHTML, icon as createIcon, triggerEvent } from '../utilities';
 
 const defaultSettings = {
   size: 'tiny',
@@ -82,7 +82,7 @@ class Modal extends Component {
     const iconToUse = icon !== false && icon == null ? this.constructor.icon : icon;
 
     this.modal[0].querySelector('.modal-title span')
-      .innerHTML = iconToUse ? `${Fustrate.icon(iconToUse)} ${title}` : title;
+      .innerHTML = iconToUse ? `${createIcon(iconToUse)} ${title}` : title;
   }
 
   setContent(content, reload = true) {
@@ -155,7 +155,7 @@ class Modal extends Component {
 
     return `
       <button data-button="${name}" class="expand ${type}">
-        ${Fustrate.escapeHtml(text)}
+        ${escapeHTML(text)}
       </button>`;
   }
 

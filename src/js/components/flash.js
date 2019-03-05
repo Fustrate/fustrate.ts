@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
-import Fustrate from '../fustrate';
 import Component from '../component';
+import { icon as createIcon } from '../utilities';
 
 const settings = {
   fadeInSpeed: 500,
@@ -14,7 +14,7 @@ class Flash extends Component {
     super();
 
     const bar = $(`<div class="flash ${type != null ? type : 'info'}"></div>`)
-      .html(icon ? `${Fustrate.class.icon(icon)} ${message}` : message)
+      .html(icon ? `${createIcon(icon)} ${message}` : message)
       .hide()
       .prependTo($('#flashes'))
       .fadeIn(settings.fadeInSpeed)

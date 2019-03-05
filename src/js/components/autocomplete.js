@@ -29,6 +29,16 @@ class AutocompleteSuggestion extends String {
   }
 }
 
+class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
+  constructor(datum) {
+    super(datum, datum);
+  }
+
+  highlightedHTML(value) {
+    return this.highlight(value, this.datum);
+  }
+}
+
 class AutocompleteSource {
   /* eslint-disable no-unused-vars, class-methods-use-this */
   matches(datum) {
@@ -51,6 +61,20 @@ class AutocompleteSource {
 
     return this.list.filter(datum => this.filter(datum, searchTerm), this);
   }
+}
+
+class PlainAutocompleteSource extends AutocompleteSource {
+  constructor(list) {
+    super();
+
+    this.list = list;
+  }
+
+  static filter(suggestion, userInput) {
+    return suggestion.value.toLowerCase().indexOf(userInput) >= 0;
+  }
+
+  static suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
 }
 
 class Autocomplete extends Component {
@@ -78,10 +102,12 @@ class Autocomplete extends Component {
   }
 
   extractOptions(options) {
-    if (options.sources) {
+    if (options.source) {
+      this.sources = [options.source];
+    } else if (options.sources) {
       this.sources = options.sources;
     } else if (options.list) {
-      this.sources = [new AutocompleteSource({ list: options.list })];
+      this.sources = [new PlainAutocompleteSource(options.list)];
     }
   }
 
@@ -217,30 +243,6 @@ class Autocomplete extends Component {
   static create(input, options) {
     return new this(input, options);
   }
-}
-
-class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
-  constructor(datum) {
-    super(datum, datum);
-  }
-
-  highlightedHTML(value) {
-    return this.highlight(value, this.datum);
-  }
-}
-
-class PlainAutocompleteSource extends AutocompleteSource {
-  constructor(list) {
-    super();
-
-    this.list = list;
-  }
-
-  static filter(suggestion, userInput) {
-    return suggestion.value.toLowerCase().indexOf(userInput) >= 0;
-  }
-
-  static suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
 }
 
 class PlainAutocomplete extends Autocomplete {

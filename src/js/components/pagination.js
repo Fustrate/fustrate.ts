@@ -1,5 +1,5 @@
-import Fustrate from '../fustrate';
 import Component from '../component';
+import { linkTo } from '../utilities';
 
 const settings = {
   previousText: '← Previous',
@@ -21,7 +21,7 @@ class Pagination extends Component {
   }
 
   link(text, page, ...args) {
-    return Fustrate.linkTo(text, `${this.base}page=${page}`, ...args);
+    return linkTo(text, `${this.base}page=${page}`, ...args);
   }
 
   previousLink() {
@@ -57,7 +57,7 @@ class Pagination extends Component {
 
     const pages = this.windowedPageNumbers().map((page) => {
       if (page === this.currentPage) {
-        return `<li class="current">${Fustrate.linkTo(page, '#')}</li>`;
+        return `<li class="current">${linkTo(page, '#')}</li>`;
       }
 
       if (page === 'gap') {
