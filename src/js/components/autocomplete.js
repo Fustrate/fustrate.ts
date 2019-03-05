@@ -210,24 +210,6 @@ class Autocomplete extends Component {
     this.awesomplete.replace(suggestion);
   }
 
-  resetValue(event) {
-    event.stopPropagation();
-    event.preventDefault();
-
-    const value = this.awesomplete.container.parentElement.querySelector('.autocomplete-value');
-
-    if (value) {
-      value.remove();
-    }
-
-    this.input.value = '';
-    this.awesomplete.container.style.display = '';
-
-    this.input.focus();
-
-    return false;
-  }
-
   static addType(name, func) {
     Autocomplete.types[name] = func;
   }
