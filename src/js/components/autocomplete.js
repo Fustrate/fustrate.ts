@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Awesomplete from 'awesomplete';
 
 import Component from '../component';
+import { triggerEvent } from '../utilities';
 
 class Suggestion extends String {
   constructor(datum, displayValue) {
@@ -75,6 +76,7 @@ class Autocomplete extends Component {
 
     $(this.input)
       .data('awesomplete', this)
+      .on('awesomplete-selectcomplete', this.onSelect.bind(this))
       .on('keyup', this.onKeyup.bind(this).debounce())
       .on('focus', this.onFocus.bind(this));
   }
@@ -86,9 +88,13 @@ class Autocomplete extends Component {
 
     this.awesomplete.close();
 
-    $(this.input).trigger('blanked.autocomplete');
+    triggerEvent(this.input, 'blanked.autocomplete');
   }
 
+  onSelect(event) {
+    triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text })
+  }
+  
   onFocus() {
     this.items = [];
     this.value = this.input.value && this.input.value.trim();
