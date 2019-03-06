@@ -18,7 +18,7 @@ class GenericTable extends GenericPage {
     this.reloadTable();
   }
 
-  reloadTable() {} // eslint-disable-line class-methods-use-this
+  reloadTable() {}
 
   createRow(item) {
     return this.constructor.updateRow(elementFromString(this.constructor.blankRow), item);

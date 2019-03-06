@@ -63,7 +63,7 @@ class Modal extends Component {
     this.modal.data('modal', this);
   }
 
-  initialize() {} // eslint-disable-line class-methods-use-this
+  initialize() {}
 
   reloadUIElements() {
     this.fields = {};

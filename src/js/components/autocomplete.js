@@ -11,7 +11,6 @@ class AutocompleteSuggestion extends String {
     this.datum = datum;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   highlight(input, text) {
     if (input.trim() === '') {
       return text;
@@ -40,19 +39,17 @@ class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
 }
 
 class AutocompleteSource {
-  /* eslint-disable no-unused-vars, class-methods-use-this */
-  matches(datum) {
+  matches() {
     return true;
   }
 
-  filter(suggestion, value) {
+  filter() {
     return true;
   }
 
   suggestion(datum) {
     return new AutocompleteSuggestion(datum);
   }
-  /* eslint-enable no-unused-vars, class-methods-use-this */
 }
 
 class PlainAutocompleteSource extends AutocompleteSource {
@@ -62,13 +59,11 @@ class PlainAutocompleteSource extends AutocompleteSource {
     this.list = list;
   }
 
-  /* eslint-disable class-methods-use-this */
   filter(suggestion, userInput) {
     return suggestion.toLowerCase().indexOf(userInput) >= 0;
   }
 
   suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
-  /* eslint-enable class-methods-use-this */
 
   matchingData(searchTerm) {
     return this.list.filter(datum => this.filter(datum, searchTerm), this);
