@@ -21,7 +21,11 @@ class GenericTable extends GenericPage {
   reloadTable() {}
 
   createRow(item) {
-    return this.constructor.updateRow(elementFromString(this.constructor.blankRow), item);
+    const row = elementFromString(this.constructor.blankRow);
+
+    this.updateRow(row, item);
+
+    return row;
   }
 
   static sortRows(rows, sortFunction = () => {}) {
@@ -36,10 +40,6 @@ class GenericTable extends GenericPage {
     });
 
     return rowsWithSortOrder.map(row => row[1]);
-  }
-
-  static updateRow(row) {
-    return row;
   }
 
   reloadRows(rows, { sort } = { sort: null }) {
