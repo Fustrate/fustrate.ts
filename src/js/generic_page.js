@@ -1,6 +1,6 @@
 class GenericPage {
   constructor(root) {
-    this.root = root;
+    this.root = root || document.body;
   }
 
   initialize() {
