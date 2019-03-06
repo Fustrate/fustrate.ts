@@ -220,7 +220,7 @@ class PlainAutocomplete extends Autocomplete {
   onSelect(event) {
     super.onSelect(event);
 
-    this.input.value = event.originalEvent.text.toString();
+    this.input.value = event.text.toString();
   }
 }
 
