@@ -8,11 +8,10 @@
   "bugs": "https://github.com/Fustrate/fustrate-rails.js/issues",
   "dependencies": {
     "@rails/ujs": "^6.0.0-beta2",
-    "@rails/webpacker": "4.0.0-rc.7",
+    "@rails/webpacker": "^4.0.2",
     "awesomplete": "https://github.com/Fustrate/awesomplete",
     "jquery": "^3.3.1",
-    "moment": "^2.24.0",
-    "rails-erb-loader": "^5.5.2"
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
