@@ -126,6 +126,9 @@ class Autocomplete extends Component {
 
   onSelect(event) {
     triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text });
+
+    // It's obviously not still an error if we just selected a value from the dropdown.
+    this.input.classList.remove('error');
   }
 
   onFocus() {
