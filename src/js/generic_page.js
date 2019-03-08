@@ -4,10 +4,10 @@ class GenericPage {
   }
 
   initialize() {
+    this.callAllMethodsBeginningWith('initialize');
+
     this.reloadUIElements();
     this.addEventListeners();
-
-    this.callAllMethodsBeginningWith('initialize');
   }
 
   addEventListeners() {
