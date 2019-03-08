@@ -36,7 +36,6 @@ class GenericPage {
     this.root.querySelector('.header > span').textContent = text;
   }
 
-  // Calls all methods matching /refresh.+/
   refresh() {
     this.callAllMethodsBeginningWith('refresh');
   }

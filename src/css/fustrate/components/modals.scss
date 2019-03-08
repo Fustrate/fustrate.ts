@@ -4,8 +4,18 @@ $modal-cancel-button-color: #dadada !default;
 $modal-overlay-color: rgba(0, 0, 0, .45) !default;
 $modal-title-color: #fff !default;
 
+$modal-widths: (
+  tiny: 32em,
+  small: 44em,
+  medium: 56em,
+  large: 68em,
+  xlarge: 80em
+) !default;
+
 @mixin modal-width($width: 80%) {
+  left: 50%;
   margin-left: -($width / 2);
+  top: rem-calc(100);
   width: $width;
 }
 
@@ -166,29 +176,11 @@ $modal-title-color: #fff !default;
       min-height: 100vh;
     }
 
-    @media #{$medium-up} {
-      @include modal-width;
-      left: 50%;
-      top: rem-calc(100);
-
-      &.tiny {
-        @include modal-width(30%);
-      }
-
-      &.small {
-        @include modal-width(40%);
-      }
-
-      &.medium {
-        @include modal-width(60%);
-      }
-
-      &.large {
-        @include modal-width(70%);
-      }
-
-      &.xlarge {
-        @include modal-width(95%);
+    @each $name, $size in $modal-widths {
+      @media #{$screen} and (min-width:#{$size + .063em}) {
+        &.#{$name} {
+          @include modal-width($size);
+        }
       }
     }
   }
