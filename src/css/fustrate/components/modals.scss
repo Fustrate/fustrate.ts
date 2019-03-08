@@ -172,10 +172,6 @@ $modal-widths: (
       }
     }
 
-    @media #{$small-only} {
-      min-height: 100vh;
-    }
-
     @each $name, $size in $modal-widths {
       @media #{$screen} and (min-width:#{$size + .063em}) {
         &.#{$name} {
