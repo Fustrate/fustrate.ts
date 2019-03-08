@@ -35,26 +35,20 @@ const applyMixin = (target, mixin, options) => {
   const instance = new mixin();
   const prototype = Object.getPrototypeOf(instance);
 
-  if (!target.initializers) {
-    target.initializers = [];
-  }
-
   if (options) {
     Object.getOwnPropertyNames(options).forEach((key) => {
       target[key] = options[key];
     });
   }
 
-  target.initializers.push(prototype.initialize);
-
   // Assign properties to the prototype
   Object.getOwnPropertyNames(prototype).forEach((key) => {
-    if (['initialize'].includes(key)) {
-      return;
-    }
+    // Mixins can define their own `initialize` and `addEventListeners` methods, which will be
+    // added with their mixin name appended, and called at the same time as the original methods.
+    const newKey = ['initialize', 'addEventListeners'].includes(key) ? `${key}${mixin.name}` : key;
 
-    if (!target.prototype[key]) {
-      target.prototype[key] = prototype[key];
+    if (!target.prototype[newKey]) {
+      target.prototype[newKey] = prototype[key];
     }
   }, this);
 

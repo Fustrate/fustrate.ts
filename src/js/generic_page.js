@@ -6,15 +6,12 @@ class GenericPage {
   initialize() {
     this.reloadUIElements();
     this.addEventListeners();
+
+    this.callAllMethodsBeginningWith('initialize');
   }
 
   addEventListeners() {
-    Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((name) => {
-      // Edge returns true for /one.+two/.test('onetwo'), 2017-10-21
-      if (/^add..*EventListeners$/.test(name)) {
-        this[name].apply(this);
-      }
-    });
+    this.callAllMethodsBeginningWith('addEventListeners');
   }
 
   reloadUIElements() {
@@ -40,8 +37,12 @@ class GenericPage {
 
   // Calls all methods matching /refresh.+/
   refresh() {
+    this.callAllMethodsBeginningWith('refresh');
+  }
+
+  callAllMethodsBeginningWith(string) {
     Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((name) => {
-      if (name !== 'refresh' && name.indexOf('refresh') === 0) {
+      if (name !== string && name.indexOf(string) === 0) {
         this[name].apply(this);
       }
     });
