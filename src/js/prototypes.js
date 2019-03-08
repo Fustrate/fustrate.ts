@@ -1,5 +1,6 @@
 // Replicate a few common prototype methods on default objects
 import moment from 'moment';
+import BasicObject from './basic_object';
 
 function arrayCompact(strings = true) {
   this.forEach((el, index) => {
@@ -115,6 +116,15 @@ Number.prototype.bytesToString = numberBytesToString;
 Number.prototype.ordinalize = numberOrdinalize;
 Number.prototype.truncate = numberTruncate;
 
+function isPlainObject(object) {
+  // Do the inexpensive checks first.
+  if (typeof object !== 'object' || Array.isArray(object) || object === null) {
+    return false;
+  }
+
+  return Object.prototype.isPrototypeOf.call(BasicObject, object);
+}
+
 function objectDeepExtend(out, ...rest) {
   out = out || {};
 
@@ -122,9 +132,7 @@ function objectDeepExtend(out, ...rest) {
     .filter(obj => obj)
     .forEach((obj) => {
       Object.getOwnPropertyNames(obj).forEach((key) => {
-        const value = obj[key];
-
-        if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && value !== null) {
+        if (Object.isPlainObject(obj[key])) {
           out[key] = objectDeepExtend(out[key], obj[key]);
         } else {
           out[key] = obj[key];
@@ -135,6 +143,7 @@ function objectDeepExtend(out, ...rest) {
   return out;
 }
 
+Object.isPlainObject = isPlainObject;
 Object.deepExtend = objectDeepExtend;
 
 function stringCapitalize() {
