@@ -86,6 +86,9 @@ class Autocomplete extends Component {
       replace: suggestion => suggestion.label,
       suggestion: datum => this.suggestionForDatum(datum),
     });
+    
+    // Fix for Chrome ignoring autocomplete="off", but does it break Firefox?
+    this.input.setAttribute('autocomplete', 'awesomplete');
 
     this.input.addEventListener('awesomplete-selectcomplete', this.onSelect.bind(this));
     this.input.addEventListener('keyup', this.onKeyup.bind(this).debounce());
