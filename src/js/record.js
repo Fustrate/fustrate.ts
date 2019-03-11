@@ -5,6 +5,8 @@ import BasicObject from './basic_object';
 
 class Record extends BasicObject {
   // static get classname() { return 'Subreddit::GameThread'; }
+  
+  get classname() { return this.constructor.classname; }
 
   constructor(data) {
     super(data);
