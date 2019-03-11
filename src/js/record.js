@@ -109,7 +109,7 @@ class Record extends BasicObject {
     return $.Deferred((deferred) => {
       record.update(attributes)
         .fail(deferred.reject)
-        .done(() => { this.deferred.resolve(record); });
+        .done(() => { deferred.resolve(record); });
     });
   }
 }
