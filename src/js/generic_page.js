@@ -52,7 +52,7 @@ class GenericPage {
     });
   }
 
-  get allMethodNames() {
+  getAllMethodNames() {
     let props = [];
     let klass = this;
 
