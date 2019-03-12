@@ -62,7 +62,7 @@ class GenericPage {
       klass = Object.getPrototypeOf(klass);
     }
 
-    return props.sort().filter(name => typeof obj[name] === 'function');
+    return props.sort().filter(name => typeof this[name] === 'function');
   };
 }
 
