@@ -41,12 +41,29 @@ class GenericPage {
   }
 
   callAllMethodsBeginningWith(string) {
-    Object.getOwnPropertyNames(Object.getPrototypeOf(this)).forEach((name) => {
+    if (!this.allMethodNamesList) {
+      this.allMethodNamesList = this.getAllMethodNames();
+    }
+    
+    this.allMethodNamesList.forEach((name) => {
       if (name !== string && name.indexOf(string) === 0) {
         this[name].apply(this);
       }
     });
   }
+
+  get allMethodNames() {
+    let props = [];
+    let klass = this;
+
+    while (klass) {
+      props = props.concat(Object.getOwnPropertyNames(klass));
+
+      klass = Object.getPrototypeOf(klass);
+    }
+
+    return props.sort().filter(name => typeof obj[name] === 'function');
+  };
 }
 
 export default GenericPage;
