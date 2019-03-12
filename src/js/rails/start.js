@@ -6,7 +6,7 @@ import startDisableFeature from './features/disable';
 import startMethodFeature from './features/method';
 import startRemoteFeature from './features/remote';
 
-const start = () => {
+export default () => {
   // Cut down on the number of issues from people inadvertently including
   // rails-ujs twice by detecting and raising an error when it happens.
   if (window.rails_loaded) {
@@ -23,5 +23,3 @@ const start = () => {
 
   window.rails_loaded = true;
 };
-
-export default start;
