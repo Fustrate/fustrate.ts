@@ -86,8 +86,8 @@ class Tooltip extends Component {
     };
   }
 
-  static create(element) {
-    return new Tooltip(element);
+  static create(element, title) {
+    return new Tooltip(element, title);
   }
 }
 
