@@ -20,9 +20,9 @@ class Tooltip extends Component {
   addEventListeners() {
     this.element
       .off('.tooltip')
-      .on('mouseenter.tooltip', this.show)
-      .on('mousemove.tooltip', this.move)
-      .on('mouseleave.tooltip', this.hide);
+      .on('mouseenter.tooltip', this.show.bind(this))
+      .on('mousemove.tooltip', this.move.bind(this))
+      .on('mouseleave.tooltip', this.hide.bind(this));
   }
 
   setTitle(title) {
