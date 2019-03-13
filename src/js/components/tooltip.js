@@ -35,7 +35,7 @@ class Tooltip extends Component {
 
   move(e) {
     if (this.active) {
-      this.tooltip.css(this.tooltipPosition(e));
+      this.tooltip.css(this.constructor.tooltipPosition(e));
     }
 
     return false;
@@ -62,7 +62,7 @@ class Tooltip extends Component {
     this.tooltip
       .text(title)
       .appendTo($('body'))
-      .css(this.tooltipPosition(e))
+      .css(this.constructor.tooltipPosition(e))
       .fadeIn(fadeSpeed);
 
     return false;
