@@ -1,7 +1,5 @@
 import $ from 'jquery';
 
-import Rails from './components/rails';
-
 const entityMap = {
   '&': '&amp;',
   '<': '&lt;',
@@ -160,28 +158,6 @@ const linkTo = (text, href, options = {}) => {
   return element.outerHTML;
 };
 
-function postRedirectTo(href) {
-  const { csrfToken, csrfParam } = Rails;
-
-  const form = document.createElement('form');
-  let formContent = "<input name='_method' value='post' type='hidden'>";
-
-  if ((csrfParam != null) && (csrfToken != null) && !Rails.isCrossDomain(href)) {
-    formContent += `<input name='${csrfParam}' value='${csrfToken}' type='hidden'>`;
-  }
-
-  // Must trigger submit by click on a button, else "submit" event handler
-  // won't work!
-  formContent += '<input type="submit">';
-  form.method = 'post';
-  form.action = href;
-  form.innerHTML = formContent;
-  form.style.display = 'none';
-  document.body.appendChild(form);
-
-  form.querySelector('[type="submit"]').click();
-}
-
 const redirectTo = (href) => {
   window.setTimeout(() => {
     window.location.href = href.path ? href.path() : href;
@@ -212,7 +188,6 @@ export {
   label,
   linkTo,
   multilineEscapeHTML,
-  postRedirectTo,
   redirectTo,
   triggerEvent,
 };
