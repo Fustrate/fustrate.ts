@@ -49,7 +49,6 @@ const handleConfirm = (e) => {
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { handleConfirm };
 
 export default () => {

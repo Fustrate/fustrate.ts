@@ -16,7 +16,7 @@ class Flash extends Component {
     const bar = $(`<div class="flash ${type != null ? type : 'info'}"></div>`)
       .html(icon ? `${createIcon(icon)} ${message}` : message)
       .hide()
-      .prependTo($('#flashes'))
+      .prependTo(document.getElementById('flashes'))
       .fadeIn(settings.fadeInSpeed)
       .delay(settings.displayTime)
       .fadeOut(settings.fadeOutSpeed, () => bar.remove());

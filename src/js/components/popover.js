@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import Component from '../component';
+import { delegate } from '../rails/utils/event';
 
 const cache = {};
 
@@ -8,7 +9,7 @@ class Popover extends Component {
   static initialize() {
     this.container = document.body;
 
-    $('[data-popover-url]').click(this.togglePopover);
+    delegate(document.body, '[data-popover-url]', 'click', this.togglePopover);
 
     $('body').on('click.popover', this.hidePopover);
   }

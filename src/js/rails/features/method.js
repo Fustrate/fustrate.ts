@@ -41,7 +41,6 @@ const handleMethod = (event) => {
   stopEverything(event);
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { handleMethod };
 
 export default () => {

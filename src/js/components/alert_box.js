@@ -1,12 +1,13 @@
 import $ from 'jquery';
 
 import Component from '../component';
+import { delegate } from '../rails/utils/event';
 
 const fadeSpeed = 300;
 
 class AlertBox extends Component {
   static initialize() {
-    $('.alert-box').on('click', '.close', this.closeAlertBox);
+    delegate(document.body, '.alert-box .close', 'click', this.closeAlertBox);
   }
 
   static closeAlertBox(event) {

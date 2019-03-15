@@ -13,7 +13,7 @@ class Tooltip extends Component {
     this.addEventListeners();
 
     if (title) {
-      this.element.attr('title', title);
+      element.setAttribute('title', title);
     }
   }
 
@@ -61,7 +61,7 @@ class Tooltip extends Component {
     this.active = true;
     this.tooltip
       .text(title)
-      .appendTo($('body'))
+      .appendTo(document.body)
       .css(this.constructor.tooltipPosition(e))
       .fadeIn(fadeSpeed);
 
