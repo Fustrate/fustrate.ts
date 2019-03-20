@@ -43,12 +43,14 @@ function arrayToSentence() {
   }
 }
 
-Array.prototype.compact = arrayCompact;
-Array.prototype.first = arrayFirst;
-Array.prototype.last = arrayLast;
-Array.prototype.peek = arrayLast;
-Array.prototype.remove = arrayRemove;
-Array.prototype.toSentence = arrayToSentence;
+Object.defineProperties(Array.prototype, {
+  compact: { value: arrayCompact },
+  first: { value: arrayFirst },
+  last: { value: arrayLast },
+  peek: { value: arrayLast },
+  remove: { value: arrayRemove },
+  toSentence: { value: arrayToSentence },
+});
 
 function functionDebounce(delay = 250) {
   let timeout = null;
@@ -76,8 +78,10 @@ function functionDefine(name, methods) {
   Object.defineProperty(this.prototype, name, methods);
 }
 
-Function.prototype.debounce = functionDebounce;
-Function.prototype.define = functionDefine;
+Object.defineProperties(Function.prototype, {
+  debounce: { value: functionDebounce },
+  define: { value: functionDefine },
+});
 
 function numberAccountingFormat() {
   if (this < 0) {
@@ -111,10 +115,12 @@ function numberTruncate(digits = 2) {
   return this.toFixed(digits).replace(/\.?0+$/, '');
 }
 
-Number.prototype.accountingFormat = numberAccountingFormat;
-Number.prototype.bytesToString = numberBytesToString;
-Number.prototype.ordinalize = numberOrdinalize;
-Number.prototype.truncate = numberTruncate;
+Object.defineProperties(Number.prototype, {
+  accountingFormat: { value: numberAccountingFormat },
+  bytesToString: { value: numberBytesToString },
+  ordinalize: { value: numberOrdinalize },
+  truncate: { value: numberTruncate },
+});
 
 function isPlainObject(object) {
   // Do the inexpensive checks first.
@@ -143,8 +149,10 @@ function objectDeepExtend(out, ...rest) {
   return out;
 }
 
-Object.isPlainObject = isPlainObject;
-Object.deepExtend = objectDeepExtend;
+Object.defineProperties(Object.prototype, {
+  isPlainObject: { value: isPlainObject },
+  deepExtend: { value: objectDeepExtend },
+});
 
 function stringCapitalize() {
   return this.charAt(0).toUpperCase() + this.slice(1);
@@ -219,17 +227,19 @@ function stringUnderscore() {
     .toLowerCase();
 }
 
-String.prototype.capitalize = stringCapitalize;
-String.prototype.dasherize = stringDasherize;
-String.prototype.humanize = stringHumanize;
-String.prototype.isBlank = stringIsBlank;
-String.prototype.parameterize = stringParameterize;
-String.prototype.phoneFormat = stringPhoneFormat;
-String.prototype.pluralize = stringPluralize;
-String.prototype.presence = stringPresence;
-String.prototype.strip = stringStrip;
-String.prototype.titleize = stringTitleize;
-String.prototype.underscore = stringUnderscore;
+Object.defineProperties(String.prototype, {
+  capitalize: { value: stringCapitalize },
+  dasherize: { value: stringHumanize },
+  humanize: { value: stringHumanize },
+  isBlank: { value: stringIsBlank },
+  parameterize: { value: stringParameterize },
+  phoneFormat: { value: stringPhoneFormat },
+  pluralize: { value: stringPluralize },
+  presence: { value: stringPresence },
+  strip: { value: stringStrip },
+  titleize: { value: stringTitleize },
+  underscore: { value: stringUnderscore },
+});
 
 function momentToHumanDate(time = false) {
   const year = this.year() !== moment().year() ? '/YY' : '';
@@ -240,6 +250,8 @@ function momentToHumanDate(time = false) {
 moment.fn.toHumanDate = momentToHumanDate;
 
 if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector
-    || Element.prototype.webkitMatchesSelector;
+  Object.defineProperties(Element.prototype, 'matches', {
+    value: Element.prototype.msMatchesSelector
+      || Element.prototype.webkitMatchesSelector,
+  });
 }
