@@ -335,8 +335,12 @@ class Modal extends Component {
       return false;
     }
 
+    // Double clicking the overlay can cause this to fire twice - first with an open modal, then
+    // without.
+    const jModal = modal.data('modal');
+
     // Don't continue to close if we're not supposed to
-    if (!modal.data('modal').constructor.closeOnBackgroundClick) {
+    if (!jModal || !jModal.constructor.closeOnBackgroundClick) {
       return false;
     }
 
