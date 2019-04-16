@@ -177,17 +177,38 @@ const triggerEvent = (element, name, data = {}) => {
   element.dispatchEvent(event);
 };
 
+const toggle = (element, showOrHide) => {
+  value = showOrHide ? '' : 'none';
+  
+  if (element instanceof NodeList) {
+    element.forEach((elem) => { elem.style.display = value; });
+  } else {
+    element.style.display = value;
+  }
+};
+
+const show = (element) => {
+  toggle(element, true);
+};
+
+const hide = (element) => {
+  toggle(element, false);
+};
+
 export {
   ajaxUpload,
   applyMixin,
   elementFromString,
   escapeHTML,
   getCurrentPageJson,
+  hide,
   hms,
   icon,
   label,
   linkTo,
   multilineEscapeHTML,
   redirectTo,
+  show,
+  toggle,
   triggerEvent,
 };
