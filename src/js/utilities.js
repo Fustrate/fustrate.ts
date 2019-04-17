@@ -178,7 +178,7 @@ const triggerEvent = (element, name, data = {}) => {
 };
 
 const toggle = (element, showOrHide) => {
-  value = showOrHide ? '' : 'none';
+  const value = showOrHide ? '' : 'none';
   
   if (element instanceof NodeList) {
     element.forEach((elem) => { elem.style.display = value; });
