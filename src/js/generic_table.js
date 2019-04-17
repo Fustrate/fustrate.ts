@@ -67,11 +67,9 @@ class GenericTable extends GenericPage {
   }
 
   removeRow(row) {
-    row.fadeOut(() => {
-      row.remove();
+    row.parentNode.removeChild(row);
 
-      this.updated();
-    });
+    this.updated();
   }
 
   updated() {
