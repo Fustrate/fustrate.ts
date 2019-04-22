@@ -250,7 +250,7 @@ function momentToHumanDate(time = false) {
 moment.fn.toHumanDate = momentToHumanDate;
 
 if (!Element.prototype.matches) {
-  Object.defineProperties(Element.prototype, 'matches', {
+  Object.defineProperty(Element.prototype, 'matches', {
     value: Element.prototype.msMatchesSelector
       || Element.prototype.webkitMatchesSelector,
   });
