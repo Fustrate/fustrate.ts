@@ -255,3 +255,7 @@ if (!Element.prototype.matches) {
       || Element.prototype.webkitMatchesSelector,
   });
 }
+
+if (!Array.prototype.flatMap) {
+  Array.prototype.flatMap = (...args) => Array.prototype.map.apply(this, ...args).flat(1);
+}
