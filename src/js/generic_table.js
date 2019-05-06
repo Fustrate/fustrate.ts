@@ -52,7 +52,7 @@ class GenericTable extends GenericPage {
         row.parentNode.removeChild(row);
       });
 
-      (sort ? this.sortRows(rows, sort) : rows).forEach((row) => {
+      (sort ? this.constructor.sortRows(rows, sort) : rows).forEach((row) => {
         this.tbody.appendChild(row);
       });
     }
