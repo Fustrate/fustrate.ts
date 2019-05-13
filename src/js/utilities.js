@@ -179,11 +179,21 @@ const triggerEvent = (element, name, data = {}) => {
 
 const toggle = (element, showOrHide) => {
   const value = showOrHide ? '' : 'none';
-  
+
   if (element instanceof NodeList) {
-    element.forEach((elem) => { elem.style.display = value; });
+    element.forEach((elem) => {
+      elem.style.display = value;
+
+      if (showOrHide) {
+        elem.classList.remove('js-hide');
+      }
+    });
   } else {
     element.style.display = value;
+
+    if (showOrHide) {
+      element.classList.remove('js-hide');
+    }
   }
 };
 
