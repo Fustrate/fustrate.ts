@@ -92,8 +92,8 @@ function hms(seconds, zero) {
   const absolute = Math.abs(seconds);
   const parts = [
     Math.floor(absolute / 3600),
-    `0${Math.floor((absolute % 3600) / 60).slice(-2)}`,
-    `0${Math.floor(absolute % 60).slice(-2)}`,
+    `0${Math.floor((absolute % 3600) / 60)}`.slice(-2),
+    `0${Math.floor(absolute % 60)}`.slice(-2),
   ];
 
   return `${seconds < 0 ? '-' : ''}${parts.join(':')}`;
