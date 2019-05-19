@@ -1,4 +1,4 @@
-import $ from 'jquery';
+// Internal functions
 
 const entityMap = {
   '&': '&amp;',
@@ -11,24 +11,29 @@ const entityMap = {
   '=': '&#x3D;',
 };
 
-const ajaxUpload = (url, data) => {
-  const formData = new FormData();
+const hrefFor = (href) => {
+  if (href.path) {
+    return href.path();
+  }
 
-  Object.keys(data).forEach((key) => {
-    formData.append(key, data[key]);
-  });
+  if (!(href.type && href.id)) {
+    return href;
+  }
 
-  return $.ajax({
-    url,
-    type: 'POST',
-    data: formData,
-    processData: false,
-    contentType: false,
-    dataType: 'script',
-  });
+  throw new Error(`Invalid href: ${href}`);
 };
 
-const applyMixin = (target, mixin, options) => {
+const toggleElement = (element, makeVisible) => {
+  element.style.display = makeVisible ? '' : 'none';
+
+  if (makeVisible) {
+    element.classList.remove('js-hide');
+  }
+};
+
+// Exported functions
+
+export const applyMixin = (target, mixin, options) => {
   // eslint-disable-next-line new-cap
   const instance = new mixin();
   const prototype = Object.getPrototypeOf(instance);
@@ -62,7 +67,7 @@ const applyMixin = (target, mixin, options) => {
   }, this);
 };
 
-const elementFromString = (string) => {
+export const elementFromString = (string) => {
   const template = document.createElement('template');
 
   template.innerHTML = string.trim();
@@ -70,7 +75,7 @@ const elementFromString = (string) => {
   return template.content.firstChild;
 };
 
-const escapeHTML = (string) => {
+export const escapeHTML = (string) => {
   if (string === null || string === undefined) {
     return '';
   }
@@ -78,13 +83,7 @@ const escapeHTML = (string) => {
   return String(string).replace(/[&<>"'`=/]/g, entity => entityMap[entity]);
 };
 
-const getCurrentPageJson = () => {
-  const pathname = window.location.pathname.replace(/\/+$/, '');
-
-  return $.get(`${pathname}.json${window.location.search}`);
-};
-
-function hms(seconds, zero) {
+export function hms(seconds, zero) {
   if (zero && (seconds === 0 || seconds === undefined)) {
     return zero;
   }
@@ -99,19 +98,7 @@ function hms(seconds, zero) {
   return `${seconds < 0 ? '-' : ''}${parts.join(':')}`;
 }
 
-const hrefFor = (href) => {
-  if (href.path) {
-    return href.path();
-  }
-
-  if (!(href.type && href.id)) {
-    return href;
-  }
-
-  throw new Error(`Invalid href: ${href}`);
-};
-
-const icon = (types, style = 'regular') => {
+export const icon = (types, style = 'regular') => {
   const classes = types.split(' ')
     .map(thing => `fa-${thing}`)
     .join(' ');
@@ -119,7 +106,7 @@ const icon = (types, style = 'regular') => {
   return `<i class="fa${style[0]} ${classes}"></i>`;
 };
 
-const label = (text, type) => {
+export const label = (text, type) => {
   const classes = ['label', type, text.replace(/\s+/g, '-')]
     .compact()
     .join(' ')
@@ -134,7 +121,7 @@ const label = (text, type) => {
   return span.outerHTML;
 };
 
-const multilineEscapeHTML = (string) => {
+export const multilineEscapeHTML = (string) => {
   if (string === null || string === undefined) {
     return '';
   }
@@ -145,7 +132,7 @@ const multilineEscapeHTML = (string) => {
     .join('<br />');
 };
 
-const linkTo = (text, href, options = {}) => {
+export const linkTo = (text, href, options = {}) => {
   const element = document.createElement('a');
 
   element.href = hrefFor(href);
@@ -158,13 +145,13 @@ const linkTo = (text, href, options = {}) => {
   return element.outerHTML;
 };
 
-const redirectTo = (href) => {
+export const redirectTo = (href) => {
   window.setTimeout(() => {
     window.location.href = href.path ? href.path() : href;
   }, 750);
 };
 
-const triggerEvent = (element, name, data = {}) => {
+export const triggerEvent = (element, name, data = {}) => {
   let event;
 
   if (window.CustomEvent) {
@@ -177,22 +164,13 @@ const triggerEvent = (element, name, data = {}) => {
   element.dispatchEvent(event);
 };
 
-const isVisible = elem => !!(
+export const isVisible = elem => !!(
   elem.offsetWidth
   || elem.offsetHeight
   || elem.getClientRects().length
 );
 
-// Internal function
-const toggleElement = (element, makeVisible) => {
-  element.style.display = makeVisible ? '' : 'none';
-
-  if (makeVisible) {
-    element.classList.remove('js-hide');
-  }
-};
-
-const toggle = (element, showOrHide) => {
+export const toggle = (element, showOrHide) => {
   if (element instanceof NodeList) {
     element.forEach((elem) => {
       toggleElement(elem, showOrHide !== undefined ? showOrHide : !isVisible(elem));
@@ -202,29 +180,10 @@ const toggle = (element, showOrHide) => {
   }
 };
 
-const show = (element) => {
+export const show = (element) => {
   toggle(element, true);
 };
 
-const hide = (element) => {
+export const hide = (element) => {
   toggle(element, false);
-};
-
-export {
-  ajaxUpload,
-  applyMixin,
-  elementFromString,
-  escapeHTML,
-  getCurrentPageJson,
-  hide,
-  hms,
-  icon,
-  isVisible,
-  label,
-  linkTo,
-  multilineEscapeHTML,
-  redirectTo,
-  show,
-  toggle,
-  triggerEvent,
 };
