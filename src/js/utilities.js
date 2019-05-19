@@ -177,23 +177,28 @@ const triggerEvent = (element, name, data = {}) => {
   element.dispatchEvent(event);
 };
 
-const toggle = (element, showOrHide) => {
-  const value = showOrHide ? '' : 'none';
+const isVisible = elem => !!(
+  elem.offsetWidth
+  || elem.offsetHeight
+  || elem.getClientRects().length
+);
 
+// Internal function
+const toggleElement = (element, makeVisible) => {
+  element.style.display = makeVisible ? '' : 'none';
+
+  if (makeVisible) {
+    element.classList.remove('js-hide');
+  }
+};
+
+const toggle = (element, showOrHide) => {
   if (element instanceof NodeList) {
     element.forEach((elem) => {
-      elem.style.display = value;
-
-      if (showOrHide) {
-        elem.classList.remove('js-hide');
-      }
+      toggleElement(elem, showOrHide !== undefined ? showOrHide : !isVisible(elem));
     });
   } else {
-    element.style.display = value;
-
-    if (showOrHide) {
-      element.classList.remove('js-hide');
-    }
+    toggleElement(element, showOrHide !== undefined ? showOrHide : !isVisible(element));
   }
 };
 
@@ -214,6 +219,7 @@ export {
   hide,
   hms,
   icon,
+  isVisible,
   label,
   linkTo,
   multilineEscapeHTML,
