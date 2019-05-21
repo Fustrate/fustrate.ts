@@ -1,7 +1,7 @@
 import Awesomplete from 'awesomplete';
 
 import Component from '../component';
-import { triggerEvent } from '../utilities';
+import { debounce, triggerEvent } from '../utilities';
 import { get } from '../ajax';
 
 export class AutocompleteSuggestion extends String {
@@ -91,7 +91,7 @@ export class Autocomplete extends Component {
     this.input.setAttribute('autocomplete', 'awesomplete');
 
     this.input.addEventListener('awesomplete-selectcomplete', this.onSelect.bind(this));
-    this.input.addEventListener('keyup', this.onKeyup.bind(this).debounce());
+    this.input.addEventListener('keyup', debounce(this.onKeyup.bind(this)));
     this.input.addEventListener('focus', this.onFocus.bind(this));
   }
 
