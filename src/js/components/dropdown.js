@@ -12,7 +12,7 @@ export default class Dropdown extends Component {
     // Hide any visible dropdowns before showing this one
     this.hide();
 
-    this.popper = new Popper(document.querySelector('.panel'), event.target.nextElementSibling, {
+    this.popper = new Popper(event.target, event.target.nextElementSibling, {
       placement: 'bottom-start',
       modifiers: {
         flip: {
