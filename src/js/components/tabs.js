@@ -1,23 +1,31 @@
-import $ from 'jquery';
-
 import Component from '../component';
+import { delegate } from '../rails/utils/event';
 
 export default class Tabs extends Component {
   constructor(tabs) {
     super();
 
     this.tabs = tabs;
-    this.tabs.on('click', 'li > a', (e) => {
-      this.activateTab($(e.currentTarget), true);
+
+    delegate(this.tabs, 'li > a', 'click', (event) => {
+      this.activateTab(event.target, true);
+
       return false;
     });
 
     if (window.location.hash) {
-      this.activateTab($(`li > a[href='${window.location.hash}']`, this.tabs).first(), false);
-    } else if ($('li > a.active', this.tabs).length > 0) {
-      this.activateTab($('li > a.active', this.tabs).first(), false);
+      this.tabs.querySelector(`li > a[href='${window.location.hash}']`);
+
+      this.activateTab(this.tabs.querySelector(`li > a[href='${window.location.hash}']`), false);
     } else {
-      this.activateTab($('li > a', this.tabs).first(), false);
+      const tabWithActiveClass = this.tabs.querySelector('li > a.active');
+
+      if (tabWithActiveClass) {
+        this.activateTab(tabWithActiveClass, false);
+      } else {
+        // Open the first tab by default
+        this.activateTab(this.tabs.querySelector('li > a'), false);
+      }
     }
   }
 
@@ -26,18 +34,29 @@ export default class Tabs extends Component {
       return;
     }
 
-    $('.active', this.tabs).removeClass('active');
-    tab.addClass('active');
+    [...this.tabs.querySelectorAll('.active')].forEach((sibling) => {
+      sibling.classList.remove('active');
+    });
+
+    tab.classList.add('active');
     const hash = tab.attr('href').split('#')[1];
 
     if (changeHash) {
       window.location.hash = hash;
     }
 
-    $(`#${hash}`).addClass('active').siblings().removeClass('active');
+    const tabContent = document.getElementById(hash);
+
+    tabContent.classList.add('active');
+
+    [...tabContent.parentElement.children].forEach((sibling) => {
+      if (sibling !== tabContent) {
+        sibling.classList.remove('active');
+      }
+    });
   }
 
   static initialize() {
-    $('ul.tabs').each((index, elem) => new Tabs($(elem)));
+    return [...document.querySelectorAll('ul.tabs')].map(ul => new Tabs(ul));
   }
 }
