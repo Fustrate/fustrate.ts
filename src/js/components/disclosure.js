@@ -12,6 +12,7 @@ export default class Disclosure extends Component {
     const isOpen = disclosure.classList.contains('open');
 
     disclosure.classList.toggle('open');
+
     triggerEvent(disclosure, `${(isOpen ? 'closed' : 'opened')}.disclosure`);
 
     return false;

@@ -44,7 +44,7 @@ export default class GenericPage {
     if (!this.allMethodNamesList) {
       this.allMethodNamesList = this.getAllMethodNames();
     }
-    
+
     this.allMethodNamesList.forEach((name) => {
       if (name !== string && name.indexOf(string) === 0) {
         this[name].apply(this);
@@ -63,5 +63,5 @@ export default class GenericPage {
     }
 
     return props.sort().filter(name => typeof this[name] === 'function');
-  };
+  }
 }

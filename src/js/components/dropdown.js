@@ -49,6 +49,7 @@ export default class Dropdown extends Component {
 
     $(dropdown).fadeIn(200, () => {
       this.locked = false;
+
       $(document.body).one('click', this.hide);
     });
   }
