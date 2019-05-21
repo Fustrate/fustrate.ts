@@ -67,6 +67,26 @@ export const applyMixin = (target, mixin, options) => {
   }, this);
 };
 
+export const debounce = (func, delay = 250) => {
+  let timeout = null;
+
+  return (...args) => {
+    const context = this;
+
+    const delayedFunc = () => {
+      func.apply(context, args);
+
+      timeout = null;
+    };
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(delayedFunc, delay);
+  };
+};
+
 export const elementFromString = (string) => {
   const template = document.createElement('template');
 

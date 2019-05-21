@@ -52,34 +52,12 @@ Object.defineProperties(Array.prototype, {
   toSentence: { value: arrayToSentence },
 });
 
-function functionDebounce(delay = 250) {
-  let timeout = null;
-  const self = this;
-
-  return (...args) => {
-    const context = this;
-
-    const delayedFunc = () => {
-      self.apply(context, args);
-
-      timeout = null;
-    };
-
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-
-    timeout = setTimeout(delayedFunc, delay);
-  };
-}
-
 // Used to define getters and setters
 function functionDefine(name, methods) {
   Object.defineProperty(this.prototype, name, methods);
 }
 
 Object.defineProperties(Function.prototype, {
-  debounce: { value: functionDebounce },
   define: { value: functionDefine },
 });
 
