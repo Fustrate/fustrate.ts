@@ -39,7 +39,7 @@ export default class Tabs extends Component {
     });
 
     tab.classList.add('active');
-    const hash = tab.attr('href').split('#')[1];
+    const hash = tab.getAttribute('href').split('#')[1];
 
     if (changeHash) {
       window.location.hash = hash;

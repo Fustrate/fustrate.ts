@@ -29,7 +29,7 @@ export default class Tooltip extends Component {
     if (this.active) {
       this.tooltip.text(title);
     } else {
-      this.element.prop('title', title);
+      this.element[0].setAttribute('title', title);
     }
   }
 
@@ -46,7 +46,7 @@ export default class Tooltip extends Component {
       return false;
     }
 
-    const titleProp = this.element.prop('title');
+    const titleProp = this.element[0].getAttribute('title');
     const title = titleProp != null ? titleProp : '';
 
     if (title.length === 0) {
@@ -71,7 +71,7 @@ export default class Tooltip extends Component {
   hide() {
     // No use hiding something that doesn't exist.
     if (this.tooltip) {
-      this.element.attr('title', this.tooltip.text());
+      this.element[0].setAttribute('title', this.tooltip.text());
       this.active = false;
       this.tooltip.fadeOut(fadeSpeed, this.tooltip.detach);
     }
