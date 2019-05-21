@@ -189,7 +189,7 @@ export default class Modal extends Component {
       return;
     }
 
-    const [firstInput] = this.modal[0].querySelectorAll('input, select, textarea')
+    const [firstInput] = [...this.modal[0].querySelectorAll('input, select, textarea')]
       .filter(element => isVisible(element) && !element.disabled && !element.readOnly);
 
     if (firstInput) {

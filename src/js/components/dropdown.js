@@ -6,6 +6,8 @@ import { delegate } from '../rails/utils/event';
 export default class Dropdown extends Component {
   static initialize() {
     delegate(document.body, '.has-dropdown', 'click', this.open.bind(this));
+
+    this.boundHide = this.hide.bind(this);
   }
 
   static open(event) {
@@ -21,6 +23,8 @@ export default class Dropdown extends Component {
       },
     });
 
+    document.body.addEventListener('click', this.boundHide);
+
     return false;
   }
 
@@ -28,5 +32,7 @@ export default class Dropdown extends Component {
     if (this.popper) {
       this.popper.destroy();
     }
+
+    document.body.removeEventListener('click', this.boundHide);
   }
 }
