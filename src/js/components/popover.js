@@ -11,11 +11,11 @@ export default class Popover extends Component {
 
     delegate(document.body, '[data-popover-url]', 'click', this.togglePopover);
 
-    $('body').on('click.popover', this.hidePopover);
+    document.body.addEventListener('click', this.hidePopover);
   }
 
   static togglePopover(event) {
-    const path = event.currentTarget.dataset.popoverUrl;
+    const path = event.target.dataset.popoverUrl;
     // Hide if the url is the same, hide and show a new one if it's different
     const createNew = (!this.popover) || (this.popover.data('popover-url') !== path);
 
@@ -29,7 +29,7 @@ export default class Popover extends Component {
   }
 
   static createPopover(event) {
-    const path = event.currentTarget.dataset.popoverUrl;
+    const path = event.target.dataset.popoverUrl;
 
     this.popover = document.createElement('div');
     this.popover.classList.add('popover');
@@ -51,12 +51,12 @@ export default class Popover extends Component {
   static setContent(html, event) {
     this.popover.innerHTML = html;
 
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = event.target.getBoundingClientRect();
     const containerRect = this.container.getBoundingClientRect();
 
     const windowHeight = document.body.offsetHeight;
     const offsetTop = rect.top + document.body.scrollTop;
-    const height = event.currentTarget.offsetHeight;
+    const height = event.target.offsetHeight;
     const distanceFromTop = offsetTop - document.body.scrollTop;
     const distanceFromBottom = windowHeight + document.body.scrollTop - offsetTop - height;
 
@@ -69,7 +69,7 @@ export default class Popover extends Component {
       this.popover.style.top = offsetTop - Math.min(distanceFromTop, 0) + 10;
       this.popover.style.maxHeight = distanceFromBottom + height - 20;
     } else {
-      this.popover.style.bottom = windowHeight - event.currentTarget.offsetTop - height
+      this.popover.style.bottom = windowHeight - event.target.offsetTop - height
         - Math.min(distanceFromBottom, 0) - 40;
       this.popover.style.maxHeight = distanceFromTop - 10;
     }

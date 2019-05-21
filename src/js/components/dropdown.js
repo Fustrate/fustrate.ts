@@ -1,10 +1,11 @@
 import $ from 'jquery';
 
 import Component from '../component';
+import { delegate } from '../rails/utils/event';
 
 export default class Dropdown extends Component {
   static initialize() {
-    $(document.body).on('click.dropdowns', '.has-dropdown', this.open.bind(this));
+    delegate(document.body, '.has-dropdown', 'click', this.open.bind(this));
   }
 
   static open(event) {
@@ -15,7 +16,7 @@ export default class Dropdown extends Component {
     // Hide any visible dropdowns before showing this one
     this.hide();
 
-    const button = event.currentTarget;
+    const button = event.target;
     const dropdown = button.nextElementSibling;
 
     this.locked = true;

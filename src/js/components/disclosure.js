@@ -8,7 +8,7 @@ export default class Disclosure extends Component {
   }
 
   static toggleDisclosure(event) {
-    const disclosure = event.currentTarget.closest('.disclosure');
+    const disclosure = event.target.closest('.disclosure');
     const isOpen = disclosure.classList.contains('open');
 
     disclosure.classList.toggle('open');
