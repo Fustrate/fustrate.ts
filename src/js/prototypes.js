@@ -229,7 +229,7 @@ function stringUnderscore() {
 
 Object.defineProperties(String.prototype, {
   capitalize: { value: stringCapitalize },
-  dasherize: { value: stringHumanize },
+  dasherize: { value: stringDasherize },
   humanize: { value: stringHumanize },
   isBlank: { value: stringIsBlank },
   parameterize: { value: stringParameterize },

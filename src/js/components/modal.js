@@ -1,7 +1,13 @@
 import $ from 'jquery';
 
 import Component from '../component';
-import { escapeHTML, icon as createIcon, triggerEvent } from '../utilities';
+import {
+  elementFromString,
+  escapeHTML,
+  icon as createIcon,
+  triggerEvent,
+  isVisible,
+} from '../utilities';
 
 const defaultSettings = {
   size: 'tiny',
@@ -183,10 +189,12 @@ export default class Modal extends Component {
       return;
     }
 
-    $('input, select, textarea', this.modal)
-      .filter(':visible:not(:disabled):not([readonly])')
-      .first()
-      .focus();
+    const [firstInput] = this.modal[0].querySelectorAll('input, select, textarea')
+      .filter(element => isVisible(element) && !element.disabled && !element.readOnly);
+
+    if (firstInput) {
+      firstInput.focus();
+    }
   }
 
   open() {
@@ -233,8 +241,12 @@ export default class Modal extends Component {
     };
 
     setTimeout((() => {
-      this.modal.css(css).addClass('open').animate(endCss, 250, 'linear', () => {
-        this.modal.removeClass('locked').trigger('opened.modal');
+      this.modal[0].classList.add('open');
+
+      this.modal.css(css).animate(endCss, 250, 'linear', () => {
+        this.modal[0].classList.remove('locked');
+
+        this.modal.trigger('opened.modal');
       });
     }), 125);
   }
@@ -274,7 +286,9 @@ export default class Modal extends Component {
 
   // Just hide the modal immediately and don't bother with an overlay
   hide() {
-    this.modal.removeClass('open locked').css(this.settings.css.close);
+    this.modal[0].classList.remove('open', 'locked');
+
+    this.modal.css(this.settings.css.close);
   }
 
   cancel() {
@@ -301,9 +315,13 @@ export default class Modal extends Component {
   }
 
   createModal() {
-    const classes = this.defaultClasses().join(' ');
+    // Join and split in case any of the classes include spaces
+    const classes = this.defaultClasses().join(' ').split(' ');
 
-    return $(template).addClass(classes).appendTo(this.settings.appendTo);
+    const element = elementFromString(template);
+    element.classList.add(...classes);
+
+    return $(element).appendTo(this.settings.appendTo);
   }
 
   defaultClasses() {

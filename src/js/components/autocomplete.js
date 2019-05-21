@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import Awesomplete from 'awesomplete';
 
 import Component from '../component';
 import { triggerEvent } from '../utilities';
+import { get } from '../ajax';
 
 export class AutocompleteSuggestion extends String {
   constructor(datum, displayValue) {
@@ -171,8 +171,8 @@ export class Autocomplete extends Component {
 
     this.sources.forEach((source) => {
       if (source.url) {
-        $.get(source.url({ search: value, commit: 1, format: 'json' })).done((response) => {
-          list = list.concat(response);
+        get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
+          list = list.concat(response.data);
 
           this.awesomplete.list = list;
         });

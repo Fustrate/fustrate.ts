@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import Component from '../component';
 import { delegate } from '../rails/utils/event';
+import { get } from '../ajax';
 
 const cache = {};
 
@@ -17,7 +18,7 @@ export default class Popover extends Component {
   static togglePopover(event) {
     const path = event.target.dataset.popoverUrl;
     // Hide if the url is the same, hide and show a new one if it's different
-    const createNew = (!this.popover) || (this.popover.data('popover-url') !== path);
+    const createNew = (!this.popover) || (this.popover.dataset.popoverUrl !== path);
 
     this.hidePopover(event);
 
@@ -41,7 +42,7 @@ export default class Popover extends Component {
       this.setContent(cache[path], event);
       $(this.popover).fadeIn(100);
     } else {
-      $.get(path).done((html) => {
+      get(path, { responseType: 'text' }).then((html) => {
         cache[path] = html;
         this.setContent(html, event);
       });
