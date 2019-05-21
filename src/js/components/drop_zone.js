@@ -5,8 +5,8 @@ export default class DropZone extends Component {
   constructor(target, callback) {
     super();
 
-    target.addEventListener('dragover', false);
-    target.addEventListener('dragenter', false);
+    target.addEventListener('dragover', () => false);
+    target.addEventListener('dragenter', () => false);
     target.addEventListener('drop', (event) => {
       callback(event.dataTransfer.files);
 
