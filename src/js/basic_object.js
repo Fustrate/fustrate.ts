@@ -2,7 +2,7 @@ import moment from 'moment';
 
 import Listenable from './listenable';
 
-class BasicObject extends Listenable {
+export default class BasicObject extends Listenable {
   constructor(data) {
     super(data);
 
@@ -37,5 +37,3 @@ class BasicObject extends Listenable {
     return items.map(item => new this(Object.deepExtend({}, item, attributes)));
   }
 }
-
-export default BasicObject;

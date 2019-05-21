@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import BasicObject from './basic_object';
 
-class Record extends BasicObject {
+export default class Record extends BasicObject {
   // static get classname() { return 'Subreddit::GameThread'; }
 
   get classname() { return this.constructor.classname; }
@@ -115,5 +115,3 @@ class Record extends BasicObject {
     });
   }
 }
-
-export default Record;

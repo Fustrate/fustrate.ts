@@ -4,7 +4,7 @@ import Component from '../component';
 
 const fadeSpeed = 100;
 
-class Tooltip extends Component {
+export default class Tooltip extends Component {
   constructor(element, title) {
     super();
 
@@ -90,5 +90,3 @@ class Tooltip extends Component {
     return new Tooltip(element, title);
   }
 }
-
-export default Tooltip;

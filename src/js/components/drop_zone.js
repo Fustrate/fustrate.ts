@@ -3,7 +3,7 @@ import $ from 'jquery';
 import Component from '../component';
 
 // Allow files to be dropped onto an element
-class DropZone extends Component {
+export default class DropZone extends Component {
   constructor(target, callback) {
     super();
 
@@ -17,5 +17,3 @@ class DropZone extends Component {
       });
   }
 }
-
-export default DropZone;

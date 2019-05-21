@@ -18,7 +18,7 @@ const isRemote = (element) => {
 };
 
 // Submits "remote" forms and links with ajax
-const handleRemote = (e) => {
+export const handleRemote = (e) => {
   const element = this;
 
   if (!isRemote(element)) {
@@ -96,7 +96,7 @@ const handleRemote = (e) => {
   return stopEverything(e);
 };
 
-const formSubmitButtonClick = () => {
+export const formSubmitButtonClick = () => {
   const button = this;
   const { form } = button;
 
@@ -115,7 +115,7 @@ const formSubmitButtonClick = () => {
   setData(form, 'ujs:submit-button-formmethod', button.getAttribute('formmethod'));
 };
 
-const preventInsignificantClick = (e) => {
+export const preventInsignificantClick = (e) => {
   const link = this;
   const method = (link.getAttribute('data-method') || 'GET').toUpperCase();
   const data = link.getAttribute('data-params');
@@ -127,8 +127,6 @@ const preventInsignificantClick = (e) => {
     e.stopImmediatePropagation();
   }
 };
-
-export { handleRemote, formSubmitButtonClick, preventInsignificantClick };
 
 export default () => {
   delegate(document, linkClickSelector, 'click', handleRemote);

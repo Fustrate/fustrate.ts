@@ -1,4 +1,4 @@
-class Listenable {
+export default class Listenable {
   constructor() {
     this.listeners = {};
   }
@@ -35,5 +35,3 @@ class Listenable {
     return this;
   }
 }
-
-export default Listenable;

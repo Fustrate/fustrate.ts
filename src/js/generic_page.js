@@ -1,4 +1,4 @@
-class GenericPage {
+export default class GenericPage {
   constructor(root) {
     this.root = root || document.body;
   }
@@ -65,5 +65,3 @@ class GenericPage {
     return props.sort().filter(name => typeof this[name] === 'function');
   };
 }
-
-export default GenericPage;

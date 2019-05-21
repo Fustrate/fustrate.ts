@@ -6,7 +6,7 @@ const settings = {
   nextText: 'Next →',
 };
 
-class Pagination extends Component {
+export default class Pagination extends Component {
   constructor({
     currentPage, totalPages, totalEntries, perPage,
   }) {
@@ -143,5 +143,3 @@ class Pagination extends Component {
     return `${window.location.pathname}?`;
   }
 }
-
-export default Pagination;

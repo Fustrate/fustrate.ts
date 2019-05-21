@@ -1,6 +1,4 @@
 import Listenable from './listenable';
 
-class Component extends Listenable {
+export default class Component extends Listenable {
 }
-
-export default Component;

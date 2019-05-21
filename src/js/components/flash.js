@@ -9,7 +9,7 @@ const settings = {
   displayTime: 4000,
 };
 
-class Flash extends Component {
+export class Flash extends Component {
   constructor(message, { type, icon } = {}) {
     super();
 
@@ -27,27 +27,20 @@ class Flash extends Component {
   }
 }
 
-class InfoFlash extends Flash {
+export class InfoFlash extends Flash {
   constructor(message, { icon } = {}) {
     super(message, { type: 'info', icon });
   }
 }
 
-class SuccessFlash extends Flash {
+export class SuccessFlash extends Flash {
   constructor(message, { icon } = {}) {
     super(message, { type: 'success', icon });
   }
 }
 
-class ErrorFlash extends Flash {
+export class ErrorFlash extends Flash {
   constructor(message, { icon } = {}) {
     super(message, { type: 'error', icon });
   }
 }
-
-export {
-  Flash,
-  InfoFlash,
-  SuccessFlash,
-  ErrorFlash,
-};

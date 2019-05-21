@@ -43,13 +43,11 @@ const allowAction = (element) => {
   return answer && callback;
 };
 
-const handleConfirm = (e) => {
+export const handleConfirm = (e) => {
   if (!allowAction(this)) {
     stopEverything(e);
   }
 };
-
-export { handleConfirm };
 
 export default () => {
   delegate(document, linkClickSelector, 'click', handleConfirm);

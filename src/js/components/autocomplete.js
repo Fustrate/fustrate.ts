@@ -4,7 +4,7 @@ import Awesomplete from 'awesomplete';
 import Component from '../component';
 import { triggerEvent } from '../utilities';
 
-class AutocompleteSuggestion extends String {
+export class AutocompleteSuggestion extends String {
   constructor(datum, displayValue) {
     super(displayValue);
 
@@ -32,13 +32,13 @@ class AutocompleteSuggestion extends String {
   }
 }
 
-class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
+export class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
   constructor(datum) {
     super(datum, datum);
   }
 }
 
-class AutocompleteSource {
+export class AutocompleteSource {
   matches() {
     return true;
   }
@@ -52,7 +52,7 @@ class AutocompleteSource {
   }
 }
 
-class PlainAutocompleteSource extends AutocompleteSource {
+export class PlainAutocompleteSource extends AutocompleteSource {
   constructor(list) {
     super();
 
@@ -70,7 +70,7 @@ class PlainAutocompleteSource extends AutocompleteSource {
   }
 }
 
-class Autocomplete extends Component {
+export class Autocomplete extends Component {
   constructor(input, options = {}) {
     super();
 
@@ -213,7 +213,7 @@ class Autocomplete extends Component {
   }
 }
 
-class PlainAutocomplete extends Autocomplete {
+export class PlainAutocomplete extends Autocomplete {
   static create(input, options) {
     return super.create(input, options);
   }
@@ -224,12 +224,3 @@ class PlainAutocomplete extends Autocomplete {
     this.input.value = event.text.toString();
   }
 }
-
-export {
-  Autocomplete,
-  AutocompleteSource,
-  AutocompleteSuggestion,
-  PlainAutocomplete,
-  PlainAutocompleteSource,
-  PlainAutocompleteSuggestion,
-};

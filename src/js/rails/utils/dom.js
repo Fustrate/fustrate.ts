@@ -12,7 +12,7 @@ const m = Element.prototype.matches
 //   css selector string or
 //   a javascript object with `selector` and `exclude` properties
 //   Examples: "form", { selector: "form", exclude: "form[data-remote='true']"}
-const matches = (element, selector) => {
+export const matches = (element, selector) => {
   if (selector.exclude) {
     return m.call(element, selector.selector) && !m.call(element, selector.exclude);
   }
@@ -24,9 +24,9 @@ const matches = (element, selector) => {
 // See: https://developer.mozilla.org/en-US/docs/Glossary/Expando
 const expando = '_ujsData';
 
-const getData = (element, key) => (element[expando] ? element[expando][key] : undefined);
+export const getData = (element, key) => (element[expando] ? element[expando][key] : undefined);
 
-const setData = (element, key, value) => {
+export const setData = (element, key, value) => {
   if (!element[expando]) {
     element[expando] = {};
   }
@@ -36,13 +36,6 @@ const setData = (element, key, value) => {
 
 // a wrapper for document.querySelectorAll
 // returns an Array
-const $ = (selector) => {
+export const $ = (selector) => {
   Array.prototype.slice.call(document.querySelectorAll(selector));
-};
-
-export {
-  matches,
-  getData,
-  setData,
-  $,
 };

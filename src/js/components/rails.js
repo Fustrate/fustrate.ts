@@ -1,5 +1,5 @@
 // @rails/ujs isn't working for me right now. Check back later.
-class Rails {
+export default class Rails {
   static get csrfToken() {
     const meta = document.querySelector('meta[name=csrf-token]');
 
@@ -34,5 +34,3 @@ class Rails {
     }
   }
 }
-
-export default Rails;

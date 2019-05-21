@@ -2,7 +2,7 @@ import { matches } from './dom';
 
 const toArray = e => Array.prototype.slice.call(e);
 
-const serializeElement = (element, additionalParam) => {
+export const serializeElement = (element, additionalParam) => {
   let inputs = [element];
 
   if (matches(element, 'form')) {
@@ -39,12 +39,10 @@ const serializeElement = (element, additionalParam) => {
 // Helper function that returns form elements that match the specified CSS selector
 // If form is actually a "form" element this will return associated elements outside the from that
 // have the html form attribute set
-const formElements = (form, selector) => {
+export const formElements = (form, selector) => {
   if (matches(form, 'form')) {
     return toArray(form.elements).filter(el => matches(el, selector));
   }
 
   return toArray(form.querySelectorAll(selector));
 };
-
-export { serializeElement, formElements };

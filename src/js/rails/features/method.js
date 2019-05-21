@@ -6,7 +6,7 @@ import { linkClickSelector } from '../utils/selectors';
 
 // Handles "data-method" on links such as:
 // <a href="/users/5" data-method="delete" rel="nofollow" data-confirm="Are you sure?">Delete</a>
-const handleMethod = (event) => {
+export const handleMethod = (event) => {
   const link = event.target;
   const { method } = link.dataset;
 
@@ -40,8 +40,6 @@ const handleMethod = (event) => {
 
   stopEverything(event);
 };
-
-export { handleMethod };
 
 export default () => {
   delegate(document, linkClickSelector, 'click', handleMethod);

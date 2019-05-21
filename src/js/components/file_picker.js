@@ -1,7 +1,7 @@
 import Component from '../component';
 
 // Turn any element into a trigger for file selection.
-class FilePicker extends Component {
+export default class FilePicker extends Component {
   constructor(callback) {
     super();
 
@@ -19,5 +19,3 @@ class FilePicker extends Component {
     input.click();
   }
 }
-
-export default FilePicker;

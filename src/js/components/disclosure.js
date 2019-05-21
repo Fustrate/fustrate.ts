@@ -2,7 +2,7 @@ import Component from '../component';
 import { triggerEvent } from '../utilities';
 import { delegate } from '../rails/utils/event';
 
-class Disclosure extends Component {
+export default class Disclosure extends Component {
   static initialize() {
     delegate(document.body, '.disclosure-title', 'click', this.toggleDisclosure);
   }
@@ -17,5 +17,3 @@ class Disclosure extends Component {
     return false;
   }
 }
-
-export default Disclosure;

@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import Component from '../component';
 
-class Tabs extends Component {
+export default class Tabs extends Component {
   constructor(tabs) {
     super();
 
@@ -41,5 +41,3 @@ class Tabs extends Component {
     $('ul.tabs').each((index, elem) => new Tabs($(elem)));
   }
 }
-
-export default Tabs;

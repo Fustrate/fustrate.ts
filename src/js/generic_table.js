@@ -2,7 +2,7 @@ import GenericPage from './generic_page';
 import Pagination from './components/pagination';
 import { elementFromString } from './utilities';
 
-class GenericTable extends GenericPage {
+export default class GenericTable extends GenericPage {
   constructor(root, table) {
     super(root);
 
@@ -104,5 +104,3 @@ class GenericTable extends GenericPage {
     });
   }
 }
-
-export default GenericTable;

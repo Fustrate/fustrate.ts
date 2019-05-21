@@ -98,7 +98,7 @@ const processResponse = (response, type) => {
   return response;
 };
 
-const ajax = (options) => {
+export const ajax = (options) => {
   options = prepareOptions(options);
 
   const xhr = createXHR(options, () => {
@@ -129,10 +129,10 @@ const ajax = (options) => {
 };
 
 // Default way to get an element's href. May be overridden at Rails.href.
-const href = element => element.href;
+export const href = element => element.href;
 
 // Determines if the request is a cross domain request.
-const isCrossDomain = (url) => {
+export const isCrossDomain = (url) => {
   const originAnchor = document.createElement('a');
   originAnchor.href = window.location.href;
 
@@ -153,5 +153,3 @@ const isCrossDomain = (url) => {
     return true;
   }
 };
-
-export { ajax, href, isCrossDomain };

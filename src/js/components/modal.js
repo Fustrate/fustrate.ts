@@ -37,7 +37,7 @@ const template = `
     <div class="modal-buttons"></div>
   </div>`;
 
-class Modal extends Component {
+export default class Modal extends Component {
   static get settings() { return {}; }
 
   constructor({ settings } = {}) {
@@ -357,5 +357,3 @@ class Modal extends Component {
     return false;
   }
 }
-
-export default Modal;

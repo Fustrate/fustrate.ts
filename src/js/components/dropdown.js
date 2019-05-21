@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import Component from '../component';
 
-class Dropdown extends Component {
+export default class Dropdown extends Component {
   static initialize() {
     $(document.body).on('click.dropdowns', '.has-dropdown', this.open.bind(this));
   }
@@ -67,5 +67,3 @@ class Dropdown extends Component {
     $(visibleDropdown).fadeOut(200);
   }
 }
-
-export default Dropdown;

@@ -115,14 +115,14 @@ const isXhrRedirect = (event) => {
   return xhr ? xhr.getResponseHeader('X-Xhr-Redirect') : false;
 };
 
-const handleDisabledElement = (e) => {
+export const handleDisabledElement = (e) => {
   if (this.disabled) {
     stopEverything(e);
   }
 };
 
 // Unified function to enable an element (link, button and form)
-const enableElement = (e) => {
+export const enableElement = (e) => {
   let element;
 
   if (e instanceof Event) {
@@ -145,7 +145,7 @@ const enableElement = (e) => {
 };
 
 // Unified function to disable an element (link, button and form)
-const disableElement = (e) => {
+export const disableElement = (e) => {
   const element = e instanceof Event ? e.target : e;
 
   if (matches(element, linkDisableSelector)) {
@@ -156,8 +156,6 @@ const disableElement = (e) => {
     disableFormElements(element);
   }
 };
-
-export { handleDisabledElement, enableElement, disableElement };
 
 export default () => {
   // This event works the same as the load event, except that it fires every

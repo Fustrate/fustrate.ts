@@ -38,7 +38,7 @@ if (typeof CustomEvent !== 'function') {
 //   e.g. 'click', 'submit'
 // data::
 //   data you want to pass when you dispatch an event
-const fire = (obj, name, data) => {
+export const fire = (obj, name, data) => {
   const event = new CustomEvent(name, { bubbles: true, cancelable: true, detail: data });
 
   obj.dispatchEvent(event);
@@ -47,7 +47,7 @@ const fire = (obj, name, data) => {
 };
 
 // Helper function, needed to provide consistent behavior in IE
-const stopEverything = (e) => {
+export const stopEverything = (e) => {
   fire(e.target, 'ujs:everythingStopped');
 
   e.preventDefault();
@@ -66,7 +66,7 @@ const stopEverything = (e) => {
 //   string representing the event e.g. 'submit', 'click'
 // handler::
 //   the event handler to be called
-const delegate = (element, selector, eventType, handler) => {
+export const delegate = (element, selector, eventType, handler) => {
   element.addEventListener(eventType, (event) => {
     let { target } = event;
 
@@ -80,5 +80,3 @@ const delegate = (element, selector, eventType, handler) => {
     }
   });
 };
-
-export { delegate, fire, stopEverything };

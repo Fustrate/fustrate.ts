@@ -5,7 +5,7 @@ import { delegate } from '../rails/utils/event';
 
 const cache = {};
 
-class Popover extends Component {
+export default class Popover extends Component {
   static initialize() {
     this.container = document.body;
 
@@ -87,5 +87,3 @@ class Popover extends Component {
     this.popover = undefined;
   }
 }
-
-export default Popover;

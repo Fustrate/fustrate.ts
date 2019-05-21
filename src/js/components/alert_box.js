@@ -5,7 +5,7 @@ import { delegate } from '../rails/utils/event';
 
 const fadeSpeed = 300;
 
-class AlertBox extends Component {
+export default class AlertBox extends Component {
   static initialize() {
     delegate(document.body, '.alert-box .close', 'click', this.closeAlertBox);
   }
@@ -18,5 +18,3 @@ class AlertBox extends Component {
     return false;
   }
 }
-
-export default AlertBox;

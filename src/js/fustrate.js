@@ -16,7 +16,7 @@ const entityMap = {
   '=': '&#x3D;',
 };
 
-class Fustrate {
+export default class Fustrate {
   static start(instance) {
     Fustrate.instance = instance;
 
@@ -172,5 +172,3 @@ class Fustrate {
 
 window.Fustrate = Fustrate;
 window.$ = $;
-
-export default Fustrate;
