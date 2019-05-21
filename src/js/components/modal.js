@@ -218,7 +218,7 @@ export default class Modal extends Component {
       this.close();
     });
 
-    this.modal.trigger('opening.modal');
+    triggerEvent(this.modal[0], 'opening.modal');
 
     if (typeof this.settings.cachedHeight === 'undefined') {
       this.cacheHeight();
@@ -253,7 +253,7 @@ export default class Modal extends Component {
 
   close(openPrevious = true) {
     if (this.modal[0].classList.contains('locked') || !this.modal[0].classList.contains('open')) {
-      return;
+      return Promise.reject();
     }
 
     this.modal[0].classList.add('locked');
@@ -269,19 +269,25 @@ export default class Modal extends Component {
       opacity: 0,
     };
 
-    setTimeout((() => {
-      this.modal.animate(endCss, 250, 'linear', () => {
-        this.modal
-          .css(this.settings.css.close)
-          .removeClass('locked')
-          .trigger('closed.modal');
-        if (openPrevious) {
-          this.openPreviousModal();
-        } else {
-          this.settings.previousModal = $();
-        }
-      }).removeClass('open');
-    }), 125);
+    return new Promise((resolve) => {
+      setTimeout((() => {
+        this.modal.animate(endCss, 250, 'linear', () => {
+          this.modal[0].classList.remove('locked');
+
+          this.modal.css(this.settings.css.close).trigger('closed.modal');
+
+          resolve();
+
+          if (openPrevious) {
+            this.openPreviousModal();
+          } else {
+            this.settings.previousModal = $();
+          }
+        });
+
+        this.modal[0].classList.remove('open');
+      }), 125);
+    });
   }
 
   // Just hide the modal immediately and don't bother with an overlay
