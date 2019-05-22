@@ -4,8 +4,8 @@ export const isPlainObject = (object) => {
     return false;
   }
 
-  // This is a getter on BasicObject
-  return !!object.isPlainObject;
+  // This is a getter on BasicObject - any sort of basic record shouldn't be iterated
+  return !object.isBasicObject;
 };
 
 export const deepExtend = (out, ...rest) => {

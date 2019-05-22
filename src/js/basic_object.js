@@ -34,7 +34,7 @@ export default class BasicObject extends Listenable {
     }
   }
 
-  get isPlainObject() { return true; }
+  get isBasicObject() { return true; }
 
   static buildList(items, attributes = {}) {
     return items.map(item => new this(deepExtend({}, item, attributes)));
