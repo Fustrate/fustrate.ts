@@ -65,6 +65,8 @@ export const applyMixin = (target, mixin, options) => {
       target[key] = prototype.constructor[key];
     }
   }, this);
+
+  return target;
 };
 
 export const debounce = (func, delay = 250) => {

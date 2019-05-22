@@ -232,7 +232,6 @@ export default class Modal extends Component {
     }
 
     const css = this.settings.css.open;
-    // css.top = parseInt @modal.css('top'), 10
     css.top = `${$(window).scrollTop() - this.settings.cachedHeight}px`;
 
     const endCss = {
