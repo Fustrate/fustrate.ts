@@ -1,5 +1,6 @@
 // Internal functions
 import { compact } from './array';
+import { underscore } from './string';
 
 const entityMap = {
   '&': '&amp;',
@@ -130,10 +131,8 @@ export const icon = (types, style = 'regular') => {
 };
 
 export const label = (text, type) => {
-  const classes = compact(['label', type, text.replace(/\s+/g, '-')])
-    .join(' ')
+  const classes = underscore(compact(['label', type, text.replace(/\s+/g, '-')]).join(' '))
     .toLowerCase()
-    .dasherize()
     .split(' ');
 
   const span = document.createElement('span');

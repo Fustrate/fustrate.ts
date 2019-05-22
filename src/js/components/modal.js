@@ -9,6 +9,7 @@ import {
   triggerEvent,
   isVisible,
 } from '../utilities';
+import { titleize } from '../string';
 
 const defaultSettings = {
   size: 'tiny',
@@ -121,7 +122,7 @@ export default class Modal extends Component {
       if (typeof button === 'string') {
         list.push(`
           <button data-button="${button}" class="${button} expand">
-            ${button.titleize()}
+            ${titleize(button)}
           </button>`);
       } else if (typeof button === 'object') {
         Object.keys(button).forEach((name) => {
@@ -153,7 +154,7 @@ export default class Modal extends Component {
     }
 
     if (text == null) {
-      text = name.titleize();
+      text = titleize(name);
     }
 
     if (type == null) {
