@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { deepExtend } from './object';
 
 import Listenable from './listenable';
 
@@ -33,7 +34,9 @@ export default class BasicObject extends Listenable {
     }
   }
 
+  get isPlainObject() { return true; }
+
   static buildList(items, attributes = {}) {
-    return items.map(item => new this(Object.deepExtend({}, item, attributes)));
+    return items.map(item => new this(deepExtend({}, item, attributes)));
   }
 }

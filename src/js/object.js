@@ -1,12 +1,11 @@
-import BasicObject from './basic_object';
-
 export const isPlainObject = (object) => {
   // Do the inexpensive checks first.
   if (typeof object !== 'object' || Array.isArray(object) || object === null) {
     return false;
   }
 
-  return Object.prototype.isPrototypeOf.call(BasicObject, object);
+  // This is a getter on BasicObject
+  return !!object.isPlainObject;
 };
 
 export const deepExtend = (out, ...rest) => {

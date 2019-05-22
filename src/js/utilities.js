@@ -1,4 +1,5 @@
 // Internal functions
+import { compact } from './array';
 
 const entityMap = {
   '&': '&amp;',
@@ -129,8 +130,7 @@ export const icon = (types, style = 'regular') => {
 };
 
 export const label = (text, type) => {
-  const classes = ['label', type, text.replace(/\s+/g, '-')]
-    .compact()
+  const classes = compact(['label', type, text.replace(/\s+/g, '-')])
     .join(' ')
     .toLowerCase()
     .dasherize()

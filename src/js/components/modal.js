@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import Component from '../component';
+import { deepExtend } from '../object';
 import {
   elementFromString,
   escapeHTML,
@@ -49,7 +50,7 @@ export default class Modal extends Component {
   constructor({ settings } = {}) {
     super();
 
-    this.settings = Object.deepExtend(
+    this.settings = deepExtend(
       {},
       defaultSettings,
       this.constructor.settings != null ? this.constructor.settings : {},
