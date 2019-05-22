@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import moment from 'moment';
+import { underscore } from './string';
 
 import BasicObject from './basic_object';
 
@@ -102,7 +103,7 @@ export default class Record extends BasicObject {
   }
 
   static paramKey() {
-    return this.classname.underscore().replace('/', '_');
+    return underscore(this.classname).replace('/', '_');
   }
 
   static create(attributes) {
