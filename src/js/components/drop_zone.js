@@ -1,16 +1,22 @@
 import Component from '../component';
+import { stopEverything } from '../rails/utils/event';
 
 // Allow files to be dropped onto an element
 export default class DropZone extends Component {
   constructor(target, callback) {
     super();
 
-    target.addEventListener('dragover', () => false);
-    target.addEventListener('dragenter', () => false);
-    target.addEventListener('drop', (event) => {
-      callback(event.dataTransfer.files);
+    target.addEventListener('dragover', stopEverything);
+    target.addEventListener('dragenter', stopEverything);
 
-      return false;
+    target.addEventListener('drop', (event) => {
+      stopEverything(event);
+
+      callback(event.dataTransfer.files);
     });
+  }
+
+  static create(target, callback) {
+    return new DropZone(target, callback);
   }
 }
