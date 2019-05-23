@@ -30,16 +30,18 @@ export default class Tabs extends Component {
   }
 
   activateTab(tab, changeHash) {
-    if (tab.length === 0) {
+    if (!tab) {
       return;
     }
+
+    const link = tab.closest('a');
 
     [...this.tabs.querySelectorAll('.active')].forEach((sibling) => {
       sibling.classList.remove('active');
     });
 
-    tab.classList.add('active');
-    const hash = tab.getAttribute('href').split('#')[1];
+    link.classList.add('active');
+    const hash = link.getAttribute('href').split('#')[1];
 
     if (changeHash) {
       window.location.hash = hash;
