@@ -9,7 +9,7 @@ export default class FilePicker extends Component {
     input.setAttribute('type', 'file');
 
     input.addEventListener('change', () => {
-      callback(input.files);
+      callback(Array.from(input.files));
 
       input.parentNode.removeChild(input);
     });

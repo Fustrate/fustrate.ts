@@ -12,7 +12,7 @@ export default class DropZone extends Component {
     target.addEventListener('drop', (event) => {
       stopEverything(event);
 
-      callback(event.dataTransfer.files);
+      callback(Array.from(event.dataTransfer.files));
     });
   }
 
