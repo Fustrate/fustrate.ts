@@ -19,13 +19,13 @@ export default class GenericPage {
     this.fields = {};
     this.buttons = {};
 
-    [...this.root.querySelectorAll('[data-field]')]
+    Array.from(this.root.querySelectorAll('[data-field]'))
       .filter(element => !element.matches('.modal [data-field]'))
       .forEach((element) => {
         this.fields[element.dataset.field] = element;
       });
 
-    [...this.root.querySelectorAll('[data-button]')]
+    Array.from(this.root.querySelectorAll('[data-button]'))
       .filter(element => !element.matches('.modal [data-button]'))
       .forEach((element) => {
         this.buttons[element.dataset.button] = element;

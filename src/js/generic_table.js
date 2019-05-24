@@ -87,7 +87,8 @@ export default class GenericTable extends GenericPage {
   }
 
   getCheckedIds() {
-    return [...this.tbody.querySelectorAll('td:first-child input:checked')].map(() => this.value);
+    return Array.from(this.tbody.querySelectorAll('td:first-child input:checked'))
+      .map(() => this.value);
   }
 
   // This should be fed a response from a JSON request for a paginated
