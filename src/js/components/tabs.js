@@ -36,7 +36,7 @@ export default class Tabs extends Component {
 
     const link = tab.closest('a');
 
-    this.tabs.querySelectorAll('.active').forEach((sibling) => {
+    Array.from(this.tabs.querySelectorAll('.active')).forEach((sibling) => {
       sibling.classList.remove('active');
     });
 
@@ -51,7 +51,7 @@ export default class Tabs extends Component {
 
     tabContent.classList.add('active');
 
-    tabContent.parentElement.children.forEach((sibling) => {
+    Array.from(tabContent.parentElement.children).forEach((sibling) => {
       if (sibling !== tabContent) {
         sibling.classList.remove('active');
       }
@@ -59,6 +59,6 @@ export default class Tabs extends Component {
   }
 
   static initialize() {
-    document.querySelectorAll('ul.tabs').forEach(ul => new Tabs(ul));
+    Array.from(document.querySelectorAll('ul.tabs')).forEach(ul => new Tabs(ul));
   }
 }
