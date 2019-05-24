@@ -57,9 +57,3 @@ export default class Fustrate {
 
 window.Fustrate = Fustrate;
 window.$ = $;
-
-moment.fn.toHumanDate = function toHumanDate(time = false) {
-  const year = this.year() !== moment().year() ? '/YY' : '';
-
-  return this.format(`M/D${year}${(time ? ' h:mm A' : '')}`);
-};

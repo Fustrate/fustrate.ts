@@ -208,3 +208,10 @@ export const show = (element) => {
 export const hide = (element) => {
   toggle(element, false);
 };
+
+export const toHumanDate = (momentObject, time = false) => {
+  // use Date#getFullYear so that we don't have to pull in the moment library
+  const year = momentObject.year() !== (new Date()).getFullYear() ? '/YY' : '';
+
+  return momentObject.format(`M/D${year}${(time ? ' h:mm A' : '')}`);
+};
