@@ -25,52 +25,62 @@ export default class Pagination extends Component {
   }
 
   previousLink() {
+    const li = document.createElement('li');
+    li.classList.add('previous_page');
+
     if (this.currentPage === 1) {
-      return `
-        <li class="previous_page unavailable">
-          <a href="#">${settings.previousText}</a>
-        </li>`;
+      li.classList.add('unavailable');
+      li.innerHTML = `<a href="#">${settings.previousText}</a>`;
+    } else {
+      li.innerHTML = this.link(settings.previousText, this.currentPage - 1, { rel: 'prev' });
     }
 
-    const previous = this.link(settings.previousText, this.currentPage - 1, { rel: 'prev' });
-
-    return `<li class="previous_page">${previous}</li>`;
+    return li;
   }
 
   nextLink() {
+    const li = document.createElement('li');
+    li.classList.add('next_page');
+
     if (this.currentPage === this.totalPages) {
-      return `
-        <li class="next_page unavailable">
-          <a href="#">${settings.nextText}</a>
-        </li>`;
+      li.classList.add('unavailable');
+      li.innerHTML = `<a href="#">${settings.nextText}</a>`;
+    } else {
+      li.innerHTML = this.link(settings.nextText, this.currentPage + 1, { rel: 'next' });
     }
 
-    const next = this.link(settings.nextText, this.currentPage + 1, { rel: 'next' });
-
-    return `<li class="next_page">${next}</li>`;
+    return li;
   }
 
   generate() {
+    const ul = document.createElement('ul');
+    ul.classList.add('pagination');
+
     if (this.totalPages === 1) {
-      return '<ul class="pagination"></ul>';
+      return ul;
     }
 
-    const pages = this.windowedPageNumbers().map((page) => {
+    ul.appendChild(this.previousLink());
+
+    this.windowedPageNumbers().forEach((page) => {
+      const li = document.createElement('li');
+
       if (page === this.currentPage) {
-        return `<li class="current">${linkTo(page, '#')}</li>`;
+        li.classList.add('current');
+        li.innerHTML = linkTo(page, '#');
+      } else if (page === 'gap') {
+        li.classList.add('unavailable');
+        li.innerHTML = '<span class="gap">…</span>';
+      } else {
+        li.innerHTML = this.link(page, page);
       }
 
-      if (page === 'gap') {
-        return '<li class="unavailable"><span class="gap">…</span></li>';
-      }
-
-      return `<li>${this.link(page, page)}</li>`;
+      ul.appendChild(li);
     });
 
-    pages.unshift(this.previousLink());
-    pages.push(this.nextLink());
+    ul.appendChild(this.nextLink());
 
-    return `<ul class="pagination">${pages.join('')}</ul>`;
+    return ul;
   }
 
   windowedPageNumbers() {
