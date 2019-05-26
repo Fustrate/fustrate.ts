@@ -5,11 +5,13 @@ import { deepExtend } from '../object';
 import {
   elementFromString,
   escapeHTML,
+  hide,
   icon as createIcon,
-  triggerEvent,
   isVisible,
 } from '../utilities';
 import { titleize } from '../string';
+import { delegate } from '../rails/utils/event';
+import { remove } from '../array';
 
 const defaultSettings = {
   size: 'tiny',
@@ -45,6 +47,14 @@ const template = `
     <div class="modal-buttons"></div>
   </div>`;
 
+// A stack of currently-open modals
+let openModals = [];
+
+// We only want to add the global listeners once
+let addedGlobalListeners = false;
+
+let overlay;
+
 export default class Modal extends Component {
   static get settings() { return {}; }
 
@@ -58,7 +68,6 @@ export default class Modal extends Component {
       settings != null ? settings : {},
     );
 
-    this.settings.previousModal = $();
     this.modal = this.createModal();
 
     this.setTitle(this.settings.title, { icon: this.settings.icon });
@@ -67,8 +76,6 @@ export default class Modal extends Component {
     this.reloadUIElements();
     this.addEventListeners();
     this.initialize();
-
-    this.modal.data('modal', this);
   }
 
   initialize() {}
@@ -143,42 +150,16 @@ export default class Modal extends Component {
     }
   }
 
-  static createButton(name, options) {
-    let text;
-    let type;
-
-    if (typeof options === 'object') {
-      ({ text, type } = options);
-    } else if (typeof options === 'string') {
-      text = options;
-    }
-
-    if (text == null) {
-      text = titleize(name);
-    }
-
-    if (type == null) {
-      type = name;
-    }
-
-    return `
-      <button data-button="${name}" class="expand ${type}">
-        ${escapeHTML(text)}
-      </button>`;
-  }
-
   addEventListeners() {
-    this.modal
-      .off('.modal')
-      .on('close.modal', this.close.bind(this))
-      .on('open.modal', this.open.bind(this))
-      .on('hide.modal', this.hide.bind(this))
-      .on('opened.modal', this.focusFirstInput.bind(this))
-      .on('click.modal', '.modal-close', this.closeButtonClicked.bind(this));
+    this.modal[0].querySelector('.modal-close').addEventListener('click', this.closeButtonClicked.bind(this));
 
-    $(document)
-      .off('.modal', '.modal-overlay')
-      .on('click.modal touchstart.modal', '.modal-overlay', this.constructor.backgroundClicked);
+    if (!addedGlobalListeners) {
+      delegate(document.body, '.modal-overlay', 'click', this.constructor.backgroundClicked);
+      delegate(document.body, '.modal-overlay', 'touchstart', this.constructor.backgroundClicked);
+      document.body.addEventListener('keyup', this.constructor.keyPressed);
+
+      addedGlobalListeners = true;
+    }
 
     if (this.buttons.cancel) {
       this.buttons.cancel.addEventListener('click', this.cancel.bind(this));
@@ -191,7 +172,7 @@ export default class Modal extends Component {
       return;
     }
 
-    const [firstInput] = [...this.modal[0].querySelectorAll('input, select, textarea')]
+    const [firstInput] = Array.from(this.modal[0].querySelectorAll('input, select, textarea'))
       .filter(element => isVisible(element) && !element.disabled && !element.readOnly);
 
     if (firstInput) {
@@ -200,34 +181,27 @@ export default class Modal extends Component {
   }
 
   open() {
-    if (this.modal[0].classList.contains('locked') || this.modal[0].classList.contains('open')) {
+    if (this.locked || this.modal[0].classList.contains('open')) {
       return;
     }
 
-    this.modal[0].classList.add('locked');
+    this.locked = true;
 
+    if (openModals.includes(this)) {
+      remove(openModals, this);
+    }
 
-    // If there is currently a modal being shown, store it and re-open it when
-    // this modal closes.
-    this.settings.previousModal = $('.modal.open');
+    openModals.push(this);
 
-    // These events only matter when the modal is visible
-    $('body').off('keyup.modal').on('keyup.modal', (e) => {
-      if (this.modal[0].classList.contains('locked') || e.which !== 27) {
-        return;
-      }
-
-      this.close();
-    });
-
-    triggerEvent(this.modal[0], 'opening.modal');
+    this.trigger('opening.modal');
 
     if (typeof this.settings.cachedHeight === 'undefined') {
       this.cacheHeight();
     }
 
-    if (this.settings.previousModal.length) {
-      this.settings.previousModal.trigger('hide.modal');
+    if (openModals.length > 1) {
+      // Hide the modal immediately previous to this one.
+      openModals[openModals.length - 2].hide();
     } else {
       // There are no open modals - show the background overlay
       this.constructor.toggleBackground(true);
@@ -245,25 +219,28 @@ export default class Modal extends Component {
       this.modal[0].classList.add('open');
 
       this.modal.css(css).animate(endCss, 250, 'linear', () => {
-        this.modal[0].classList.remove('locked');
+        this.locked = false;
 
-        this.modal.trigger('opened.modal');
+        this.trigger('opened.modal');
+
+        this.focusFirstInput();
       });
     }), 125);
   }
 
   close(openPrevious = true) {
-    if (this.modal[0].classList.contains('locked') || !this.modal[0].classList.contains('open')) {
+    if (this.locked || !this.modal[0].classList.contains('open')) {
       return Promise.reject();
     }
 
-    this.modal[0].classList.add('locked');
+    this.locked = true;
 
-    $('body').off('keyup.modal');
-
-    if (!(this.settings.previousModal.length && openPrevious)) {
+    if (!openPrevious || openModals.length === 1) {
       this.constructor.toggleBackground(false);
     }
+
+    // Remove the top-most modal (this one) from the stack
+    openModals.pop();
 
     const endCss = {
       top: `${-$(window).scrollTop() - this.settings.cachedHeight}px`,
@@ -273,16 +250,17 @@ export default class Modal extends Component {
     return new Promise((resolve) => {
       setTimeout((() => {
         this.modal.animate(endCss, 250, 'linear', () => {
-          this.modal[0].classList.remove('locked');
+          this.locked = false;
 
-          this.modal.css(this.settings.css.close).trigger('closed.modal');
+          this.modal.css(this.settings.css.close);
+          this.trigger('closed.modal');
 
           resolve();
 
           if (openPrevious) {
             this.openPreviousModal();
           } else {
-            this.settings.previousModal = $();
+            this.constructor.hideAllModals();
           }
         });
 
@@ -293,7 +271,9 @@ export default class Modal extends Component {
 
   // Just hide the modal immediately and don't bother with an overlay
   hide() {
-    this.modal[0].classList.remove('open', 'locked');
+    this.locked = false;
+
+    this.modal[0].classList.remove('open');
 
     this.modal.css(this.settings.css.close);
   }
@@ -304,16 +284,14 @@ export default class Modal extends Component {
       this.deferred.reject();
     }
 
-    return this.close();
+    this.close();
   }
 
   openPreviousModal() {
-    this.settings.previousModal.trigger('open.modal');
-
-    this.settings.previousModal = $();
+    if (openModals.length > 0) {
+      openModals[openModals.length - 1].open();
+    }
   }
-
-  static get closeOnBackgroundClick() { return true; }
 
   cacheHeight() {
     this.settings.cachedHeight = this.modal.show().height();
@@ -335,50 +313,76 @@ export default class Modal extends Component {
     return [this.settings.size, this.settings.type].filter(klass => klass !== null);
   }
 
+  closeButtonClicked() {
+    this.close();
+
+    return false;
+  }
+
   static toggleBackground(visible = true) {
-    if (!Modal.overlay) {
-      Modal.overlay = $('<div class="modal-overlay">');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.classList.add('modal-overlay');
     }
 
     if (visible) {
-      if (Modal.overlay.is(':visible')) {
-        return;
-      }
+      if (!isVisible(overlay)) {
+        hide(overlay);
 
-      Modal.overlay.hide().appendTo('body').fadeIn(Modal.fadeSpeed);
+        $(overlay).appendTo('body').fadeIn(Modal.fadeSpeed);
+      }
     } else {
-      Modal.overlay.fadeOut(Modal.fadeSpeed, () => {
-        Modal.overlay.detach();
+      $(overlay).fadeOut(Modal.fadeSpeed, () => {
+        $(overlay).detach();
       });
     }
   }
 
+  static get closeOnBackgroundClick() {
+    return true;
+  }
+
+  // Close the top-most modal if the background is clicked
   static backgroundClicked() {
-    const modal = $('.modal.open');
-
-    if (!modal || modal.hasClass('locked')) {
-      return false;
-    }
-
-    // Double clicking the overlay can cause this to fire twice - first with an open modal, then
-    // without.
-    const jModal = modal.data('modal');
+    const modal = openModals[openModals.length - 1];
 
     // Don't continue to close if we're not supposed to
-    if (!jModal || !jModal.constructor.closeOnBackgroundClick) {
-      return false;
+    if (modal && !modal.locked && modal.constructor.closeOnBackgroundClick) {
+      modal.close();
     }
-
-    modal.trigger('close.modal');
 
     return false;
   }
 
-  closeButtonClicked() {
-    if (!this.modal[0].classList.contains('locked')) {
-      this.modal.trigger('close.modal');
+  static createButton(name, options) {
+    let text;
+    let type;
+
+    if (typeof options === 'object') {
+      ({ text, type } = options);
+    } else if (typeof options === 'string') {
+      text = options;
     }
 
-    return false;
+    return `
+      <button data-button="${name}" class="expand ${type || name}">
+        ${escapeHTML(text || titleize(name))}
+      </button>`;
+  }
+
+  static hideAllModals() {
+    openModals.forEach((modal) => {
+      modal.hide();
+    });
+
+    openModals = [];
+  }
+
+  static keyPressed(event) {
+    if (event.which === 27 && openModals.length > 0) {
+      openModals[openModals.length - 1].close();
+    }
   }
 }
+
+Modal.fadeSpeed = 250;
