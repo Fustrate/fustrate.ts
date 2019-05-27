@@ -22,7 +22,7 @@ const defaultSettings = {
   buttons: [],
   fadeSpeed: 250,
   distanceFromTop: 25,
-  appendTo: 'body',
+  appendTo: document.body,
   css: {
     open: {
       opacity: 0,
@@ -84,11 +84,11 @@ export default class Modal extends Component {
     this.fields = {};
     this.buttons = {};
 
-    this.modal[0].querySelectorAll('[data-field]').forEach((element) => {
+    this.modal.querySelectorAll('[data-field]').forEach((element) => {
       this.fields[element.dataset.field] = element;
     });
 
-    this.modal[0].querySelectorAll('[data-button]').forEach((element) => {
+    this.modal.querySelectorAll('[data-button]').forEach((element) => {
       this.buttons[element.dataset.button] = element;
     });
   }
@@ -96,7 +96,7 @@ export default class Modal extends Component {
   setTitle(title, { icon } = {}) {
     const iconToUse = icon !== false && icon == null ? this.constructor.icon : icon;
 
-    this.modal[0].querySelector('.modal-title span')
+    this.modal.querySelector('.modal-title span')
       .innerHTML = iconToUse ? `${createIcon(iconToUse)} ${title}` : title;
   }
 
@@ -107,7 +107,7 @@ export default class Modal extends Component {
       modalContent = modalContent();
     }
 
-    this.modal[0].querySelector('.modal-content').innerHTML = modalContent;
+    this.modal.querySelector('.modal-content').innerHTML = modalContent;
 
     this.settings.cachedHeight = undefined;
 
@@ -118,7 +118,7 @@ export default class Modal extends Component {
 
   setButtons(buttons, reload = true) {
     if (buttons == null || buttons.length < 1) {
-      this.modal[0].querySelector('.modal-buttons').innerHTML = '';
+      this.modal.querySelector('.modal-buttons').innerHTML = '';
 
       return;
     }
@@ -141,7 +141,7 @@ export default class Modal extends Component {
     const klass = `large-${12 / list.length}`;
     const columns = list.map(element => `<div class="columns ${klass}">${element}</div>`);
 
-    this.modal[0].querySelector('.modal-buttons').innerHTML = `<div class="row">${columns.join('')}</div>`;
+    this.modal.querySelector('.modal-buttons').innerHTML = `<div class="row">${columns.join('')}</div>`;
 
     this.settings.cachedHeight = undefined;
 
@@ -151,7 +151,7 @@ export default class Modal extends Component {
   }
 
   addEventListeners() {
-    this.modal[0].querySelector('.modal-close').addEventListener('click', this.closeButtonClicked.bind(this));
+    this.modal.querySelector('.modal-close').addEventListener('click', this.closeButtonClicked.bind(this));
 
     if (!addedGlobalListeners) {
       delegate(document.body, '.modal-overlay', 'click', this.constructor.backgroundClicked);
@@ -172,7 +172,7 @@ export default class Modal extends Component {
       return;
     }
 
-    const [firstInput] = Array.from(this.modal[0].querySelectorAll('input, select, textarea'))
+    const [firstInput] = Array.from(this.modal.querySelectorAll('input, select, textarea'))
       .filter(element => isVisible(element) && !element.disabled && !element.readOnly);
 
     if (firstInput) {
@@ -181,7 +181,7 @@ export default class Modal extends Component {
   }
 
   open() {
-    if (this.locked || this.modal[0].classList.contains('open')) {
+    if (this.locked || this.modal.classList.contains('open')) {
       return;
     }
 
@@ -216,9 +216,9 @@ export default class Modal extends Component {
     };
 
     setTimeout((() => {
-      this.modal[0].classList.add('open');
+      this.modal.classList.add('open');
 
-      this.modal.css(css).animate(endCss, 250, 'linear', () => {
+      $(this.modal).css(css).animate(endCss, 250, 'linear', () => {
         this.locked = false;
 
         this.trigger('opened.modal');
@@ -229,7 +229,7 @@ export default class Modal extends Component {
   }
 
   close(openPrevious = true) {
-    if (this.locked || !this.modal[0].classList.contains('open')) {
+    if (this.locked || !this.modal.classList.contains('open')) {
       return Promise.reject();
     }
 
@@ -249,10 +249,10 @@ export default class Modal extends Component {
 
     return new Promise((resolve) => {
       setTimeout((() => {
-        this.modal.animate(endCss, 250, 'linear', () => {
+        $(this.modal).animate(endCss, 250, 'linear', () => {
           this.locked = false;
 
-          this.modal.css(this.settings.css.close);
+          $(this.modal).css(this.settings.css.close);
           this.trigger('closed.modal');
 
           resolve();
@@ -264,7 +264,7 @@ export default class Modal extends Component {
           }
         });
 
-        this.modal[0].classList.remove('open');
+        this.modal.classList.remove('open');
       }), 125);
     });
   }
@@ -273,9 +273,9 @@ export default class Modal extends Component {
   hide() {
     this.locked = false;
 
-    this.modal[0].classList.remove('open');
+    this.modal.classList.remove('open');
 
-    this.modal.css(this.settings.css.close);
+    $(this.modal).css(this.settings.css.close);
   }
 
   cancel() {
@@ -294,9 +294,9 @@ export default class Modal extends Component {
   }
 
   cacheHeight() {
-    this.settings.cachedHeight = this.modal.show().height();
+    this.settings.cachedHeight = $(this.modal).show().height();
 
-    this.modal.hide();
+    $(this.modal).hide();
   }
 
   createModal() {
@@ -306,7 +306,9 @@ export default class Modal extends Component {
     const element = elementFromString(template);
     element.classList.add(...classes);
 
-    return $(element).appendTo(this.settings.appendTo);
+    this.settings.appendTo.appendChild(element);
+
+    return element;
   }
 
   defaultClasses() {
@@ -329,7 +331,9 @@ export default class Modal extends Component {
       if (!isVisible(overlay)) {
         hide(overlay);
 
-        $(overlay).appendTo('body').fadeIn(Modal.fadeSpeed);
+        document.body.appendChild(overlay);
+
+        $(overlay).fadeIn(Modal.fadeSpeed);
       }
     } else {
       $(overlay).fadeOut(Modal.fadeSpeed, () => {
