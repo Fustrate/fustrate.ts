@@ -35,6 +35,32 @@ const toggleElement = (element, makeVisible) => {
 
 // Exported functions
 
+export const animate = (element, animation, callback, { delay, speed }) => {
+  const classes = ['animated', animation];
+
+  if (delay) {
+    classes.push(`delay-${delay}s`);
+  }
+
+  // slow, slower, fast, faster
+  if (speed) {
+    classes.push(speed);
+  }
+
+  function handleAnimationEnd() {
+    element.classList.remove('animated', animation);
+    element.removeEventListener('animationend', handleAnimationEnd);
+
+    if (typeof callback === 'function') {
+      callback();
+    }
+  }
+
+  element.addEventListener('animationend', handleAnimationEnd);
+
+  element.classList.add(...classes);
+};
+
 export const applyMixin = (target, mixin, options) => {
   // eslint-disable-next-line new-cap
   const instance = new mixin();
