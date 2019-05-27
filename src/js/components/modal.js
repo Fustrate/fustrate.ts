@@ -20,9 +20,7 @@ const defaultSettings = {
   content: undefined,
   title: null,
   buttons: [],
-  fadeSpeed: 250,
   distanceFromTop: 25,
-  appendTo: document.body,
   css: {
     open: {
       opacity: 0,
@@ -36,6 +34,8 @@ const defaultSettings = {
     },
   },
 };
+
+const fadeSpeed = 250;
 
 const template = `
   <div class="modal">
@@ -306,7 +306,7 @@ export default class Modal extends Component {
     const element = elementFromString(template);
     element.classList.add(...classes);
 
-    this.settings.appendTo.appendChild(element);
+    document.body.appendChild(element);
 
     return element;
   }
@@ -333,10 +333,10 @@ export default class Modal extends Component {
 
         document.body.appendChild(overlay);
 
-        $(overlay).fadeIn(Modal.fadeSpeed);
+        $(overlay).fadeIn(fadeSpeed);
       }
     } else {
-      $(overlay).fadeOut(Modal.fadeSpeed, () => {
+      $(overlay).fadeOut(fadeSpeed, () => {
         $(overlay).detach();
       });
     }
@@ -388,5 +388,3 @@ export default class Modal extends Component {
     }
   }
 }
-
-Modal.fadeSpeed = 250;
