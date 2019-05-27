@@ -35,7 +35,7 @@ const toggleElement = (element, makeVisible) => {
 
 // Exported functions
 
-export const animate = (element, animation, callback, { delay, speed }) => {
+export const animate = (element, animation, callback, { delay, speed } = {}) => {
   const classes = ['animated', animation];
 
   if (delay) {
