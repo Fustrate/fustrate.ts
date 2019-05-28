@@ -1,4 +1,4 @@
-@import '../mixins/panels';
+@import './mixins/panels';
 
 .panel {
   @include panel-color;

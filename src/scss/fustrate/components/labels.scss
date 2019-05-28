@@ -1,4 +1,4 @@
-@import '../mixins/labels';
+@import './mixins/labels';
 
 .label {
   @include label-color;

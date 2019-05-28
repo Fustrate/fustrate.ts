@@ -1,4 +1,4 @@
-@import '../mixins/alerts';
+@import './mixins/alerts';
 
 .alert-box {
   @include alert-color;
