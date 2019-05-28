@@ -1,6 +1,8 @@
 import moment from 'moment';
 import $ from 'jquery';
 
+import { CSRFProtection } from './rails/utils/csrf';
+
 require('./polyfills');
 
 // const Rails = require('@rails/ujs');
@@ -41,7 +43,7 @@ export default class Fustrate {
   static initialize() {
     $.ajaxSetup({
       cache: false,
-      // beforeSend: Rails.CSRFProtection,
+      beforeSend: CSRFProtection,
     });
 
     document.querySelectorAll('table').forEach((table) => {
