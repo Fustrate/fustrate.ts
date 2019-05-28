@@ -10,7 +10,7 @@ import {
   isVisible,
 } from '../utilities';
 import { titleize } from '../string';
-import { delegate } from '../rails/utils/event';
+import { delegate, stopEverything } from '../rails/utils/event';
 import { remove } from '../array';
 
 const defaultSettings = {
@@ -315,7 +315,9 @@ export default class Modal extends Component {
     return [this.settings.size, this.settings.type].filter(klass => klass !== null);
   }
 
-  closeButtonClicked() {
+  closeButtonClicked(event) {
+    stopEverything(event);
+
     this.close();
 
     return false;
