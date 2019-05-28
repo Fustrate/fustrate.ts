@@ -1,72 +1,54 @@
-@mixin panel-color($bg: $panel-bg) {
-  background: $bg;
-  border: 1px solid darken($bg, 11%);
+@import '../mixins/panels';
 
-  // We set the font color based on the darkness of the bg.
+.panel {
+  @include panel-color;
+  font-size: rem-calc(14);
+  margin-bottom: $panel-margin-bottom;
+  padding: $panel-padding;
+
+  // reset header line-heights for panels
   h1,
   h2,
   h3,
   h4,
   h5,
-  h6,
-  p,
-  li,
-  dl {
-    color: if(lightness($bg) >= 50%, $panel-font-color, $panel-font-color-alt);
+  h6 {
+    line-height: 1;
+    margin-bottom: rem-calc(20) / 2;
   }
-}
 
-@mixin fustrate-panels {
-  .panel {
-    @include panel-color;
-    font-size: rem-calc(14);
-    margin-bottom: $panel-margin-bottom;
-    padding: $panel-padding;
+  ul,
+  ol,
+  dl {
+    font-size: inherit;
+  }
 
-    // reset header line-heights for panels
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      line-height: 1;
-      margin-bottom: rem-calc(20) / 2;
-    }
+  // Respect the padding, fool.
+  & > :first-child {
+    margin-top: 0;
+  }
 
-    ul,
-    ol,
-    dl {
-      font-size: inherit;
-    }
+  & > :last-child {
+    margin-bottom: 0;
+  }
 
-    // Respect the padding, fool.
-    & > :first-child {
-      margin-top: 0;
-    }
+  &.radius {
+    border-radius: 3px;
+  }
 
-    & > :last-child {
-      margin-bottom: 0;
-    }
+  &.info {
+    @include panel-color(lighten($info-color, 5%));
+  }
 
-    &.radius {
-      border-radius: 3px;
-    }
+  &.success {
+    @include panel-color(lighten($success-color, 20%));
+  }
 
-    &.info {
-      @include panel-color(lighten($info-color, 5%));
-    }
+  &.danger {
+    @include panel-color(scale-color($danger-color, $lightness: 70%, $saturation: -20%));
+  }
 
-    &.success {
-      @include panel-color(lighten($success-color, 20%));
-    }
-
-    &.danger {
-      @include panel-color(scale-color($danger-color, $lightness: 70%, $saturation: -20%));
-    }
-
-    &.small {
-      padding: $panel-padding-small;
-    }
+  &.small {
+    padding: $panel-padding-small;
   }
 }

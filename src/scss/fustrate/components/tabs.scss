@@ -1,52 +1,49 @@
-@import 'buttons';
-@import 'panels';
+@import '../mixins/buttons';
 
-@mixin fustrate-tabs {
-  ul.tabs {
-    margin-bottom: 0;
+ul.tabs {
+  margin-bottom: 0;
 
-    > li {
-      display: inline;
+  > li {
+    display: inline;
 
-      a {
-        @include button-base;
-        @include button-size($tabs-padding);
-        @include button-style($tabs-bg-color);
+    a {
+      @include button-base;
+      @include button-size($tabs-padding);
+      @include button-style($tabs-bg-color);
 
-        &.active {
-          @include button-style($tabs-active-color, $hover: false);
-        }
+      &.active {
+        @include button-style($tabs-active-color, $hover: false);
       }
     }
   }
+}
 
-  .tabs-content {
-    .content {
-      display: none;
-      overflow: hidden;
-      padding: $tabs-content-padding;
+.tabs-content {
+  .content {
+    display: none;
+    overflow: hidden;
+    padding: $tabs-content-padding;
 
-      &.active {
-        display: block;
-      }
-
-      &.panel {
-        padding: $panel-padding;
-      }
+    &.active {
+      display: block;
     }
 
     &.panel {
-      padding: $tabs-content-padding;
-
-      .content {
-        padding: 0;
-      }
+      padding: $panel-padding;
     }
   }
 
-  @media #{$small-only} {
-    ul.tabs > li a {
-      @include button-size($tabs-padding * .6);
+  &.panel {
+    padding: $tabs-content-padding;
+
+    .content {
+      padding: 0;
     }
+  }
+}
+
+@media #{$small-only} {
+  ul.tabs > li a {
+    @include button-size($tabs-padding * .6);
   }
 }

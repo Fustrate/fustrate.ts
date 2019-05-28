@@ -1,38 +1,32 @@
-@mixin fustrate-flash {
-  #flashes {
-    bottom: 0;
-    left: 0;
-    padding: .15rem .15rem 0;
-    position: fixed;
-    width: 100%;
-    z-index: 9900;
+@import '../mixins/flash';
 
-    .flash {
-      @include flash-color($flash-bg-color);
-      box-shadow: 0 0 8px $flash-shadow-color;
-      color: $flash-color;
-      font-size: 1.25em;
-      line-height: 40px;
-      margin: 0 0 .15rem;
-      min-height: 40px;
-      opacity: .98;
-      padding: .2em 0;
-      position: relative;
-      text-align: center;
+#flashes {
+  bottom: 0;
+  left: 0;
+  padding: .15rem .15rem 0;
+  position: fixed;
+  width: 100%;
+  z-index: 9900;
 
-      &.error {
-        @include flash-color($flash-error-bg-color);
-      }
+  .flash {
+    @include flash-color($flash-bg-color);
+    box-shadow: 0 0 8px $flash-shadow-color;
+    color: $flash-color;
+    font-size: 1.25em;
+    line-height: 40px;
+    margin: 0 0 .15rem;
+    min-height: 40px;
+    opacity: .98;
+    padding: .2em 0;
+    position: relative;
+    text-align: center;
 
-      &.success {
-        @include flash-color($flash-success-bg-color);
-      }
+    &.error {
+      @include flash-color($flash-error-bg-color);
+    }
+
+    &.success {
+      @include flash-color($flash-success-bg-color);
     }
   }
-}
-
-@mixin flash-color($bg) {
-  background: $bg;
-  border: 1px solid scale-color($bg, $lightness: 20%);
-  text-shadow: 0 1px 3px scale-color($bg, $lightness: -50%);
 }
