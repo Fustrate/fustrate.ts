@@ -54,6 +54,3 @@ export default class Fustrate {
     });
   }
 }
-
-window.Fustrate = Fustrate;
-window.$ = $;
