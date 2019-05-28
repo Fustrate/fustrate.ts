@@ -1,9 +1,3 @@
-$label-padding: rem-calc(6 8) !default;
-$label-font-size: rem-calc(12) !default;
-$label-font-color: #333 !default;
-$label-font-color-alt: #fff !default;
-$label-plain-color: #eee !default;
-
 @mixin label-color($bg: $primary-color, $border: false) {
   background-color: $bg;
 

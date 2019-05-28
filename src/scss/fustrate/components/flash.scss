@@ -1,9 +1,3 @@
-$flash-color: #fff !default;
-$flash-shadow-color: rgba(255, 255, 255, .4) !default;
-$flash-bg-color: $primary-color !default;
-$flash-error-bg-color: $danger-color !default;
-$flash-success-bg-color: $success-color !default;
-
 @mixin fustrate-flash {
   #flashes {
     bottom: 0;

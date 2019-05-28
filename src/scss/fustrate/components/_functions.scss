@@ -1,11 +1,9 @@
 $rem-base: 16px !default;
 
-@function strip-unit($num) {
-  @return $num / ($num * 0 + 1);
-}
-
 @function convert-to-rem($value, $base-value: $rem-base) {
-  $value: strip-unit($value) / strip-unit($base-value);
+  $unitValue: $value / ($value * 0 + 1);
+  $baseValue: $base-value / ($base-value * 0 + 1);
+  $value: $unitValue / $baseValue;
 
   @if ($value == 0) {
     @return 0;
