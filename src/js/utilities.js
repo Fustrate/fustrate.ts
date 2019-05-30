@@ -193,6 +193,10 @@ export const multilineEscapeHTML = (string) => {
 export const linkTo = (text, href, options = {}) => {
   const element = document.createElement('a');
 
+  if (href === undefined && window.Honeybadger) {
+    window.Honeybadger.notify('Invalid href', { text, href, options });
+  }
+
   element.href = hrefFor(href);
   element.innerHTML = text;
 
