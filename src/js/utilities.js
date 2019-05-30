@@ -14,10 +14,21 @@ const entityMap = {
 };
 
 const hrefFor = (href) => {
+  if (href === undefined) {
+    return '#';
+  }
+
+  // A plain string is fine.
+  if (typeof href === 'string') {
+    return href;
+  }
+
+  // Models have a `path` function.
   if (href.path) {
     return href.path();
   }
 
+  // I should've commented this. What is this for?
   if (!(href.type && href.id)) {
     return href;
   }
