@@ -194,7 +194,10 @@ export const linkTo = (text, href, options = {}) => {
   const element = document.createElement('a');
 
   if (href === undefined && window.Honeybadger) {
-    window.Honeybadger.notify('Invalid href', { text, href, options });
+    window.Honeybadger.notify('Invalid href', {
+      context: { text, href, options },
+      fingerprint: 'undefinedHrefInHrefFor',
+    });
   }
 
   element.href = hrefFor(href);
