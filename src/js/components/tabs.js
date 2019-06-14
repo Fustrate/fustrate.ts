@@ -1,5 +1,5 @@
 import Component from '../component';
-import { delegate } from '../rails/utils/event';
+import { delegate, stopEverything } from '../rails/utils/event';
 
 export default class Tabs extends Component {
   constructor(tabs) {
@@ -9,6 +9,8 @@ export default class Tabs extends Component {
 
     delegate(this.tabs, 'li > a', 'click', (event) => {
       this.activateTab(event.target, true);
+
+      stopEverything(event);
 
       return false;
     });
