@@ -8,9 +8,9 @@ export default class Tabs extends Component {
     this.tabs = tabs;
 
     delegate(this.tabs, 'li > a', 'click', (event) => {
-      this.activateTab(event.target, true);
-
       stopEverything(event);
+
+      this.activateTab(event.target, true);
 
       return false;
     });
