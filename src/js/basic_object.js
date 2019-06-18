@@ -21,15 +21,15 @@ export default class BasicObject extends Listenable {
       this[key] = data[key];
     }, this);
 
-    if (this.date) {
+    if (this.date && !moment.isMoment(this.date)) {
       this.date = moment(this.date);
     }
 
-    if (this.createdAt) {
+    if (this.createdAt && !moment.isMoment(this.createdAt)) {
       this.createdAt = moment(this.createdAt);
     }
 
-    if (this.updatedAt) {
+    if (this.updatedAt && !moment.isMoment(this.updatedAt)) {
       this.updatedAt = moment(this.updatedAt);
     }
   }
