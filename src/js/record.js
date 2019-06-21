@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import moment from 'moment';
 import { underscore } from './string';
+import { get } from './ajax';
 
 import BasicObject from './basic_object';
 
@@ -25,11 +26,11 @@ export default class Record extends BasicObject {
 
   reload({ force } = {}) {
     if (this.isLoaded && !force) {
-      return $.when();
+      return Promise.resolve();
     }
 
-    return $.get(this.path({ format: 'json' })).done((response) => {
-      this.extractFromData(response);
+    return get(this.path({ format: 'json' })).then((response) => {
+      this.extractFromData(response.data);
 
       this.isLoaded = true;
     });
