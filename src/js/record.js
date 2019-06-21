@@ -33,6 +33,8 @@ export default class Record extends BasicObject {
       this.extractFromData(response.data);
 
       this.isLoaded = true;
+
+      return response;
     });
   }
 
