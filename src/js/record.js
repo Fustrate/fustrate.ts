@@ -101,7 +101,7 @@ export default class Record extends BasicObject {
   }
 
   static paramKey() {
-    return underscore(this.classname).replace('/', '_');
+    return this.classname.replace(/::/g, '').replace(/^[A-Z]/, match => match.toLowerCase());
   }
 
   static create(attributes) {

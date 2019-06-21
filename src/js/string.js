@@ -1,19 +1,3 @@
-export const camelize = (string, firstLetter = 'upper') => {
-  if (typeof string !== 'string') {
-    return '';
-  }
-
-  if (firstLetter === 'upper') {
-    string = string.replace(/^[a-z]/, match => match.toUpperCase());
-  } else if (firstLetter === 'lower') {
-    string = string.replace(/^(?:(?=\b|[A-Z_])|\w)/, match => match.toLowerCase());
-  }
-
-  return string
-    .replace(/(?:_|(\/))([a-z\d]*)/g, match => `${match[0]}${match[1].toUpperCase()}`)
-    .replace(/\//g, '::');
-};
-
 export const capitalize = string => (typeof string !== 'string' ? ''
   : `${string.charAt(0).toUpperCase()}${string.slice(1)}`);
 
