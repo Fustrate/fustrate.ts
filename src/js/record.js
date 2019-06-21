@@ -1,7 +1,6 @@
-import $ from 'jquery';
 import moment from 'moment';
 import { underscore } from './string';
-import { get } from './ajax';
+import ajax, { get } from './ajax';
 
 import BasicObject from './basic_object';
 
@@ -53,22 +52,18 @@ export default class Record extends BasicObject {
       attributes.community_id = this.community.id;
     }
 
-    return $.ajax({
+    return ajax({
+      method: this.id ? 'patch' : 'post',
       url,
       data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey()),
-      processData: false,
-      contentType: false,
-      method: this.id ? 'PATCH' : 'POST',
-      xhr: () => {
-        const xhr = $.ajaxSettings.xhr();
-        xhr.upload.onprogress = e => this.trigger('upload_progress', e);
-        return xhr;
+      onUploadProgress: (event) => {
+        this.trigger('upload_progress', event);
       },
-    }).done(this.extractFromData.bind(this));
+    }).catch(() => {}).then(this.extractFromData.bind(this));
   }
 
   delete() {
-    return $.ajax(this.path({ format: 'json' }), { method: 'DELETE' });
+    return ajax.delete(this.path({ format: 'json' }));
   }
 
   static toFormData(data, object, namespace) {
@@ -110,12 +105,6 @@ export default class Record extends BasicObject {
   }
 
   static create(attributes) {
-    const record = new this();
-
-    return $.Deferred((deferred) => {
-      record.update(attributes)
-        .fail(deferred.reject)
-        .done(() => { deferred.resolve(record); });
-    });
+    return (new this()).update(attributes);
   }
 }

@@ -1,7 +1,4 @@
 import moment from 'moment';
-import $ from 'jquery';
-
-import { CSRFProtection } from './rails/utils/csrf';
 
 require('./polyfills');
 
@@ -41,11 +38,6 @@ export default class Fustrate {
   }
 
   static initialize() {
-    $.ajaxSetup({
-      cache: false,
-      beforeSend: CSRFProtection,
-    });
-
     document.querySelectorAll('table').forEach((table) => {
       const wrapper = document.createElement('div');
       wrapper.classList.add('responsive-table');
