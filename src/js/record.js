@@ -33,7 +33,7 @@ export default class Record extends BasicObject {
 
       this.isLoaded = true;
 
-      return response;
+      return response.data;
     });
   }
 
@@ -61,6 +61,8 @@ export default class Record extends BasicObject {
       },
     }).catch(() => {}).then((response) => {
       this.extractFromData(response.data);
+
+      this.isLoaded = true;
 
       return response.data;
     });
