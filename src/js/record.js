@@ -59,7 +59,11 @@ export default class Record extends BasicObject {
       onUploadProgress: (event) => {
         fire(this, 'upload:progress', event);
       },
-    }).catch(() => {}).then(this.extractFromData.bind(this));
+    }).catch(() => {}).then((response) => {
+      this.extractFromData(response.data);
+
+      return response.data;
+    });
   }
 
   delete() {
