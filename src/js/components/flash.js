@@ -14,7 +14,7 @@ export class Flash extends Component {
   constructor(message, { type, icon } = {}) {
     super();
 
-    const bar = this.createFlashBar(message, { type, icon });
+    const bar = this.constructor.createFlashBar(message, { type, icon });
 
     $(bar)
       .hide()
