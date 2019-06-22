@@ -1,3 +1,4 @@
+// jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
 import $ from 'jquery';
 
 import Component from '../component';
@@ -10,7 +11,7 @@ import {
   isVisible,
 } from '../utilities';
 import { titleize } from '../string';
-import { delegate, stopEverything } from '../rails/utils/event';
+import { delegate, stopEverything, fire } from '../rails/utils/event';
 import { remove } from '../array';
 
 const defaultSettings = {
@@ -193,7 +194,7 @@ export default class Modal extends Component {
 
     openModals.push(this);
 
-    this.trigger('opening.modal');
+    fire(this.modal, 'modal:opening');
 
     if (typeof this.settings.cachedHeight === 'undefined') {
       this.cacheHeight();
@@ -221,7 +222,7 @@ export default class Modal extends Component {
       $(this.modal).css(css).animate(endCss, 250, 'linear', () => {
         this.locked = false;
 
-        this.trigger('opened.modal');
+        fire(this.modal, 'modal:opened');
 
         this.focusFirstInput();
       });
@@ -253,7 +254,7 @@ export default class Modal extends Component {
           this.locked = false;
 
           $(this.modal).css(this.settings.css.close);
-          this.trigger('closed.modal');
+          fire(this.modal, 'modal:closed');
 
           resolve();
 

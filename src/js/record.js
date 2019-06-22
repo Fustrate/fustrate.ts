@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { underscore } from './string';
 import ajax, { get } from './ajax';
+import { fire } from './rails/utils/event';
 
 import BasicObject from './basic_object';
 
@@ -57,7 +57,7 @@ export default class Record extends BasicObject {
       url,
       data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey()),
       onUploadProgress: (event) => {
-        this.trigger('upload_progress', event);
+        fire(this, 'upload:progress', event);
       },
     }).catch(() => {}).then(this.extractFromData.bind(this));
   }

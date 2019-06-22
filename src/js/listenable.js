@@ -1,35 +1,30 @@
+import { remove } from './array';
+
+// A simple polyfill for objects that aren't DOM nodes to receive events.
 export default class Listenable {
   constructor() {
     this.listeners = {};
   }
 
-  on(eventNames, callback) {
-    eventNames.split(' ').forEach((eventName) => {
-      if (!this.listeners[eventName]) {
-        this.listeners[eventName] = [];
-      }
+  addEventListener(type, listener) {
+    if (!this.listeners[type]) {
+      this.listeners[type] = [];
+    }
 
-      this.listeners[eventName].push(callback);
-    });
-
-    return this;
+    this.listeners[type].push(listener);
   }
 
-  off(eventNames) {
-    eventNames.split(' ').forEach((eventName) => {
-      this.listeners[eventName] = [];
-    });
-
-    return this;
+  removeEventListener(type, listener) {
+    remove(this.listeners[type], listener);
   }
 
-  trigger(name, ...args) {
-    if (!(name && this.listeners[name])) {
+  dispatchEvent(event) {
+    if (!(event.type && this.listeners[event.type])) {
       return this;
     }
 
-    this.listeners[name].forEach((callback) => {
-      callback.apply(this, args);
+    this.listeners[event.type].forEach((listener) => {
+      listener.apply(this, event);
     });
 
     return this;

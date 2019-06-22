@@ -1,3 +1,4 @@
+// jQuery: fadeOut
 import $ from 'jquery';
 
 import Component from '../component';

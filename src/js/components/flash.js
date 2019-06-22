@@ -1,3 +1,4 @@
+// jQuery: hide, fadeIn, delay, fadeOut
 import $ from 'jquery';
 
 import Component from '../component';
@@ -13,10 +14,10 @@ export class Flash extends Component {
   constructor(message, { type, icon } = {}) {
     super();
 
-    const bar = $(`<div class="flash ${type != null ? type : 'info'}"></div>`)
-      .html(icon ? `${createIcon(icon)} ${message}` : message)
+    const bar = this.createFlashBar(message, { type, icon });
+
+    $(bar)
       .hide()
-      .prependTo(document.getElementById('flashes'))
       .fadeIn(settings.fadeInSpeed)
       .delay(settings.displayTime)
       .fadeOut(settings.fadeOutSpeed, () => bar.remove());
@@ -24,6 +25,19 @@ export class Flash extends Component {
 
   static show(message, { type, icon } = {}) {
     return new this(message, { type, icon });
+  }
+
+  static createFlashBar(message, { type, icon } = {}) {
+    const bar = document.createElement('div');
+
+    bar.classList.add('flash', type || 'info');
+    bar.innerHTML = icon ? `${createIcon(icon)} ${message}` : message;
+
+    const flashes = document.getElementById('flashes');
+
+    flashes.insertBefore(bar, flashes.firstChild);
+
+    return bar;
   }
 }
 
