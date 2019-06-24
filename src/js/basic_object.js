@@ -14,7 +14,7 @@ export default class BasicObject extends Listenable {
   // Formats a few common attributes as dates with moment.js
   extractFromData(data) {
     if (!data) {
-      return;
+      return {};
     }
 
     Object.getOwnPropertyNames(data).forEach((key) => {
@@ -32,6 +32,8 @@ export default class BasicObject extends Listenable {
     if (this.updatedAt && !moment.isMoment(this.updatedAt)) {
       this.updatedAt = moment(this.updatedAt);
     }
+
+    return data;
   }
 
   get isBasicObject() { return true; }
