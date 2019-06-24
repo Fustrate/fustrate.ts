@@ -55,7 +55,7 @@ export default class Record extends BasicObject {
     return ajax({
       method: this.id ? 'patch' : 'post',
       url,
-      data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey),
+      data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey()),
       onUploadProgress: (event) => {
         fire(this, 'upload:progress', event);
       },
@@ -106,7 +106,7 @@ export default class Record extends BasicObject {
     }
   }
 
-  static get paramKey() {
+  static paramKey() {
     return this.classname.replace(/::/g, '').replace(/^[A-Z]/, match => match.toLowerCase());
   }
 
