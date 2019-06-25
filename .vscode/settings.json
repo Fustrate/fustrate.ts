@@ -1,9 +1,13 @@
 {
+  "[css]": {
+    "editor.tabSize": 2,
+    "editor.rulers": [80],
+  },
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.rulers": [100],
   },
-  "[css]": {
+  "[json]": {
     "editor.tabSize": 2,
     "editor.rulers": [80],
   },
@@ -11,9 +15,9 @@
     "editor.tabSize": 2,
     "editor.rulers": [80],
   },
-  "[json]": {
+  "[typescript]": {
     "editor.tabSize": 2,
-    "editor.rulers": [80],
+    "editor.rulers": [120],
   },
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
