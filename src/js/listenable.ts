@@ -2,7 +2,7 @@ import { remove } from "./array";
 
 // A simple polyfill for objects that aren't DOM nodes to receive events.
 export default abstract class Listenable {
-  private listeners: { [s: string]: Function[] };
+  private listeners: { [s: string]: Array<(...args: any) => void> };
 
   constructor() {
     this.listeners = {};

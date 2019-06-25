@@ -8,15 +8,15 @@ export default class BasicObject extends Listenable {
     return items.map((item) => new this(deepExtend({}, item, attributes)));
   }
 
+  public date?: string | moment.Moment;
+  public createdAt?: string | moment.Moment;
+  public updatedAt?: string | moment.Moment;
+
   constructor(data) {
     super();
 
     this.extractFromData(data);
   }
-
-  public date?: string | moment.Moment;
-  public createdAt?: string | moment.Moment;
-  public updatedAt?: string | moment.Moment;
 
   // Simple extractor to assign root keys as properties in the current object.
   // Formats a few common attributes as dates with moment.js

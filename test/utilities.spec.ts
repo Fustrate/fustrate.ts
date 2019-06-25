@@ -1,95 +1,89 @@
-// import {
-//   animate,
-//   applyMixin,
-//   debounce,
-//   elementFromString,
-//   escapeHTML,
-//   hms,
-//   icon,
-//   label,
-//   multilineEscapeHTML,
-//   linkTo,
-//   redirectTo,
-//   triggerEvent,
-//   isVisible,
-//   toggle,
-//   show,
-//   hide,
-//   toHumanDate,
-// } from '../utilities';
-const utilities = require('../utilities');
+import assert = require("assert");
+import utilities = require("../utilities");
 
-var assert = require('assert');
-
-describe('animate', () => {
+describe("animate", () => {
+  // TODO
 });
 
-describe('applyMixin', () => {
+describe("applyMixin", () => {
+  // TODO
 });
 
-describe('debounce', () => {
+describe("debounce", () => {
+  // TODO
 });
 
-describe('elementFromString', () => {
-  it('creates a bare element', () => {
-    assert(utilities.elementFromString('<input>') instanceof HTMLInputElement);
+describe("elementFromString", () => {
+  it("creates a bare element", () => {
+    assert(utilities.elementFromString("<input>") instanceof HTMLInputElement);
   });
 });
 
-describe('escapeHTML', () => {
+describe("escapeHTML", () => {
+  // TODO
 });
 
-describe('hms', () => {
-  it('formats zero properly', () => {
-    assert.strictEqual(utilities.hms(0), '0:00:00');
-    assert.strictEqual(utilities.hms(0, '-'), '-');
+describe("hms", () => {
+  it("formats zero properly", () => {
+    assert.strictEqual(utilities.hms(0), "0:00:00");
+    assert.strictEqual(utilities.hms(0, "-"), "-");
   });
 
-  it('formats positive numbers', () => {
-    assert.strictEqual(utilities.hms(1), '0:00:01');
-    assert.strictEqual(utilities.hms(61), '0:01:01');
-    assert.strictEqual(utilities.hms(5025), '1:23:45');
-    assert.strictEqual(utilities.hms(86400), '24:00:00');
+  it("formats positive numbers", () => {
+    assert.strictEqual(utilities.hms(1), "0:00:01");
+    assert.strictEqual(utilities.hms(61), "0:01:01");
+    assert.strictEqual(utilities.hms(5025), "1:23:45");
+    assert.strictEqual(utilities.hms(86400), "24:00:00");
   });
 
-  it('formats negative numbers', () => {
-    assert.strictEqual(utilities.hms(-1), '-0:00:01');
-    assert.strictEqual(utilities.hms(-61), '-0:01:01');
-    assert.strictEqual(utilities.hms(-5025), '-1:23:45');
-    assert.strictEqual(utilities.hms(-86400), '-24:00:00');
+  it("formats negative numbers", () => {
+    assert.strictEqual(utilities.hms(-1), "-0:00:01");
+    assert.strictEqual(utilities.hms(-61), "-0:01:01");
+    assert.strictEqual(utilities.hms(-5025), "-1:23:45");
+    assert.strictEqual(utilities.hms(-86400), "-24:00:00");
   });
 });
 
-describe('icon', () => {
+describe("icon", () => {
+  // TODO
 });
 
-describe('label', () => {
+describe("label", () => {
+  // TODO
 });
 
-describe('multilineEscapeHTML', () => {
+describe("multilineEscapeHTML", () => {
+  // TODO
 });
 
-describe('linkTo', () => {
+describe("linkTo", () => {
+  // TODO
 });
 
-describe('redirectTo', () => {
+describe("redirectTo", () => {
+  // TODO
 });
 
-describe('triggerEvent', () => {
+describe("triggerEvent", () => {
+  // TODO
 });
 
-describe('isVisible', () => {
+describe("isVisible", () => {
+  // TODO
 });
 
-describe('toggle', () => {
+describe("toggle", () => {
+  // TODO
 });
 
-describe('show', () => {
+describe("show", () => {
+  // TODO
 });
 
-describe('hide', () => {
+describe("hide", () => {
+  // TODO
 });
 
-describe('toHumanDate', () => {
+describe("toHumanDate", () => {
+  // TODO
 });
-
