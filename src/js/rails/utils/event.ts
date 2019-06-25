@@ -38,7 +38,7 @@ if (typeof CustomEvent !== "function") {
 //   e.g. 'click', 'submit'
 // data::
 //   data you want to pass when you dispatch an event
-export const fire = (obj: EventTarget, name: string, data: any): boolean => {
+export const fire = (obj: EventTarget, name: string, data?: any): boolean => {
   const event = new CustomEvent(name, { bubbles: true, cancelable: true, detail: data });
 
   obj.dispatchEvent(event);
@@ -69,7 +69,7 @@ export const stopEverything = (e: Event): void => {
 export const delegate = (element: Element,
                          selector: string,
                          eventType: string,
-                         handler: EventListenerOrEventListenerObject): void => {
+                         handler: (...args: any) => void): void => {
   element.addEventListener(eventType, (event) => {
     let { target } = event;
 

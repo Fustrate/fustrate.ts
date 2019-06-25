@@ -1,7 +1,9 @@
 import { remove } from "./array";
 
 // A simple polyfill for objects that aren't DOM nodes to receive events.
-export default class Listenable {
+export default abstract class Listenable {
+  private listeners: { [s: string]: Function[] };
+
   constructor() {
     this.listeners = {};
   }
@@ -18,13 +20,13 @@ export default class Listenable {
     remove(this.listeners[type], listener);
   }
 
-  public dispatchEvent(event): boolean {
+  public dispatchEvent(event: Event): boolean {
     if (!(event.type && this.listeners[event.type])) {
       return true;
     }
 
     this.listeners[event.type].forEach((listener) => {
-      listener.apply(this, event);
+      listener.apply(this, [event]);
     });
 
     return true;

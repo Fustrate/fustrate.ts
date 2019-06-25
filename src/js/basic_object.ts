@@ -1,18 +1,22 @@
-import moment from "moment";
+import * as moment from "moment";
 
 import Listenable from "./listenable";
 import { deepExtend } from "./object";
 
-export default class BasicObject extends Listenable <T> {
-  public static buildList(items, attributes = {}): T[] {
+export default class BasicObject extends Listenable {
+  public static buildList<T extends BasicObject>(items, attributes = {}): T[] {
     return items.map((item) => new this(deepExtend({}, item, attributes)));
   }
 
   constructor(data) {
-    super(data);
+    super();
 
     this.extractFromData(data);
   }
+
+  public date?: string | moment.Moment;
+  public createdAt?: string | moment.Moment;
+  public updatedAt?: string | moment.Moment;
 
   // Simple extractor to assign root keys as properties in the current object.
   // Formats a few common attributes as dates with moment.js

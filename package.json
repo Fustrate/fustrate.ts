@@ -1,6 +1,8 @@
 {
   "name": "@fustrate/rails",
   "version": "0.1.0",
+  "description": "I'm too tired to add a description right now.",
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/Fustrate/fustrate-rails.js"
@@ -28,13 +30,14 @@
     "@babel/plugin-transform-modules-commonjs": "^7.4.4",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
+    "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.4",
-    "@types/mocha": "^5.2.7",
+    "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.18.0",
-    "mocha": "^6.1.4",
+    "jest": "^24.8.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.2",
     "webpack": "^4.35.0",
@@ -44,6 +47,6 @@
   "scripts": {
     "lint": "eslint .",
     "precommit": "npm run lint",
-    "test": "mocha"
+    "test": "jest"
   }
 }

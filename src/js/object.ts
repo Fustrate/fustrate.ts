@@ -5,7 +5,7 @@ export const isPlainObject = (obj: any): boolean => {
   }
 
   // This is a getter on BasicObject - any sort of basic record shouldn't be iterated
-  return !(obj as object).isBasicObject;
+  return !(obj as any).isBasicObject;
 };
 
 export const deepExtend = (out: object, ...rest): object => {
