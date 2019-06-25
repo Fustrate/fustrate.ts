@@ -1,10 +1,8 @@
-// tslint:disable max-classes-per-file
-
 // jQuery: hide, fadeIn, delay, fadeOut
-import $ from "jquery";
+import $ from 'jquery';
 
-import Component from "../component";
-import { icon as createIcon } from "../utilities";
+import Component from '../component';
+import { icon as createIcon } from '../utilities';
 
 const settings = {
   displayTime: 4000,
@@ -18,12 +16,12 @@ export class Flash extends Component {
   }
 
   public static createFlashBar(message, { type, icon } = {}) {
-    const bar = document.createElement("div");
+    const bar = document.createElement('div');
 
-    bar.classList.add("flash", type || "info");
+    bar.classList.add('flash', type || 'info');
     bar.innerHTML = icon ? `${createIcon(icon)} ${message}` : message;
 
-    const flashes = document.getElementById("flashes");
+    const flashes = document.getElementById('flashes');
 
     flashes.insertBefore(bar, flashes.firstChild);
 
@@ -45,18 +43,18 @@ export class Flash extends Component {
 
 export class InfoFlash extends Flash {
   constructor(message: string, { icon } = {}) {
-    super(message, { type: "info", icon });
+    super(message, { type: 'info', icon });
   }
 }
 
 export class SuccessFlash extends Flash {
   constructor(message: string, { icon } = {}) {
-    super(message, { type: "success", icon });
+    super(message, { type: 'success', icon });
   }
 }
 
 export class ErrorFlash extends Flash {
   constructor(message: string, { icon } = {}) {
-    super(message, { type: "error", icon });
+    super(message, { type: 'error', icon });
   }
 }

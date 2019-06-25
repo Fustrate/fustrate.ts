@@ -1,27 +1,27 @@
 // Internal functions
-import { compact } from "./array";
-import { underscore } from "./string";
+import { compact } from './array';
+import { underscore } from './string';
 
 type Mixin = new(...args: any[]) => any;
 
 const entityMap = {
-  "\"": "&quot;",
-  "&": "&amp;",
-  "'": "&#39;",
-  "/": "&#x2F;",
-  "<": "&lt;",
-  "=": "&#x3D;",
-  ">": "&gt;",
-  "`": "&#x60;",
+  '"': '&quot;',
+  '&': '&amp;',
+  '\'': '&#39;',
+  '/': '&#x2F;',
+  '<': '&lt;',
+  '=': '&#x3D;',
+  '>': '&gt;',
+  '`': '&#x60;',
 };
 
 const hrefFor = (href) => {
   if (href === undefined) {
-    return "#";
+    return '#';
   }
 
   // A plain string is fine.
-  if (typeof href === "string") {
+  if (typeof href === 'string') {
     return href;
   }
 
@@ -39,20 +39,22 @@ const hrefFor = (href) => {
 };
 
 const toggleElement = (element: HTMLElement, makeVisible: boolean): void => {
-  element.style.display = makeVisible ? "" : "none";
+  element.style.display = makeVisible ? '' : 'none';
 
   if (makeVisible) {
-    element.classList.remove("js-hide");
+    element.classList.remove('js-hide');
   }
 };
 
 // Exported functions
 
-export const animate = (element: HTMLElement,
-                        animation: string,
-                        callback?: () => void,
-                        { delay, speed } = {}): void => {
-  const classes = ["animated", animation];
+export const animate = (
+  element: HTMLElement,
+  animation: string,
+  callback?: () => void,
+  { delay, speed } = {},
+): void => {
+  const classes = ['animated', animation];
 
   if (delay) {
     classes.push(`delay-${delay}s`);
@@ -64,19 +66,20 @@ export const animate = (element: HTMLElement,
   }
 
   function handleAnimationEnd() {
-    element.classList.remove("animated", animation);
-    element.removeEventListener("animationend", handleAnimationEnd);
+    element.classList.remove('animated', animation);
+    element.removeEventListener('animationend', handleAnimationEnd);
 
-    if (typeof callback === "function") {
+    if (typeof callback === 'function') {
       callback();
     }
   }
 
-  element.addEventListener("animationend", handleAnimationEnd);
+  element.addEventListener('animationend', handleAnimationEnd);
 
   element.classList.add(...classes);
 };
 
+// eslint-disable-next-line arrow-parens
 export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
   // eslint-disable-next-line new-cap
   const instance = new mixin();
@@ -92,7 +95,7 @@ export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
   Object.getOwnPropertyNames(prototype).forEach((key) => {
     // Mixins can define their own `initialize` and `addEventListeners` methods, which will be
     // added with their mixin name appended, and called at the same time as the original methods.
-    const newKey = ["initialize", "addEventListeners"].includes(key) ? `${key}${mixin.name}` : key;
+    const newKey = ['initialize', 'addEventListeners'].includes(key) ? `${key}${mixin.name}` : key;
 
     if (!target.prototype[newKey]) {
       target.prototype[newKey] = prototype[key];
@@ -101,7 +104,7 @@ export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
 
   // Assign properties to the prototype
   Object.getOwnPropertyNames(prototype.constructor).forEach((key) => {
-    if (["length", "name", "prototype"].includes(key)) {
+    if (['length', 'name', 'prototype'].includes(key)) {
       return;
     }
 
@@ -134,7 +137,7 @@ export const debounce = (func, delay: number = 250): void => {
 };
 
 export const elementFromString = (str: string): ChildNode => {
-  const template = document.createElement("template");
+  const template = document.createElement('template');
 
   template.innerHTML = str.trim();
 
@@ -143,10 +146,10 @@ export const elementFromString = (str: string): ChildNode => {
 
 export const escapeHTML = (str: string): string => {
   if (str === null || str === undefined) {
-    return "";
+    return '';
   }
 
-  return String(str).replace(/[&<>"'`=/]/g, (entity) => entityMap[entity]);
+  return String(str).replace(/[&<>''`=/]/g, entity => entityMap[entity]);
 };
 
 export function hms(seconds: number | undefined, zero?: string): string {
@@ -161,23 +164,23 @@ export function hms(seconds: number | undefined, zero?: string): string {
     `0${Math.floor(absolute % 60)}`.slice(-2),
   ];
 
-  return `${seconds < 0 ? "-" : ""}${parts.join(":")}`;
+  return `${seconds < 0 ? '-' : ''}${parts.join(':')}`;
 }
 
-export const icon = (types: string, style = "regular"): string => {
-  const classes = types.split(" ")
-    .map((thing) => `fa-${thing}`)
-    .join(" ");
+export const icon = (types: string, style = 'regular'): string => {
+  const classes = types.split(' ')
+    .map(thing => `fa-${thing}`)
+    .join(' ');
 
-  return `<i class="fa${style[0]} ${classes}"></i>`;
+  return `<i class='fa${style[0]} ${classes}'></i>`;
 };
 
 export const label = (text: string, type?: string): string => {
-  const classes = underscore(compact(["label", type, text.replace(/\s+/g, "-")]).join(" "))
+  const classes = underscore(compact(['label', type, text.replace(/\s+/g, '-')]).join(' '))
     .toLowerCase()
-    .split(" ");
+    .split(' ');
 
-  const span = document.createElement("span");
+  const span = document.createElement('span');
   span.textContent = text;
   span.classList.add(...classes);
 
@@ -185,23 +188,23 @@ export const label = (text: string, type?: string): string => {
 };
 
 export const multilineEscapeHTML = (str?: string): string => {
-  if (typeof str !== "string") {
-    return "";
+  if (typeof str !== 'string') {
+    return '';
   }
 
   return str
     .split(/\r?\n/)
-    .map((line) => escapeHTML(line))
-    .join("<br />");
+    .map(line => escapeHTML(line))
+    .join('<br />');
 };
 
 export const linkTo = (text: string, href, options = {}): string => {
-  const element = document.createElement("a");
+  const element = document.createElement('a');
 
   if (href === undefined && window.Honeybadger) {
-    window.Honeybadger.notify("Invalid href", {
+    window.Honeybadger.notify('Invalid href', {
       context: { text, href, options },
-      fingerprint: "undefinedHrefInHrefFor",
+      fingerprint: 'undefinedHrefInHrefFor',
     });
   }
 
@@ -227,7 +230,7 @@ export const triggerEvent = (element, name, data = {}): void => {
   if (window.CustomEvent) {
     event = new CustomEvent(name, { detail: data });
   } else {
-    event = document.createEvent("CustomEvent");
+    event = document.createEvent('CustomEvent');
     event.initCustomEvent(name, true, true, data);
   }
 
@@ -260,7 +263,7 @@ export const hide = (element: HTMLElement): void => {
 
 export const toHumanDate = (momentObject, time: boolean = false) => {
   // use Date#getFullYear so that we don't have to pull in the moment library
-  const year = momentObject.year() !== (new Date()).getFullYear() ? "/YY" : "";
+  const year = momentObject.year() !== (new Date()).getFullYear() ? '/YY' : '';
 
-  return momentObject.format(`M/D${year}${(time ? " h:mm A" : "")}`);
+  return momentObject.format(`M/D${year}${(time ? ' h:mm A' : '')}`);
 };

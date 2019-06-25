@@ -4,15 +4,15 @@ export const linkClickSelector = `
 
 // Button elements bound by rails-ujs
 export const buttonClickSelector = {
-  exclude: "form button",
-  selector: "button[data-remote]:not([form]), button[data-confirm]:not([form])",
+  exclude: 'form button',
+  selector: 'button[data-remote]:not([form]), button[data-confirm]:not([form])',
 };
 
 // Select elements bound by rails-ujs
-export const inputChangeSelector = "select[data-remote], input[data-remote], textarea[data-remote]";
+export const inputChangeSelector = 'select[data-remote], input[data-remote], textarea[data-remote]';
 
 // Form elements bound by rails-ujs
-export const formSubmitSelector = "form";
+export const formSubmitSelector = 'form';
 
 // Form input elements bound by rails-ujs
 export const formInputClickSelector = `
@@ -30,10 +30,10 @@ export const formEnableSelector = `
   input[data-disable]:disabled, button[data-disable]:disabled, textarea[data-disable]:disabled`;
 
 // Form file input elements
-export const fileInputSelector = "input[name][type=file]:not([disabled])";
+export const fileInputSelector = 'input[name][type=file]:not([disabled])';
 
 // Link onClick disable selector with possible reenable after remote submission
-export const linkDisableSelector = "a[data-disable-with], a[data-disable]";
+export const linkDisableSelector = 'a[data-disable-with], a[data-disable]';
 
 // Button onClick disable selector with possible reenable after remote submission
-export const buttonDisableSelector = "button[data-remote][data-disable-with], button[data-remote][data-disable]";
+export const buttonDisableSelector = 'button[data-remote][data-disable-with], button[data-remote][data-disable]';

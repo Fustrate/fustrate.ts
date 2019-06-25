@@ -5,7 +5,7 @@
   },
   "[javascript]": {
     "editor.tabSize": 2,
-    "editor.rulers": [100],
+    "editor.rulers": [120],
   },
   "[json]": {
     "editor.tabSize": 2,
@@ -23,4 +23,9 @@
   "files.insertFinalNewline": true,
   "typescript.validate.enable": false,
   "javascript.validate.enable": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+  ]
 }

@@ -1,6 +1,6 @@
 export const isPlainObject = (obj: any): boolean => {
   // Do the inexpensive checks first.
-  if (typeof obj !== "object" || Array.isArray(obj) || obj === null) {
+  if (typeof obj !== 'object' || Array.isArray(obj) || obj === null) {
     return false;
   }
 
@@ -9,7 +9,7 @@ export const isPlainObject = (obj: any): boolean => {
 };
 
 export const deepExtend = (out: object, ...rest): object => {
-  rest.filter((obj) => obj).forEach((obj) => {
+  rest.filter(obj => obj).forEach((obj) => {
     Object.getOwnPropertyNames(obj).forEach((key) => {
       out[key] = isPlainObject(obj[key]) ? deepExtend(out[key], obj[key]) : obj[key];
     });

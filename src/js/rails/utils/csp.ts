@@ -1,7 +1,7 @@
 let nonce = null;
 
 export const loadCSPNonce = (): string | undefined => {
-  const meta: HTMLMetaElement = document.querySelector("meta[name=csp-nonce]");
+  const meta: HTMLMetaElement = document.querySelector('meta[name=csp-nonce]');
 
   nonce = meta && meta.content;
 

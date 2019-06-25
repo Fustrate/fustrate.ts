@@ -11,7 +11,7 @@ const m = Element.prototype.matches
 // selector::
 //   css selector string or
 //   a javascript object with `selector` and `exclude` properties
-//   Examples: "form", { selector: "form", exclude: "form[data-remote='true']"}
+//   Examples: 'form', { selector: 'form', exclude: 'form[data-remote='true']'}
 export const matches = (element, selector): boolean => {
   if (selector.exclude) {
     return m.call(element, selector.selector) && !m.call(element, selector.exclude);
@@ -20,13 +20,13 @@ export const matches = (element, selector): boolean => {
   return m.call(element, selector);
 };
 
-// get and set data on a given element using "expando properties"
+// get and set data on a given element using 'expando properties'
 // See: https://developer.mozilla.org/en-US/docs/Glossary/Expando
-const expando = "_ujsData";
+const expando = '_ujsData';
 
-export const getData: any = (element: HTMLElement, key: string) => element[expando]
+export const getData: any = (element: HTMLElement, key: string) => (element[expando]
   ? element[expando][key]
-  : undefined;
+  : undefined);
 
 export const setData = (element: HTMLElement, key: string, value: any): void => {
   if (!element[expando]) {

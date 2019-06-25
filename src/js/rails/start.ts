@@ -1,16 +1,16 @@
-import { loadCSPNonce } from "./utils/csp";
-import { refreshCSRFTokens } from "./utils/csrf";
+import { loadCSPNonce } from './utils/csp';
+import { refreshCSRFTokens } from './utils/csrf';
 
-import startConfirmFeature from "./features/confirm";
-import startDisableFeature from "./features/disable";
-import startMethodFeature from "./features/method";
-import startRemoteFeature from "./features/remote";
+import startConfirmFeature from './features/confirm';
+import startDisableFeature from './features/disable';
+import startMethodFeature from './features/method';
+import startRemoteFeature from './features/remote';
 
 export default (): void => {
   // Cut down on the number of issues from people inadvertently including
   // rails-ujs twice by detecting and raising an error when it happens.
   if (window.rails_loaded) {
-    throw new Error("rails-ujs has already been loaded!");
+    throw new Error('rails-ujs has already been loaded!');
   }
 
   startConfirmFeature();
@@ -18,8 +18,8 @@ export default (): void => {
   startMethodFeature();
   startRemoteFeature();
 
-  document.addEventListener("DOMContentLoaded", refreshCSRFTokens);
-  document.addEventListener("DOMContentLoaded", loadCSPNonce);
+  document.addEventListener('DOMContentLoaded', refreshCSRFTokens);
+  document.addEventListener('DOMContentLoaded', loadCSPNonce);
 
   window.rails_loaded = true;
 };

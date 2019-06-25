@@ -1,4 +1,4 @@
-import { delegate, fire, stopEverything } from "../utils/event";
+import { delegate, fire, stopEverything } from '../utils/event';
 
 import {
   buttonClickSelector,
@@ -6,7 +6,7 @@ import {
   formSubmitSelector,
   inputChangeSelector,
   linkClickSelector,
-} from "../utils/selectors";
+} from '../utils/selectors';
 
 // For 'data-confirm' attribute:
 // - Fires `confirm` event
@@ -21,7 +21,7 @@ import {
 // return false. The `confirm:complete` event is fired whether or not the user answered true or
 //   false to the dialog.
 const allowAction = (element) => {
-  const message = element.getAttribute("data-confirm");
+  const message = element.getAttribute('data-confirm');
 
   if (!message) {
     return true;
@@ -30,14 +30,14 @@ const allowAction = (element) => {
   let answer = false;
   let callback;
 
-  if (fire(element, "confirm")) {
+  if (fire(element, 'confirm')) {
     try {
       // eslint-disable-next-line no-alert
       answer = window.confirm(message, element);
     } catch (e) {
       // Do noeting
     }
-    callback = fire(element, "confirm:complete", [answer]);
+    callback = fire(element, 'confirm:complete', [answer]);
   }
 
   return answer && callback;
@@ -50,9 +50,9 @@ export const handleConfirm = (e) => {
 };
 
 export default () => {
-  delegate(document, linkClickSelector, "click", handleConfirm);
-  delegate(document, inputChangeSelector, "change", handleConfirm);
-  delegate(document, buttonClickSelector, "click", handleConfirm);
-  delegate(document, formSubmitSelector, "submit", handleConfirm);
-  delegate(document, formInputClickSelector, "click", handleConfirm);
+  delegate(document, linkClickSelector, 'click', handleConfirm);
+  delegate(document, inputChangeSelector, 'change', handleConfirm);
+  delegate(document, buttonClickSelector, 'click', handleConfirm);
+  delegate(document, formSubmitSelector, 'submit', handleConfirm);
+  delegate(document, formInputClickSelector, 'click', handleConfirm);
 };

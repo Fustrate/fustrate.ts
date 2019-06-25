@@ -1,9 +1,9 @@
-import Component from "../component";
-import { linkTo } from "../utilities";
+import Component from '../component';
+import { linkTo } from '../utilities';
 
 const settings = {
-  nextText: "Next →",
-  previousText: "← Previous",
+  nextText: 'Next →',
+  previousText: '← Previous',
 };
 
 export default class Pagination extends Component {
@@ -15,13 +15,13 @@ export default class Pagination extends Component {
 
   // Just add 'page='
   protected static getPreppedPaginationURL(): string {
-    const url = window.location.search.replace(/[?&]page=\d+/, "");
+    const url = window.location.search.replace(/[?&]page=\d+/, '');
 
-    if (url[0] === "?") {
+    if (url[0] === '?') {
       return `${window.location.pathname}${url}&`;
     }
 
-    if (url[0] === "&") {
+    if (url[0] === '&') {
       return `${window.location.pathname}?${url.slice(1, url.length)}&`;
     }
 
@@ -29,11 +29,16 @@ export default class Pagination extends Component {
   }
 
   public currentPage: number;
+
   public totalPages: number;
+
   public totalEntries: number;
+
   public perPage: number;
 
-  constructor({ currentPage, totalPages, totalEntries, perPage }) {
+  constructor({
+    currentPage, totalPages, totalEntries, perPage,
+  }) {
     super();
 
     this.currentPage = currentPage;
@@ -45,8 +50,8 @@ export default class Pagination extends Component {
   }
 
   public generate(): HTMLUListElement {
-    const ul = document.createElement("ul");
-    ul.classList.add("pagination");
+    const ul = document.createElement('ul');
+    ul.classList.add('pagination');
 
     if (this.totalPages === 1) {
       return ul;
@@ -55,14 +60,14 @@ export default class Pagination extends Component {
     ul.appendChild(this.previousLink());
 
     this.windowedPageNumbers().forEach((page) => {
-      const li = document.createElement("li");
+      const li = document.createElement('li');
 
       if (page === this.currentPage) {
-        li.classList.add("current");
-        li.innerHTML = linkTo(page, "#");
-      } else if (page === "gap") {
-        li.classList.add("unavailable");
-        li.innerHTML = "<span class=\"gap\">…</span>";
+        li.classList.add('current');
+        li.innerHTML = linkTo(page, '#');
+      } else if (page === 'gap') {
+        li.classList.add('unavailable');
+        li.innerHTML = '<span class=\'gap\'>…</span>';
       } else {
         li.innerHTML = this.link(page, page);
       }
@@ -80,28 +85,28 @@ export default class Pagination extends Component {
   }
 
   protected previousLink(): HTMLLIElement {
-    const li = document.createElement("li");
-    li.classList.add("previous_page");
+    const li = document.createElement('li');
+    li.classList.add('previous_page');
 
     if (this.currentPage === 1) {
-      li.classList.add("unavailable");
-      li.innerHTML = `<a href="#">${settings.previousText}</a>`;
+      li.classList.add('unavailable');
+      li.innerHTML = `<a href='#'>${settings.previousText}</a>`;
     } else {
-      li.innerHTML = this.link(settings.previousText, this.currentPage - 1, { rel: "prev" });
+      li.innerHTML = this.link(settings.previousText, this.currentPage - 1, { rel: 'prev' });
     }
 
     return li;
   }
 
   protected nextLink(): HTMLLIElement {
-    const li = document.createElement("li");
-    li.classList.add("next_page");
+    const li = document.createElement('li');
+    li.classList.add('next_page');
 
     if (this.currentPage === this.totalPages) {
-      li.classList.add("unavailable");
-      li.innerHTML = `<a href="#">${settings.nextText}</a>`;
+      li.classList.add('unavailable');
+      li.innerHTML = `<a href='#'>${settings.nextText}</a>`;
     } else {
-      li.innerHTML = this.link(settings.nextText, this.currentPage + 1, { rel: "next" });
+      li.innerHTML = this.link(settings.nextText, this.currentPage + 1, { rel: 'next' });
     }
 
     return li;
@@ -128,7 +133,7 @@ export default class Pagination extends Component {
     }
 
     if (windowFrom > 4) {
-      pages = [1, 2, "gap"];
+      pages = [1, 2, 'gap'];
     } else {
       for (let i = 1; i < windowFrom; i += 1) {
         pages.push(i);
@@ -140,7 +145,7 @@ export default class Pagination extends Component {
     }
 
     if (this.totalPages - 3 > pages[pages.length - 1]) {
-      pages.push("gap");
+      pages.push('gap');
       pages.push(this.totalPages - 1);
       pages.push(this.totalPages);
     } else if (pages[pages.length - 1] + 1 <= this.totalPages) {

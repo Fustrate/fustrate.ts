@@ -1,23 +1,23 @@
-import moment from "moment";
-import ajax, { get } from "./ajax";
-import { fire } from "./rails/utils/event";
+import moment from 'moment';
+import ajax, { get } from './ajax';
+import { fire } from './rails/utils/event';
 
-import BasicObject from "./basic_object";
+import BasicObject from './basic_object';
 
 export default class Record extends BasicObject {
   public static classname: string;
 
   public static toFormData(data: FormData, obj: object, namespace?: string): FormData {
     Object.getOwnPropertyNames(obj).forEach((field) => {
-      if (typeof obj[field] === "undefined" || Number.isNaN(obj[field])) {
+      if (typeof obj[field] === 'undefined' || Number.isNaN(obj[field])) {
         return;
       }
 
       const key = namespace ? `${namespace}[${field}]` : field;
 
-      if (obj[field] && typeof obj[field] === "object") {
-        this.appendObjectToFormData(data, key, object[field]);
-      } else if (typeof obj[field] === "boolean") {
+      if (obj[field] && typeof obj[field] === 'object') {
+        this.appendObjectToFormData(data, key, obj[field]);
+      } else if (typeof obj[field] === 'boolean') {
         data.append(key, Number(obj[field]));
       } else if (obj[field] !== null && obj[field] !== undefined) {
         data.append(key, obj[field]);
@@ -42,7 +42,7 @@ export default class Record extends BasicObject {
   }
 
   public static get paramKey(): string {
-    return this.classname.replace(/::/g, "").replace(/^[A-Z]/, (match) => match.toLowerCase());
+    return this.classname.replace(/::/g, '').replace(/^[A-Z]/, match => match.toLowerCase());
   }
 
   public static create(attributes): Promise {
@@ -54,7 +54,7 @@ export default class Record extends BasicObject {
 
     this.isLoaded = false;
 
-    if (typeof data === "number" || typeof data === "string") {
+    if (typeof data === 'number' || typeof data === 'string') {
       // If the parameter was a number or string, it's likely the record ID
       this.id = parseInt(data, 10);
     } else {
@@ -70,7 +70,7 @@ export default class Record extends BasicObject {
       return Promise.resolve();
     }
 
-    return get(this.path({ format: "json" })).then((response) => {
+    return get(this.path({ format: 'json' })).then((response) => {
       this.extractFromData(response.data);
 
       this.isLoaded = true;
@@ -83,11 +83,11 @@ export default class Record extends BasicObject {
     let url: string;
 
     if (this.id) {
-      url = this.path({ format: "json" });
+      url = this.path({ format: 'json' });
     } else {
       this.extractFromData(attributes);
 
-      url = this.constructor.createPath({ format: "json" });
+      url = this.constructor.createPath({ format: 'json' });
     }
 
     if (this.community && attributes.community_id === undefined) {
@@ -96,12 +96,12 @@ export default class Record extends BasicObject {
 
     return ajax({
       data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey),
-      method: this.id ? "patch" : "post",
+      method: this.id ? 'patch' : 'post',
       onUploadProgress: (event) => {
-        fire(this, "upload:progress", event);
+        fire(this, 'upload:progress', event);
       },
       url,
-    }).catch(() => ()).then((response) => {
+    }).catch(() => {}).then((response) => {
       this.extractFromData(response.data);
 
       this.isLoaded = true;
@@ -111,6 +111,6 @@ export default class Record extends BasicObject {
   }
 
   public delete(): Promise {
-    return ajax.delete(this.path({ format: "json" }));
+    return ajax.delete(this.path({ format: 'json' }));
   }
 }

@@ -1,15 +1,17 @@
-import * as moment from "moment";
+import * as moment from 'moment';
 
-import Listenable from "./listenable";
-import { deepExtend } from "./object";
+import Listenable from './listenable';
+import { deepExtend } from './object';
 
 export default class BasicObject extends Listenable {
   public static buildList<T extends BasicObject>(items, attributes = {}): T[] {
-    return items.map((item) => new this(deepExtend({}, item, attributes)));
+    return items.map(item => new this(deepExtend({}, item, attributes)));
   }
 
   public date?: string | moment.Moment;
+
   public createdAt?: string | moment.Moment;
+
   public updatedAt?: string | moment.Moment;
 
   constructor(data) {
@@ -29,15 +31,15 @@ export default class BasicObject extends Listenable {
       this[key] = data[key];
     }, this);
 
-    if (typeof this.date === "string") {
+    if (typeof this.date === 'string') {
       this.date = moment(this.date);
     }
 
-    if (typeof this.createdAt === "string") {
+    if (typeof this.createdAt === 'string') {
       this.createdAt = moment(this.createdAt);
     }
 
-    if (typeof this.updatedAt === "string") {
+    if (typeof this.updatedAt === 'string') {
       this.updatedAt = moment(this.updatedAt);
     }
 

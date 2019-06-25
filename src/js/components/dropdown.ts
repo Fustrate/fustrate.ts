@@ -1,11 +1,11 @@
-import Popper from "popper.js";
+import Popper from 'popper.js';
 
-import Component from "../component";
-import { delegate } from "../rails/utils/event";
+import Component from '../component';
+import { delegate } from '../rails/utils/event';
 
 export default class Dropdown extends Component {
   public static initialize() {
-    delegate(document.body, ".has-dropdown", "click", this.open.bind(this));
+    delegate(document.body, '.has-dropdown', 'click', this.open.bind(this));
 
     this.boundHide = this.hide.bind(this);
   }
@@ -17,13 +17,13 @@ export default class Dropdown extends Component {
     this.popper = new Popper(event.target, event.target.nextElementSibling, {
       modifiers: {
         flip: {
-          behavior: ["bottom", "top"],
+          behavior: ['bottom', 'top'],
         },
       },
-      placement: "bottom-start",
+      placement: 'bottom-start',
     });
 
-    document.body.addEventListener("click", this.boundHide);
+    document.body.addEventListener('click', this.boundHide);
 
     return false;
   }
@@ -33,6 +33,6 @@ export default class Dropdown extends Component {
       this.popper.destroy();
     }
 
-    document.body.removeEventListener("click", this.boundHide);
+    document.body.removeEventListener('click', this.boundHide);
   }
 }

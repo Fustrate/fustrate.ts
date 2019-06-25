@@ -1,9 +1,9 @@
-import Pagination from "./components/pagination";
-import GenericPage from "./generic_page";
-import { elementFromString } from "./utilities";
+import Pagination from './components/pagination';
+import GenericPage from './generic_page';
+import { elementFromString } from './utilities';
 
-const sortRows = (rows: HTMLTableRowElement[], sortFunction = () => ()): HTMLTableRowElement[] => {
-  const rowsWithSortOrder = rows.map((row) => [sortFunction(row), row]);
+const sortRows = (rows: HTMLTableRowElement[], sortFunction = () => {}): HTMLTableRowElement[] => {
+  const rowsWithSortOrder = rows.map(row => [sortFunction(row), row]);
 
   rowsWithSortOrder.sort((x, y) => {
     if (x[0] === y[0]) {
@@ -13,23 +13,26 @@ const sortRows = (rows: HTMLTableRowElement[], sortFunction = () => ()): HTMLTab
     return x[0] > y[0] ? 1 : -1;
   });
 
-  return rowsWithSortOrder.map((row) => row[1]);
+  return rowsWithSortOrder.map(row => row[1]);
 };
 
 export default class GenericTable extends GenericPage {
-  private static noRecordsMessage = "No records found.";
+  private static noRecordsMessage = 'No records found.';
 
   public table: HTMLTableElement;
+
   public tbody: HTMLTableSectionElement;
+
   public loadingRow?: HTMLTableRowElement;
+
   public noRecordsRow?: HTMLTableRowElement;
 
   constructor(root, table) {
     super(root);
 
     this.table = table;
-    this.tbody = this.table.tBodies[0];
-    this.loadingRow = this.tbody.querySelector("tr.loading");
+    [this.tbody] = this.table.tBodies;
+    this.loadingRow = this.tbody.querySelector('tr.loading');
   }
 
   public initialize() {
@@ -48,11 +51,11 @@ export default class GenericTable extends GenericPage {
 
   public reloadRows(rows: HTMLTableRowElement[], { sort } = { sort: null }): void {
     if (this.loadingRow) {
-      this.loadingRow.style.display = "none";
+      this.loadingRow.style.display = 'none';
     }
 
     if (rows) {
-      this.tbody.querySelectorAll("tr:not(.no-records):not(.loading)").forEach((row) => {
+      this.tbody.querySelectorAll('tr:not(.no-records):not(.loading)').forEach((row) => {
         row.parentNode.removeChild(row);
       });
 
@@ -77,11 +80,11 @@ export default class GenericTable extends GenericPage {
   }
 
   public updated(): void {
-    if (this.tbody.querySelectorAll("tr:not(.no-records):not(.loading)").length === 0) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
+    if (this.tbody.querySelectorAll('tr:not(.no-records):not(.loading)').length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
 
-      tr.classList.add("no-records");
+      tr.classList.add('no-records');
 
       td.colSpan = 16;
       td.textContent = this.constructor.noRecordsMessage;
@@ -92,7 +95,7 @@ export default class GenericTable extends GenericPage {
   }
 
   public getCheckedIds(): number[] {
-    return Array.from(this.tbody.querySelectorAll("td:first-child input:checked"))
+    return Array.from(this.tbody.querySelectorAll('td:first-child input:checked'))
       .map(() => parseInt(this.value, 10));
   }
 
@@ -103,9 +106,9 @@ export default class GenericTable extends GenericPage {
       return;
     }
 
-    const paginationHTML = (new Pagination(response)).generate();
+    const ul = (new Pagination(response)).generate();
 
-    this.root.querySelectorAll(".pagination").forEach((pagination) => {
+    this.root.querySelectorAll('.pagination').forEach((pagination) => {
       pagination.parentNode.replaceChild(ul.cloneNode(true), pagination);
     });
   }
@@ -113,13 +116,13 @@ export default class GenericTable extends GenericPage {
   public checkAll(event: Event): void {
     const check = event ? event.target.checked : true;
 
-    this.table.querySelectorAll("td:first-child input[type=\"checkbox\"]").forEach((checkbox) => {
+    this.table.querySelectorAll('td:first-child input[type=\'checkbox\']').forEach((checkbox) => {
       checkbox.checked = check;
     });
   }
 
   public uncheckAll(): void {
-    this.table.querySelectorAll("td:first-child input:checked").forEach((input) => {
+    this.table.querySelectorAll('td:first-child input:checked').forEach((input) => {
       input.checked = false;
     });
   }
@@ -128,6 +131,7 @@ export default class GenericTable extends GenericPage {
     // Hook point
   }
 
+  // eslint-disable-next-line no-unused-vars
   public updateRow(row: HTMLTableRowElement, item): void {
     // Hook point
   }

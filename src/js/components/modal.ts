@@ -1,37 +1,37 @@
 // jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
-import $ from "jquery";
+import $ from 'jquery';
 
-import { remove } from "../array";
-import Component from "../component";
-import { deepExtend } from "../object";
-import { delegate, fire, stopEverything } from "../rails/utils/event";
-import { titleize } from "../string";
+import { remove } from '../array';
+import Component from '../component';
+import { deepExtend } from '../object';
+import { delegate, fire, stopEverything } from '../rails/utils/event';
+import { titleize } from '../string';
 import {
   elementFromString,
   escapeHTML,
   hide,
   icon as createIcon,
   isVisible,
-} from "../utilities";
+} from '../utilities';
 
 const defaultSettings = {
   buttons: [],
   content: undefined,
   css: {
     close: {
-      display: "none",
+      display: 'none',
       opacity: 1,
-      visibility: "hidden",
+      visibility: 'hidden',
     },
     open: {
-      display: "block",
+      display: 'block',
       opacity: 0,
-      visibility: "visible",
+      visibility: 'visible',
     },
   },
   distanceFromTop: 25,
   icon: undefined,
-  size: "tiny",
+  size: 'tiny',
   title: null,
   type: null,
 };
@@ -39,13 +39,13 @@ const defaultSettings = {
 const fadeSpeed = 250;
 
 const template = `
-  <div class="modal">
-    <div class="modal-title">
+  <div class='modal'>
+    <div class='modal-title'>
       <span></span>
-      <a href="#" class="modal-close">&#215;</a>
+      <a href='#' class='modal-close'>&#215;</a>
     </div>
-    <div class="modal-content"></div>
-    <div class="modal-buttons"></div>
+    <div class='modal-content'></div>
+    <div class='modal-buttons'></div>
   </div>`;
 
 // A stack of currently-open modals
@@ -69,8 +69,8 @@ export default class Modal extends Component {
 
   protected static toggleBackground(visible = true) {
     if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.classList.add("modal-overlay");
+      overlay = document.createElement('div');
+      overlay.classList.add('modal-overlay');
     }
 
     if (visible) {
@@ -108,14 +108,14 @@ export default class Modal extends Component {
     let text;
     let type;
 
-    if (typeof options === "object") {
+    if (typeof options === 'object') {
       ({ text, type } = options);
-    } else if (typeof options === "string") {
+    } else if (typeof options === 'string') {
       text = options;
     }
 
     return `
-      <button data-button="${name}" class="expand ${type || name}">
+      <button data-button='${name}' class='expand ${type || name}'>
         ${escapeHTML(text || titleize(name))}
       </button>`;
   }
@@ -154,11 +154,11 @@ export default class Modal extends Component {
     this.fields = {};
     this.buttons = {};
 
-    this.modal.querySelectorAll("[data-field]").forEach((element) => {
+    this.modal.querySelectorAll('[data-field]').forEach((element) => {
       this.fields[element.dataset.field] = element;
     });
 
-    this.modal.querySelectorAll("[data-button]").forEach((element) => {
+    this.modal.querySelectorAll('[data-button]').forEach((element) => {
       this.buttons[element.dataset.button] = element;
     });
   }
@@ -166,18 +166,18 @@ export default class Modal extends Component {
   public setTitle(title, { icon } = {}) {
     const iconToUse = icon !== false && icon == null ? this.constructor.icon : icon;
 
-    this.modal.querySelector(".modal-title span")
+    this.modal.querySelector('.modal-title span')
       .innerHTML = iconToUse ? `${createIcon(iconToUse)} ${title}` : title;
   }
 
   public setContent(content, reload = true) {
     let modalContent = content;
 
-    if (typeof content === "function") {
+    if (typeof content === 'function') {
       modalContent = modalContent();
     }
 
-    this.modal.querySelector(".modal-content").innerHTML = modalContent;
+    this.modal.querySelector('.modal-content').innerHTML = modalContent;
 
     this.settings.cachedHeight = undefined;
 
@@ -188,7 +188,7 @@ export default class Modal extends Component {
 
   public setButtons(buttons, reload = true) {
     if (buttons == null || buttons.length < 1) {
-      this.modal.querySelector(".modal-buttons").innerHTML = "";
+      this.modal.querySelector('.modal-buttons').innerHTML = '';
 
       return;
     }
@@ -196,12 +196,12 @@ export default class Modal extends Component {
     const list = [];
 
     buttons.forEach((button) => {
-      if (typeof button === "string") {
+      if (typeof button === 'string') {
         list.push(`
-          <button data-button="${button}" class="${button} expand">
+          <button data-button='${button}' class='${button} expand'>
             ${titleize(button)}
           </button>`);
-      } else if (typeof button === "object") {
+      } else if (typeof button === 'object') {
         Object.keys(button).forEach((name) => {
           list.push(this.constructor.createButton(name, button[name]));
         }, this);
@@ -209,9 +209,9 @@ export default class Modal extends Component {
     }, this);
 
     const klass = `large-${12 / list.length}`;
-    const columns = list.map((element) => `<div class="columns ${klass}">${element}</div>`);
+    const columns = list.map(element => `<div class='columns ${klass}'>${element}</div>`);
 
-    this.modal.querySelector(".modal-buttons").innerHTML = `<div class="row">${columns.join("")}</div>`;
+    this.modal.querySelector('.modal-buttons').innerHTML = `<div class='row'>${columns.join('')}</div>`;
 
     this.settings.cachedHeight = undefined;
 
@@ -221,18 +221,18 @@ export default class Modal extends Component {
   }
 
   public addEventListeners() {
-    this.modal.querySelector(".modal-close").addEventListener("click", this.closeButtonClicked.bind(this));
+    this.modal.querySelector('.modal-close').addEventListener('click', this.closeButtonClicked.bind(this));
 
     if (!addedGlobalListeners) {
-      delegate(document.body, ".modal-overlay", "click", this.constructor.backgroundClicked);
-      delegate(document.body, ".modal-overlay", "touchstart", this.constructor.backgroundClicked);
-      document.body.addEventListener("keyup", this.constructor.keyPressed);
+      delegate(document.body, '.modal-overlay', 'click', this.constructor.backgroundClicked);
+      delegate(document.body, '.modal-overlay', 'touchstart', this.constructor.backgroundClicked);
+      document.body.addEventListener('keyup', this.constructor.keyPressed);
 
       addedGlobalListeners = true;
     }
 
     if (this.buttons.cancel) {
-      this.buttons.cancel.addEventListener("click", this.cancel.bind(this));
+      this.buttons.cancel.addEventListener('click', this.cancel.bind(this));
     }
   }
 
@@ -242,8 +242,8 @@ export default class Modal extends Component {
       return;
     }
 
-    const [firstInput] = Array.from(this.modal.querySelectorAll("input, select, textarea"))
-      .filter((element) => isVisible(element) && !element.disabled && !element.readOnly);
+    const [firstInput] = Array.from(this.modal.querySelectorAll('input, select, textarea'))
+      .filter(element => isVisible(element) && !element.disabled && !element.readOnly);
 
     if (firstInput) {
       firstInput.focus();
@@ -251,7 +251,7 @@ export default class Modal extends Component {
   }
 
   public open() {
-    if (this.locked || this.modal.classList.contains("open")) {
+    if (this.locked || this.modal.classList.contains('open')) {
       return;
     }
 
@@ -263,9 +263,9 @@ export default class Modal extends Component {
 
     openModals.push(this);
 
-    fire(this.modal, "modal:opening");
+    fire(this.modal, 'modal:opening');
 
-    if (typeof this.settings.cachedHeight === "undefined") {
+    if (typeof this.settings.cachedHeight === 'undefined') {
       this.cacheHeight();
     }
 
@@ -286,12 +286,12 @@ export default class Modal extends Component {
     };
 
     setTimeout((() => {
-      this.modal.classList.add("open");
+      this.modal.classList.add('open');
 
-      $(this.modal).css(css).animate(endCss, 250, "linear", () => {
+      $(this.modal).css(css).animate(endCss, 250, 'linear', () => {
         this.locked = false;
 
-        fire(this.modal, "modal:opened");
+        fire(this.modal, 'modal:opened');
 
         this.focusFirstInput();
       });
@@ -299,7 +299,7 @@ export default class Modal extends Component {
   }
 
   public close(openPrevious = true) {
-    if (this.locked || !this.modal.classList.contains("open")) {
+    if (this.locked || !this.modal.classList.contains('open')) {
       return Promise.reject();
     }
 
@@ -319,11 +319,11 @@ export default class Modal extends Component {
 
     return new Promise((resolve) => {
       setTimeout((() => {
-        $(this.modal).animate(endCss, 250, "linear", () => {
+        $(this.modal).animate(endCss, 250, 'linear', () => {
           this.locked = false;
 
           $(this.modal).css(this.settings.css.close);
-          fire(this.modal, "modal:closed");
+          fire(this.modal, 'modal:closed');
 
           resolve();
 
@@ -334,7 +334,7 @@ export default class Modal extends Component {
           }
         });
 
-        this.modal.classList.remove("open");
+        this.modal.classList.remove('open');
       }), 125);
     });
   }
@@ -343,7 +343,7 @@ export default class Modal extends Component {
   public hide() {
     this.locked = false;
 
-    this.modal.classList.remove("open");
+    this.modal.classList.remove('open');
 
     $(this.modal).css(this.settings.css.close);
   }
@@ -371,7 +371,7 @@ export default class Modal extends Component {
 
   protected createModal() {
     // Join and split in case any of the classes include spaces
-    const classes = this.defaultClasses().join(" ").split(" ");
+    const classes = this.defaultClasses().join(' ').split(' ');
 
     const element = elementFromString(template);
     element.classList.add(...classes);
@@ -382,7 +382,7 @@ export default class Modal extends Component {
   }
 
   protected defaultClasses() {
-    return [this.settings.size, this.settings.type].filter((klass) => klass !== null);
+    return [this.settings.size, this.settings.type].filter(klass => klass !== null);
   }
 
   protected closeButtonClicked(event) {

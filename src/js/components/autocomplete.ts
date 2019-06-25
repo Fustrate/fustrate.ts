@@ -1,10 +1,8 @@
-// tslint:disable max-classes-per-file
+import Awesomplete from 'awesomplete';
 
-import Awesomplete from "awesomplete";
-
-import { get } from "../ajax";
-import Component from "../component";
-import { debounce, triggerEvent } from "../utilities";
+import { get } from '../ajax';
+import Component from '../component';
+import { debounce, triggerEvent } from '../utilities';
 
 export class AutocompleteSuggestion extends String {
   constructor(datum, displayValue) {
@@ -14,18 +12,18 @@ export class AutocompleteSuggestion extends String {
   }
 
   public highlight(input, text) {
-    if (input.trim() === "") {
+    if (input.trim() === '') {
       return text;
     }
 
-    return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), "gi"), "<mark>$&</mark>");
+    return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
   }
 
   public item(text) {
-    return Awesomplete.$.create("li", {
-      "aria-selected": "false",
-      "innerHTML": this.highlightedHTML(text),
-      "role": "option",
+    return Awesomplete.$.create('li', {
+      'aria-selected': 'false',
+      innerHTML: this.highlightedHTML(text),
+      role: 'option',
     });
   }
 
@@ -68,7 +66,7 @@ export class PlainAutocompleteSource extends AutocompleteSource {
   public suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
 
   public matchingData(searchTerm) {
-    return this.list.filter((datum) => this.filter(datum, searchTerm), this);
+    return this.list.filter(datum => this.filter(datum, searchTerm), this);
   }
 }
 
@@ -98,17 +96,17 @@ export class Autocomplete extends Component {
       item: (suggestion, value, index) => suggestion.item(value, index),
       maxItems: 25,
       minChars: 0,
-      replace: (suggestion) => suggestion.label,
+      replace: suggestion => suggestion.label,
       sort: false, // Items are fed in the intended order
-      suggestion: (datum) => this.suggestionForDatum(datum),
+      suggestion: datum => this.suggestionForDatum(datum),
     });
 
-    // Fix for Chrome ignoring autocomplete="off", but does it break Firefox?
-    this.input.setAttribute("autocomplete", "awesomplete");
+    // Fix for Chrome ignoring autocomplete='off', but does it break Firefox?
+    this.input.setAttribute('autocomplete', 'awesomplete');
 
-    this.input.addEventListener("awesomplete-selectcomplete", this.onSelect.bind(this));
-    this.input.addEventListener("keyup", debounce(this.onKeyup.bind(this)));
-    this.input.addEventListener("focus", this.onFocus.bind(this));
+    this.input.addEventListener('awesomplete-selectcomplete', this.onSelect.bind(this));
+    this.input.addEventListener('keyup', debounce(this.onKeyup.bind(this)));
+    this.input.addEventListener('focus', this.onFocus.bind(this));
   }
 
   public extractOptions(options) {
@@ -126,7 +124,7 @@ export class Autocomplete extends Component {
       return this.sources[0];
     }
 
-    return this.sources.find((source) => source.matches(datum));
+    return this.sources.find(source => source.matches(datum));
   }
 
   public suggestionForDatum(datum) {
@@ -134,31 +132,31 @@ export class Autocomplete extends Component {
   }
 
   public blanked() {
-    if (this.input.value && this.input.value.trim() !== "") {
+    if (this.input.value && this.input.value.trim() !== '') {
       return;
     }
 
     this.awesomplete.close();
 
-    triggerEvent(this.input, "blanked.autocomplete");
+    triggerEvent(this.input, 'blanked.autocomplete');
   }
 
   public onSelect(event) {
-    triggerEvent(this.input, "selected.autocomplete", { suggestion: event.text });
+    triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text });
 
     // It's obviously not still an error if we just selected a value from the dropdown.
-    this.input.classList.remove("error");
+    this.input.classList.remove('error');
   }
 
   public onFocus() {
-    this.value = this.input.value ? this.input.value.trim() : "";
+    this.value = this.input.value ? this.input.value.trim() : '';
 
     let list = [];
     const searchTerm = this.value.toLowerCase();
 
     // If we have plain text sources, show them immediately
     this.sources
-      .filter((source) => source.list)
+      .filter(source => source.list)
       .forEach((source) => {
         list = list.concat(source.matchingData(searchTerm));
       }, this);
@@ -168,9 +166,9 @@ export class Autocomplete extends Component {
 
   public onKeyup(e) {
     const keyCode = e.which || e.keyCode;
-    const value = this.input.value ? this.input.value.trim() : "";
+    const value = this.input.value ? this.input.value.trim() : '';
 
-    if (value === "" && this.value !== "") {
+    if (value === '' && this.value !== '') {
       this.blanked();
 
       return;
@@ -187,7 +185,7 @@ export class Autocomplete extends Component {
 
     this.sources.forEach((source) => {
       if (source.url) {
-        get(source.url({ search: value, commit: 1, format: "json" })).then((response) => {
+        get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
           list = list.concat(response.data);
 
           this.awesomplete.list = list;
@@ -204,10 +202,10 @@ export class Autocomplete extends Component {
 
   public highlight(text) {
     if (!text) {
-      return "";
+      return '';
     }
 
-    return text.replace(RegExp(`(${this.value.split(/\s+/).join("|")})`, "gi"), "<mark>$&</mark>");
+    return text.replace(RegExp(`(${this.value.split(/\s+/).join('|')})`, 'gi'), '<mark>$&</mark>');
   }
 
   public replace(suggestion) {

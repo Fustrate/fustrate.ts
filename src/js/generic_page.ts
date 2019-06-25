@@ -1,6 +1,8 @@
 export default class GenericPage {
   public root: HTMLElement;
+
   public fields: { [s: string]: HTMLElement };
+
   public buttons: { [s: string]: HTMLElement };
 
   private allMethodNamesList?: string[];
@@ -12,38 +14,38 @@ export default class GenericPage {
   public initialize() {
     this.reloadUIElements();
 
-    this.callAllMethodsBeginningWith("initialize");
+    this.callAllMethodsBeginningWith('initialize');
 
     this.addEventListeners();
   }
 
   public addEventListeners() {
-    this.callAllMethodsBeginningWith("addEventListeners");
+    this.callAllMethodsBeginningWith('addEventListeners');
   }
 
   public reloadUIElements() {
     this.fields = {};
     this.buttons = {};
 
-    Array.from(this.root.querySelectorAll("[data-field]"))
-      .filter((element) => !element.matches(".modal [data-field]"))
+    Array.from(this.root.querySelectorAll('[data-field]'))
+      .filter(element => !element.matches('.modal [data-field]'))
       .forEach((element) => {
         this.fields[element.dataset.field] = element;
       });
 
-    Array.from(this.root.querySelectorAll("[data-button]"))
-      .filter((element) => !element.matches(".modal [data-button]"))
+    Array.from(this.root.querySelectorAll('[data-button]'))
+      .filter(element => !element.matches('.modal [data-button]'))
       .forEach((element) => {
         this.buttons[element.dataset.button] = element;
       });
   }
 
   public setHeader(text: string): void {
-    this.root.querySelector(".header > span").textContent = text;
+    this.root.querySelector('.header > span').textContent = text;
   }
 
   public refresh(): void {
-    this.callAllMethodsBeginningWith("refresh");
+    this.callAllMethodsBeginningWith('refresh');
   }
 
   public callAllMethodsBeginningWith(prefix: string): void {
@@ -59,7 +61,7 @@ export default class GenericPage {
   }
 
   private getAllMethodNames(): string[] {
-    let props = string[];
+    let props: string[] = [];
     let klass = this;
 
     while (klass) {
@@ -68,6 +70,6 @@ export default class GenericPage {
       klass = Object.getPrototypeOf(klass);
     }
 
-    return props.sort().filter((name) => typeof this[name] === "function");
+    return props.sort().filter(name => typeof this[name] === 'function');
   }
 }

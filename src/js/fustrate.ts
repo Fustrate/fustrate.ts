@@ -1,8 +1,8 @@
-import moment from "moment";
+import moment from 'moment';
 
-include("./polyfills");
+require('./polyfills');
 
-// const Rails = require("@rails/ujs");
+// const Rails = require('@rails/ujs');
 
 export default class Fustrate {
   public static start(Klass) {
@@ -10,7 +10,7 @@ export default class Fustrate {
       this.instance = new Klass();
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener('DOMContentLoaded', () => {
       this.initialize();
 
       if (Klass) {
@@ -20,9 +20,9 @@ export default class Fustrate {
   }
 
   public static initialize() {
-    document.querySelectorAll("table").forEach((table) => {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("responsive-table");
+    document.querySelectorAll('table').forEach((table) => {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('responsive-table');
 
       table.parentNode.insertBefore(wrapper, table);
 
@@ -33,22 +33,22 @@ export default class Fustrate {
   protected static instance;
 
   constructor() {
-    moment.updateLocale("en", {
+    moment.updateLocale('en', {
       calendar: {
-        lastDay: "[Yesterday at] LT",
-        lastWeek: "dddd [at] LT",
-        nextDay: "[Tomorrow at] LT",
-        nextWeek: "[next] dddd [at] LT",
-        sameDay: "[Today at] LT",
-        sameElse: "L",
+        lastDay: '[Yesterday at] LT',
+        lastWeek: 'dddd [at] LT',
+        nextDay: '[Tomorrow at] LT',
+        nextWeek: '[next] dddd [at] LT',
+        sameDay: '[Today at] LT',
+        sameElse: 'L',
       },
       longDateFormat: {
-        L: "M/D/YY",
-        LL: "MMMM D, YYYY",
-        LLL: "MMMM D, YYYY h:mm A",
-        LLLL: "dddd, MMMM D, YYYY h:mm A",
-        LT: "h:mm A",
-        LTS: "h:mm:ss A",
+        L: 'M/D/YY',
+        LL: 'MMMM D, YYYY',
+        LLL: 'MMMM D, YYYY h:mm A',
+        LLLL: 'dddd, MMMM D, YYYY h:mm A',
+        LT: 'h:mm A',
+        LTS: 'h:mm:ss A',
       },
     });
   }

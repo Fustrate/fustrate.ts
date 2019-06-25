@@ -1,12 +1,12 @@
-import { matches } from "./dom";
+import { matches } from './dom';
 
 // Polyfill for CustomEvent in IE9+
 // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
 let { CustomEvent } = window;
 
-if (typeof CustomEvent !== "function") {
+if (typeof CustomEvent !== 'function') {
   CustomEvent = (event, params) => {
-    const evt = document.createEvent("CustomEvent");
+    const evt = document.createEvent('CustomEvent');
 
     evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
 
@@ -23,7 +23,7 @@ if (typeof CustomEvent !== "function") {
     const result = preventDefault.call(this);
 
     if (this.cancelable && !this.defaultPrevented) {
-      Object.defineProperty(this, "defaultPrevented", { get: () => true });
+      Object.defineProperty(this, 'defaultPrevented', { get: () => true });
     }
 
     return result;
@@ -48,7 +48,7 @@ export const fire = (obj: EventTarget, name: string, data?: any): boolean => {
 
 // Helper function, needed to provide consistent behavior in IE
 export const stopEverything = (e: Event): void => {
-  fire(e.target, "ujs:everythingStopped");
+  fire(e.target, 'ujs:everythingStopped');
 
   e.preventDefault();
   e.stopPropagation();
@@ -66,10 +66,12 @@ export const stopEverything = (e: Event): void => {
 //   string representing the event e.g. 'submit', 'click'
 // handler::
 //   the event handler to be called
-export const delegate = (element: Element,
-                         selector: string,
-                         eventType: string,
-                         handler: (...args: any) => void): void => {
+export const delegate = (
+  element: Element,
+  selector: string,
+  eventType: string,
+  handler: (...args: any) => void,
+): void => {
   element.addEventListener(eventType, (event) => {
     let { target } = event;
 

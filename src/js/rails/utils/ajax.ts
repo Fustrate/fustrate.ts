@@ -1,13 +1,13 @@
-import { cspNonce } from "./csp";
-import { CSRFProtection } from "./csrf";
+import { cspNonce } from './csp';
+import { CSRFProtection } from './csrf';
 
 const AcceptHeaders = {
-  "*": "*/*",
-  "html": "text/html",
-  "json": "application/json, text/javascript",
-  "script": "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript",
-  "text": "text/plain",
-  "xml": "application/xml, text/xml",
+  '*': '*/*',
+  html: 'text/html',
+  json: 'application/json, text/javascript',
+  script: 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript',
+  text: 'text/plain',
+  xml: 'application/xml, text/xml',
 };
 
 const prepareOptions = (options) => {
@@ -15,23 +15,23 @@ const prepareOptions = (options) => {
   options.type = options.type.toUpperCase();
 
   // append data to url if it's a GET request
-  if (options.type === "GET" && options.data) {
-    if (options.url.indexOf("?") < 0) {
+  if (options.type === 'GET' && options.data) {
+    if (options.url.indexOf('?') < 0) {
       options.url += `?${options.data}`;
     } else {
       options.url += `&${options.data}`;
     }
   }
 
-  // Use "*" as default dataType
+  // Use '*' as default dataType
   if (!AcceptHeaders[options.dataType]) {
-    options.dataType = "*";
+    options.dataType = '*';
   }
 
   options.accept = AcceptHeaders[options.dataType];
 
-  if (options.dataType !== "*") {
-    options.accept += ", */*; q=0.01";
+  if (options.dataType !== '*') {
+    options.accept += ', */*; q=0.01';
   }
 
   return options;
@@ -42,16 +42,16 @@ const createXHR = (options, done): XMLHttpRequest => {
 
   // Open and setup xhr
   xhr.open(options.type, options.url, true);
-  xhr.setRequestHeader("Accept", options.accept);
+  xhr.setRequestHeader('Accept', options.accept);
 
   // Set Content-Type only when sending a string
   // Sending FormData will automatically set Content-Type to multipart/form-data
-  if (typeof options.data === "string") {
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+  if (typeof options.data === 'string') {
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
   }
 
   if (!options.crossDomain) {
-    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
   }
 
   // Add X-CSRF-Token
@@ -68,7 +68,7 @@ const createXHR = (options, done): XMLHttpRequest => {
 };
 
 const processResponse = (response, type: string) => {
-  if (typeof response === "string" && typeof type === "string") {
+  if (typeof response === 'string' && typeof type === 'string') {
     if (type.match(/\bjson\b/)) {
       try {
         response = JSON.parse(response);
@@ -76,16 +76,16 @@ const processResponse = (response, type: string) => {
         // Do nothing
       }
     } else if (type.match(/\b(?:java|ecma)script\b/)) {
-      const script = document.createElement("script");
+      const script = document.createElement('script');
 
-      script.setAttribute("nonce", cspNonce());
+      script.setAttribute('nonce', cspNonce());
       script.text = response;
 
       document.head.appendChild(script).parentNode.removeChild(script);
     } else if (type.match(/\bxml\b/)) {
       const parser = new DOMParser();
 
-      type = type.replace(/;.+/, ""); // remove something like ';charset=utf-8'
+      type = type.replace(/;.+/, ''); // remove something like ';charset=utf-8'
 
       try {
         response = parser.parseFromString(response, type);
@@ -102,7 +102,7 @@ export const ajax = (options) => {
   options = prepareOptions(options);
 
   const xhr = createXHR(options, () => {
-    const response = processResponse(xhr.response || xhr.responseText, xhr.getResponseHeader("Content-Type"));
+    const response = processResponse(xhr.response || xhr.responseText, xhr.getResponseHeader('Content-Type'));
 
     if (xhr.status) { // 100 == 2
       if (options.success) {
@@ -133,10 +133,10 @@ export const href = (element: Element): string => element.href;
 
 // Determines if the request is a cross domain request.
 export const isCrossDomain = (url: string): boolean => {
-  const originAnchor = document.createElement("a");
+  const originAnchor = document.createElement('a');
   originAnchor.href = window.location.href;
 
-  const urlAnchor = document.createElement("a");
+  const urlAnchor = document.createElement('a');
 
   try {
     urlAnchor.href = url;
@@ -146,7 +146,7 @@ export const isCrossDomain = (url: string): boolean => {
     // (should only be the case for IE7 and IE compatibility mode).
     // Otherwise, evaluate protocol and host of the URL against the origin
     // protocol and host.
-    return !(((!urlAnchor.protocol || urlAnchor.protocol === ":") && !urlAnchor.host)
+    return !(((!urlAnchor.protocol || urlAnchor.protocol === ':') && !urlAnchor.host)
       || (`${originAnchor.protocol}//${originAnchor.host}` === `${urlAnchor.protocol}//${urlAnchor.host}`));
   } catch (e) {
     // If there is an error parsing the URL, assume it is crossDomain.
