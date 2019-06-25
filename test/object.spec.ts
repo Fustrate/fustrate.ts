@@ -4,7 +4,12 @@ import { deepExtend, isPlainObject } from '../object';
 import BasicObject from '../src/js/basic_object';
 
 describe('#deepExtend()', () => {
-  // TODO
+  it('extends an object deeply', () => {
+    assert.deepStrictEqual(
+      deepExtend({}, { a: { b: { c: [1, 2, 3] } } }, { a: { b: { d: 4 } } }, { e: 5 }),
+      { a: { b: { c: [1, 2, 3], d: 4 } }, e: 5 },
+    );
+  });
 });
 
 describe('#isPlainObject()', () => {

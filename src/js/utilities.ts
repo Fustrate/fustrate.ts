@@ -149,7 +149,7 @@ export const escapeHTML = (str: string): string => {
     return '';
   }
 
-  return String(str).replace(/[&<>''`=/]/g, entity => entityMap[entity]);
+  return String(str).replace(/[&<>'"`=/\\]/g, entity => entityMap[entity]);
 };
 
 export function hms(seconds: number | undefined, zero?: string): string {

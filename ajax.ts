@@ -1,1 +1,1 @@
-export * from "./src/js/ajax";
+export * from './src/js/ajax';

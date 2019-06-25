@@ -48,8 +48,8 @@
     "webpack-dev-server": "^3.7.2"
   },
   "scripts": {
-    "lint": "eslint .",
-    "precommit": "npm run lint",
+    "lint": "eslint . --ext js,ts",
+    "precommit": "eslint . --ext js,ts",
     "test": "jest"
   }
 }

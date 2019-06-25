@@ -1,20 +1,36 @@
 import assert from 'assert';
 import {
-  elementFromString, hms,
-  // animate, applyMixin, debounce, escapeHTML, icon, label, multilineEscapeHTML, linkTo, redirectTo, triggerEvent,
+  debounce, elementFromString, escapeHTML, hms, multilineEscapeHTML, redirectTo,
+  // animate, applyMixin, icon, label, linkTo, triggerEvent,
   // isVisible, toggle, show, hide, toHumanDate,
 } from '../utilities';
 
-describe('animate', () => {
-  // TODO
-});
-
-describe('applyMixin', () => {
-  // TODO
-});
+describe('animate', () => {});
+describe('applyMixin', () => {});
 
 describe('debounce', () => {
-  // TODO
+  jest.useFakeTimers();
+
+  it('waits to run a function', () => {
+    const callback = jest.fn();
+    const debounced = debounce(callback, 2500);
+
+    debounced.call();
+    expect(callback).not.toBeCalled();
+
+    // Wait for 1 second and then run again
+    jest.runTimersToTime(1000);
+    expect(callback).not.toBeCalled();
+    debounced.call();
+
+    // Wait for 2.499 seconds
+    jest.runTimersToTime(2499);
+    expect(callback).not.toBeCalled();
+
+    // 1 more ms and it should run
+    jest.runTimersToTime(1);
+    expect(callback).toBeCalled();
+  });
 });
 
 describe('elementFromString', () => {
@@ -40,7 +56,17 @@ describe('elementFromString', () => {
 });
 
 describe('escapeHTML', () => {
-  // TODO
+  it('escapes null and undefined', () => {
+    assert.strictEqual(escapeHTML(null), '');
+    assert.strictEqual(escapeHTML(undefined), '');
+  });
+
+  it('escapes entities in a string', () => {
+    assert.strictEqual(
+      escapeHTML('<strong>\'Bob\' `&` "Bill"</strong> =/'),
+      '&lt;strong&gt;&#39;Bob&#39; &#x60;&amp;&#x60; &quot;Bill&quot;&lt;&#x2F;strong&gt; &#x3D;&#x2F;',
+    );
+  });
 });
 
 describe('hms', () => {
@@ -64,46 +90,60 @@ describe('hms', () => {
   });
 });
 
-describe('icon', () => {
-  // TODO
-});
-
-describe('label', () => {
-  // TODO
-});
+describe('icon', () => {});
+describe('label', () => {});
 
 describe('multilineEscapeHTML', () => {
-  // TODO
+  it('escapes null and undefined', () => {
+    assert.strictEqual(multilineEscapeHTML(null), '');
+    assert.strictEqual(multilineEscapeHTML(undefined), '');
+  });
+
+  it('turns newlines into br elements', () => {
+    assert.strictEqual(
+      multilineEscapeHTML('The\r\nLos\nAngeles\nDodgers'),
+      'The<br />Los<br />Angeles<br />Dodgers',
+    );
+  });
+
+  it('escapes entities in a string', () => {
+    assert.strictEqual(
+      multilineEscapeHTML('<strong>\'Bob\' `&` "Bill"</strong>\n=/'),
+      '&lt;strong&gt;&#39;Bob&#39; &#x60;&amp;&#x60; &quot;Bill&quot;&lt;&#x2F;strong&gt;<br />&#x3D;&#x2F;',
+    );
+  });
 });
 
-describe('linkTo', () => {
-  // TODO
-});
+describe('linkTo', () => {});
 
 describe('redirectTo', () => {
-  // TODO
+  jest.useFakeTimers();
+
+  global.window = Object.create(window);
+
+  Object.defineProperty(window, 'location', {
+    value: { href: 'https://github.com' },
+    writable: true,
+  });
+
+  it('redirects after 750ms', () => {
+    redirectTo('https://google.com');
+
+    assert.strictEqual(window.location.href, 'https://github.com');
+
+    // Wait for 749ms
+    jest.runTimersToTime(749);
+    assert.strictEqual(window.location.href, 'https://github.com');
+
+    // 1 more ms and it should run
+    jest.runTimersToTime(1);
+    assert.strictEqual(window.location.href, 'https://google.com');
+  });
 });
 
-describe('triggerEvent', () => {
-  // TODO
-});
-
-describe('isVisible', () => {
-  // TODO
-});
-
-describe('toggle', () => {
-  // TODO
-});
-
-describe('show', () => {
-  // TODO
-});
-
-describe('hide', () => {
-  // TODO
-});
-
-describe('toHumanDate', () => {
-  // TODO
-});
+describe('triggerEvent', () => {});
+describe('isVisible', () => {});
+describe('toggle', () => {});
+describe('show', () => {});
+describe('hide', () => {});
+describe('toHumanDate', () => {});

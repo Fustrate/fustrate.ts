@@ -1,3 +1,3 @@
-export * from "./src/js/utilities";
+export * from './src/js/utilities';
 
-export { delegate } from "./src/js/rails/utils/event";
+export { delegate } from './src/js/rails/utils/event';
