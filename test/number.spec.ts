@@ -4,27 +4,27 @@ var assert = require('assert');
 
 describe('#accountingFormat()', () => {
   it('should format a positive integer', () => {
-    assert.equal(accountingFormat(50), '$50.00');
+    assert.strictEqual(accountingFormat(50), '$50.00');
   });
 
   it('should format a negative integer', () => {
-    assert.equal(accountingFormat(-50), '($50.00)');
+    assert.strictEqual(accountingFormat(-50), '($50.00)');
   });
 
   it('should format a positive float', () => {
-    assert.equal(accountingFormat(50.75), '$50.75');
+    assert.strictEqual(accountingFormat(50.75), '$50.75');
   });
 
   it('should format a negative float', () => {
-    assert.equal(accountingFormat(-50.75), '($50.75)');
+    assert.strictEqual(accountingFormat(-50.75), '($50.75)');
   });
 
   it('should format a float with extra digits', () => {
-    assert.equal(accountingFormat(50.753), '$50.75');
+    assert.strictEqual(accountingFormat(50.753), '$50.75');
   });
 
   it('should format zero', () => {
-    assert.equal(accountingFormat(0), '$0.00');
+    assert.strictEqual(accountingFormat(0), '$0.00');
   });
 });
 

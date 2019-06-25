@@ -38,7 +38,7 @@ export const pluralize = (str: string): string => {
     return `${str.substr(0, str.length - 1)}ies`;
   }
 
-  return `${string}s`;
+  return `${str}s`;
 };
 
 export const presence = (str: string | null | undefined): string | undefined => (isBlank(str) ? undefined : str);

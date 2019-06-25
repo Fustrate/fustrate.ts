@@ -11,7 +11,7 @@ describe('Listenable', () => {
     var received = false;
 
     thing.addEventListener('hello', (event) => {
-      assert.equal(event.detail, 'world');
+      assert.strictEqual(event.detail, 'world');
 
       received = true;
     });
