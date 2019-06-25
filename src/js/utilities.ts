@@ -48,7 +48,7 @@ const toggleElement = (element: HTMLElement, makeVisible: boolean): void => {
 
 // Exported functions
 
-export const animate = (element: HTMLElement, animation: string, callback?: () => (), { delay, speed } = {}): void => {
+export const animate = (element: HTMLElement, animation: string, callback?: () => void, { delay, speed } = {}): void => {
   const classes = ["animated", animation];
 
   if (delay) {
