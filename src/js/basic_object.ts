@@ -14,10 +14,12 @@ export default class BasicObject extends Listenable {
 
   public updatedAt?: string | moment.Moment;
 
-  constructor(data) {
+  constructor(data?: object) {
     super();
 
-    this.extractFromData(data);
+    if (data) {
+      this.extractFromData(data);
+    }
   }
 
   // Simple extractor to assign root keys as properties in the current object.

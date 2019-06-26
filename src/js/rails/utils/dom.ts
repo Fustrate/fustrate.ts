@@ -1,3 +1,12 @@
+declare global {
+  interface Element {
+    matchesSelector: (selectors: string) => boolean;
+    mozMatchesSelector: (selectors: string) => boolean;
+    msMatchesSelector: (selectors: string) => boolean;
+    oMatchesSelector: (selectors: string) => boolean;
+  }
+}
+
 const m = Element.prototype.matches
   || Element.prototype.matchesSelector
   || Element.prototype.mozMatchesSelector
@@ -12,9 +21,9 @@ const m = Element.prototype.matches
 //   css selector string or
 //   a javascript object with `selector` and `exclude` properties
 //   Examples: 'form', { selector: 'form', exclude: 'form[data-remote='true']'}
-export const matches = (element, selector): boolean => {
-  if (selector.exclude) {
-    return m.call(element, selector.selector) && !m.call(element, selector.exclude);
+export const matches = (element: Element, selector: string, exclude?: string): boolean => {
+  if (exclude) {
+    return m.call(element, selector) && !m.call(element, exclude);
   }
 
   return m.call(element, selector);
@@ -38,6 +47,4 @@ export const setData = (element: HTMLElement, key: string, value: any): void => 
 
 // a wrapper for document.querySelectorAll
 // returns an Array
-export const $ = (selector): Node[] => {
-  Array.prototype.slice.call(document.querySelectorAll(selector));
-};
+export const $ = (selector: string): any[] => Array.prototype.slice.call(document.querySelectorAll(selector));

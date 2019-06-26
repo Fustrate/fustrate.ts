@@ -1,85 +1,70 @@
-import moment from 'moment';
 import ajax, { get } from './ajax';
 import { fire } from './rails/utils/event';
 
 import BasicObject from './basic_object';
+import toFormData from './form_data_builder';
+
+interface PathParameters {
+  format?: string;
+}
 
 export default class Record extends BasicObject {
   public static classname: string;
 
-  public static toFormData(data: FormData, obj: object, namespace?: string): FormData {
-    Object.getOwnPropertyNames(obj).forEach((field) => {
-      if (typeof obj[field] === 'undefined' || Number.isNaN(obj[field])) {
-        return;
-      }
+  private isLoaded: boolean = false;
 
-      const key = namespace ? `${namespace}[${field}]` : field;
-
-      if (obj[field] && typeof obj[field] === 'object') {
-        this.appendObjectToFormData(data, key, obj[field]);
-      } else if (typeof obj[field] === 'boolean') {
-        data.append(key, Number(obj[field]));
-      } else if (obj[field] !== null && obj[field] !== undefined) {
-        data.append(key, obj[field]);
-      }
-    });
-
-    return data;
-  }
-
-  public static appendObjectToFormData(data: FormData, key: string, value: any): void {
-    if (value instanceof Array) {
-      value.forEach((item) => {
-        data.append(`${key}[]`, item);
-      });
-    } else if (value instanceof File) {
-      data.append(key, value);
-    } else if (moment.isMoment(value)) {
-      data.append(key, value.format());
-    } else if (!(value instanceof Record)) {
-      this.toFormData(data, value, key);
-    }
-  }
+  public id: number;
 
   public static get paramKey(): string {
     return this.classname.replace(/::/g, '').replace(/^[A-Z]/, match => match.toLowerCase());
   }
 
-  public static create(attributes): Promise {
+  public static create(attributes): Promise<any> {
     return (new this()).update(attributes);
   }
 
-  constructor(data) {
-    super(data);
+  constructor(data?: string | number | object) {
+    super(typeof data !== 'number' && typeof data !== 'string' ? data : undefined);
 
-    this.isLoaded = false;
-
-    if (typeof data === 'number' || typeof data === 'string') {
-      // If the parameter was a number or string, it's likely the record ID
+    // If the parameter was a number or string, it's likely the record ID
+    if (typeof data === 'number') {
+      this.id = data;
+    } else if (typeof data === 'string') {
       this.id = parseInt(data, 10);
-    } else {
-      // Otherwise we were probably given a hash of attributes
-      this.extractFromData(data);
     }
   }
 
-  public get classname(): string { return this.constructor.classname; }
+  public get classname(): string {
+    return (this.constructor as typeof Record).classname;
+  }
 
-  public reload({ force } = {}): Promise {
+  public path(parameters: PathParameters): string {
+    return `/?format=${parameters.format}`;
+  }
+
+  public reload(force: boolean = false): Promise<any> {
     if (this.isLoaded && !force) {
       return Promise.resolve();
     }
 
     return get(this.path({ format: 'json' })).then((response) => {
-      this.extractFromData(response.data);
+      if (response) {
+        this.extractFromData(response.data);
 
-      this.isLoaded = true;
+        this.isLoaded = true;
 
-      return response.data;
+        return response.data;
+      }
+
+      return {};
     });
   }
 
-  public update(attributes = {}): Promise {
+  public static createPath(parameters: PathParameters): string {
+    return `/?format=${parameters.format}`;
+  }
+
+  public update(attributes = {}): Promise<any> {
     let url: string;
 
     if (this.id) {
@@ -87,21 +72,21 @@ export default class Record extends BasicObject {
     } else {
       this.extractFromData(attributes);
 
-      url = this.constructor.createPath({ format: 'json' });
-    }
-
-    if (this.community && attributes.community_id === undefined) {
-      attributes.community_id = this.community.id;
+      url = (this.constructor as typeof Record).createPath({ format: 'json' });
     }
 
     return ajax({
-      data: this.constructor.toFormData(new FormData(), attributes, this.constructor.paramKey),
+      data: toFormData(new FormData(), attributes, (this.constructor as typeof Record).paramKey),
       method: this.id ? 'patch' : 'post',
       onUploadProgress: (event) => {
         fire(this, 'upload:progress', event);
       },
       url,
     }).catch(() => {}).then((response) => {
+      if (!response) {
+        return {};
+      }
+
       this.extractFromData(response.data);
 
       this.isLoaded = true;
@@ -110,7 +95,7 @@ export default class Record extends BasicObject {
     });
   }
 
-  public delete(): Promise {
+  public delete(): Promise<any> {
     return ajax.delete(this.path({ format: 'json' }));
   }
 }

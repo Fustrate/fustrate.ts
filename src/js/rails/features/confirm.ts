@@ -1,7 +1,7 @@
 import { delegate, fire, stopEverything } from '../utils/event';
 
 import {
-  buttonClickSelector,
+  // buttonClickSelector,
   formInputClickSelector,
   formSubmitSelector,
   inputChangeSelector,
@@ -33,7 +33,7 @@ const allowAction = (element) => {
   if (fire(element, 'confirm')) {
     try {
       // eslint-disable-next-line no-alert
-      answer = window.confirm(message, element);
+      answer = window.confirm(message);
     } catch (e) {
       // Do noeting
     }
@@ -52,7 +52,7 @@ export const handleConfirm = (e) => {
 export default () => {
   delegate(document, linkClickSelector, 'click', handleConfirm);
   delegate(document, inputChangeSelector, 'change', handleConfirm);
-  delegate(document, buttonClickSelector, 'click', handleConfirm);
+  // delegate(document, buttonClickSelector, 'click', handleConfirm);
   delegate(document, formSubmitSelector, 'submit', handleConfirm);
   delegate(document, formInputClickSelector, 'click', handleConfirm);
 };

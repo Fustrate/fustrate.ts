@@ -5,7 +5,8 @@ import { delegate, stopEverything } from '../utils/event';
 import { formElements } from '../utils/form';
 
 import {
-  buttonClickSelector, buttonDisableSelector, formDisableSelector, formEnableSelector, formInputClickSelector,
+  // buttonClickSelector,
+  buttonDisableSelector, formDisableSelector, formEnableSelector, formInputClickSelector,
   formSubmitSelector, inputChangeSelector, linkClickSelector, linkDisableSelector,
 } from '../utils/selectors';
 
@@ -173,7 +174,7 @@ export default () => {
   delegate(document, formSubmitSelector, 'ajax:complete', enableElement);
 
   delegate(document, linkClickSelector, 'click', disableElement);
-  delegate(document, buttonClickSelector, 'click', disableElement);
+  // delegate(document, buttonClickSelector, 'click', disableElement);
   // Normal mode submit
   // Slight timeout so that the submit button gets properly serialized
   delegate(document, formSubmitSelector, 'submit', (e) => {
@@ -182,7 +183,7 @@ export default () => {
   delegate(document, formSubmitSelector, 'ajax:send', disableElement);
 
   delegate(document, linkClickSelector, 'click', handleDisabledElement);
-  delegate(document, buttonClickSelector, 'click', handleDisabledElement);
+  // delegate(document, buttonClickSelector, 'click', handleDisabledElement);
   delegate(document, inputChangeSelector, 'change', handleDisabledElement);
   delegate(document, formSubmitSelector, 'submit', handleDisabledElement);
   delegate(document, formInputClickSelector, 'click', handleDisabledElement);

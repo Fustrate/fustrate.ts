@@ -1,22 +1,22 @@
 import { matches } from './dom';
 
-const toArray = <T>(e: T[]): T[] => Array.prototype.slice.call(e);
+const toArray = (e: any[] | HTMLFormControlsCollection | NodeListOf<Element>): any[] => Array.prototype.slice.call(e);
 
-export const serializeElement = (element, additionalParam) => {
+export const serializeElement = (element: HTMLElement, additionalParam: object) => {
   let inputs = [element];
 
-  if (matches(element, 'form')) {
+  if (element instanceof HTMLFormElement) {
     inputs = toArray(element.elements);
   }
 
   const params = [];
 
-  inputs.forEach((input) => {
+  inputs.forEach((input: HTMLInputElement | HTMLSelectElement) => {
     if (!input.name || input.disabled) {
       return;
     }
 
-    if (matches(input, 'select')) {
+    if (input instanceof HTMLSelectElement) {
       toArray(input.options).forEach((option) => {
         if (option.selected) {
           params.push({ name: input.name, value: option.value });
@@ -39,7 +39,7 @@ export const serializeElement = (element, additionalParam) => {
 // Helper function that returns form elements that match the specified CSS selector
 // If form is actually a 'form' element this will return associated elements outside the form that
 // have the html form attribute set
-export const formElements = (form: HTMLElement, selector) => {
+export const formElements = (form: HTMLElement, selector: string) => {
   if (form instanceof HTMLFormElement) {
     return toArray(form.elements).filter(el => matches(el, selector));
   }

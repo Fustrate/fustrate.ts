@@ -36,7 +36,7 @@ export const handleMethod = (event) => {
   form.style.display = 'none';
 
   document.body.appendChild(form);
-  form.querySelector('[type="submit"]').click();
+  (form.querySelector('[type="submit"]') as HTMLInputElement).click();
 
   stopEverything(event);
 };

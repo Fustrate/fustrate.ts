@@ -2,8 +2,11 @@ import Pagination from './components/pagination';
 import GenericPage from './generic_page';
 import { elementFromString } from './utilities';
 
-const sortRows = (rows: HTMLTableRowElement[], sortFunction = () => {}): HTMLTableRowElement[] => {
-  const rowsWithSortOrder = rows.map(row => [sortFunction(row), row]);
+const sortRows = (
+  rows: HTMLTableRowElement[],
+  sortFunction?: (row: HTMLTableRowElement) => string,
+): HTMLTableRowElement[] => {
+  const rowsWithSortOrder = rows.map(row => [sortFunction ? sortFunction(row) : '', row]);
 
   rowsWithSortOrder.sort((x, y) => {
     if (x[0] === y[0]) {
@@ -26,6 +29,8 @@ export default class GenericTable extends GenericPage {
   public loadingRow?: HTMLTableRowElement;
 
   public noRecordsRow?: HTMLTableRowElement;
+
+  private blankRow: string;
 
   constructor(root, table) {
     super(root);
@@ -96,7 +101,7 @@ export default class GenericTable extends GenericPage {
 
   public getCheckedIds(): number[] {
     return Array.from(this.tbody.querySelectorAll('td:first-child input:checked'))
-      .map(() => parseInt(this.value, 10));
+      .map(element => parseInt((element as HTMLInputElement).value, 10));
   }
 
   // This should be fed a response from a JSON request for a paginated
@@ -113,17 +118,17 @@ export default class GenericTable extends GenericPage {
     });
   }
 
-  public checkAll(event: Event): void {
-    const check = event ? event.target.checked : true;
+  public checkAll(event?: Event): void {
+    const check = event ? (event.target as HTMLInputElement).checked : true;
 
     this.table.querySelectorAll('td:first-child input[type=\'checkbox\']').forEach((checkbox) => {
-      checkbox.checked = check;
+      (checkbox as HTMLInputElement).checked = check;
     });
   }
 
   public uncheckAll(): void {
     this.table.querySelectorAll('td:first-child input:checked').forEach((input) => {
-      input.checked = false;
+      (input as HTMLInputElement).checked = false;
     });
   }
 

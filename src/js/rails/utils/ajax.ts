@@ -88,7 +88,7 @@ const processResponse = (response, type: string) => {
       type = type.replace(/;.+/, ''); // remove something like ';charset=utf-8'
 
       try {
-        response = parser.parseFromString(response, type);
+        response = parser.parseFromString(response, type as SupportedType);
       } catch (error) {
         // Do nothing
       }
@@ -129,7 +129,7 @@ export const ajax = (options) => {
 };
 
 // Default way to get an element's href. May be overridden at Rails.href.
-export const href = (element: Element): string => element.href;
+export const href = (element: HTMLAnchorElement): string => element.href;
 
 // Determines if the request is a cross domain request.
 export const isCrossDomain = (url: string): boolean => {

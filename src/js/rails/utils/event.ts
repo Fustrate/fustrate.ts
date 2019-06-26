@@ -1,5 +1,9 @@
 import { matches } from './dom';
 
+declare global {
+  interface Window { CustomEvent: any; Event: any; }
+}
+
 // Polyfill for CustomEvent in IE9+
 // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
 let { CustomEvent } = window;
@@ -48,7 +52,9 @@ export const fire = (obj: EventTarget, name: string, data?: any): boolean => {
 
 // Helper function, needed to provide consistent behavior in IE
 export const stopEverything = (e: Event): void => {
-  fire(e.target, 'ujs:everythingStopped');
+  if (e.target) {
+    fire(e.target, 'ujs:everythingStopped');
+  }
 
   e.preventDefault();
   e.stopPropagation();
@@ -67,7 +73,7 @@ export const stopEverything = (e: Event): void => {
 // handler::
 //   the event handler to be called
 export const delegate = (
-  element: Element,
+  element: EventTarget,
   selector: string,
   eventType: string,
   handler: (...args: any) => void,

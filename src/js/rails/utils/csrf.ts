@@ -30,7 +30,7 @@ export const refreshCSRFTokens = (): void => {
 
   if (token && param) {
     $(`form input[name="${param}"]`).forEach((input) => {
-      input.value = token;
+      (input as HTMLInputElement).value = token;
     });
   }
 };

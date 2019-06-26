@@ -4,7 +4,11 @@ import { underscore } from './string';
 
 type Mixin = new(...args: any[]) => any;
 
-const entityMap = {
+declare global {
+  interface Window { Honeybadger: any; CustomEvent: any; }
+}
+
+const entityMap: { [s: string]: string } = {
   '"': '&quot;',
   '&': '&amp;',
   '\'': '&#39;',
@@ -52,7 +56,8 @@ export const animate = (
   element: HTMLElement,
   animation: string,
   callback?: () => void,
-  { delay, speed } = {},
+  delay?: number,
+  speed?: string,
 ): void => {
   const classes = ['animated', animation];
 
@@ -100,7 +105,7 @@ export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
     if (!target.prototype[newKey]) {
       target.prototype[newKey] = prototype[key];
     }
-  }, this);
+  });
 
   // Assign properties to the prototype
   Object.getOwnPropertyNames(prototype.constructor).forEach((key) => {
@@ -111,13 +116,13 @@ export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
     if (!target[key]) {
       target[key] = prototype.constructor[key];
     }
-  }, this);
+  });
 
   return target;
 };
 
-export const debounce = (func, delay: number = 250): void => {
-  let timeout = null;
+export const debounce = (func: (...args: any[]) => void, delay: number = 250): (...args: any[]) => void => {
+  let timeout: number | null;
 
   return (...args) => {
     const context = this;
@@ -132,11 +137,11 @@ export const debounce = (func, delay: number = 250): void => {
       clearTimeout(timeout);
     }
 
-    timeout = setTimeout(delayedFunc, delay);
+    timeout = window.setTimeout(delayedFunc, delay);
   };
 };
 
-export const elementFromString = (str: string): ChildNode => {
+export const elementFromString = (str: string): ChildNode | null => {
   const template = document.createElement('template');
 
   template.innerHTML = str.trim();
@@ -152,8 +157,8 @@ export const escapeHTML = (str: string): string => {
   return String(str).replace(/[&<>'"`=/\\]/g, entity => entityMap[entity]);
 };
 
-export function hms(seconds: number | undefined, zero?: string): string {
-  if (zero && (seconds === 0 || seconds === undefined)) {
+export function hms(seconds: number, zero?: string): string {
+  if (zero && seconds === 0) {
     return zero;
   }
 
@@ -198,7 +203,7 @@ export const multilineEscapeHTML = (str?: string): string => {
     .join('<br />');
 };
 
-export const linkTo = (text: string, href, options = {}): string => {
+export const linkTo = (text: string, href: any, options?: { [s: string]: string }): string => {
   const element = document.createElement('a');
 
   if (href === undefined && window.Honeybadger) {
@@ -211,20 +216,22 @@ export const linkTo = (text: string, href, options = {}): string => {
   element.href = hrefFor(href);
   element.innerHTML = text;
 
-  Object.keys(options).forEach((key) => {
-    element.setAttribute(key, options[key]);
-  });
+  if (options) {
+    Object.keys(options).forEach((key) => {
+      element.setAttribute(key, options[key]);
+    });
+  }
 
   return element.outerHTML;
 };
 
-export const redirectTo = (href): void => {
+export const redirectTo = (href: any): void => {
   window.setTimeout(() => {
     window.location.href = href.path ? href.path() : href;
   }, 750);
 };
 
-export const triggerEvent = (element, name, data = {}): void => {
+export const triggerEvent = (element: Element, name: string, data = {}): void => {
   let event;
 
   if (window.CustomEvent) {
