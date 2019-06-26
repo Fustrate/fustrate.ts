@@ -1,8 +1,5 @@
-import {
-  $, getData, matches, setData,
-} from '../utils/dom';
+import { getData, matches, setData } from '../utils/dom';
 import { delegate, stopEverything } from '../utils/event';
-import { formElements } from '../utils/form';
 
 import {
   // buttonClickSelector,
@@ -10,14 +7,20 @@ import {
   formSubmitSelector, inputChangeSelector, linkClickSelector, linkDisableSelector,
 } from '../utils/selectors';
 
+// Helper function that returns form elements that match the specified CSS selector
+// If form is actually a 'form' element this will return associated elements outside the form that
+// have the html form attribute set
+const formElements = (form: HTMLFormElement, selector: string) => [...form.elements]
+  .filter(el => matches(el, selector));
+
 // Replace element's html with the 'data-disable-with' after storing original html
 // and prevent clicking on it
-const disableLinkElement = (element) => {
+const disableLinkElement = (element: HTMLAnchorElement) => {
   if (getData(element, 'ujs:disabled')) {
     return;
   }
 
-  const replacement = element.getAttribute('data-disable-with');
+  const replacement = element.dataset.disableWith;
 
   if (replacement) {
     setData(element, 'ujs:enable-with', element.innerHTML); // store enabled state
@@ -30,7 +33,7 @@ const disableLinkElement = (element) => {
 };
 
 // Restore element to its original state which was disabled by 'disableLinkElement' above
-const enableLinkElement = (element) => {
+const enableLinkElement = (element: HTMLAnchorElement) => {
   const originalText = getData(element, 'ujs:enable-with');
 
   if (originalText) {
@@ -47,7 +50,7 @@ const disableFormElement = (element) => {
     return;
   }
 
-  const replacement = element.getAttribute('data-disable-with');
+  const replacement = element.dataset.disableWith;
 
   if (replacement) {
     if (matches(element, 'button')) {
@@ -67,7 +70,7 @@ const disableFormElement = (element) => {
 //  - Caches element value in 'ujs:enable-with' data store
 //  - Replaces element text with value of 'data-disable-with' attribute
 //  - Sets disabled property to true
-const disableFormElements = (form) => {
+const disableFormElements = (form: HTMLFormElement) => {
   formElements(form, formDisableSelector).forEach(disableFormElement);
 };
 
@@ -92,7 +95,7 @@ const enableFormElement = (element) => {
 //  - Replaces element text with cached value from 'ujs:enable-with' data store (created in
 //    `disableFormElements`)
 //  - Sets disabled property to false
-const enableFormElements = (form) => {
+const enableFormElements = (form: HTMLFormElement) => {
   formElements(form, formEnableSelector).forEach(enableFormElement);
 };
 
@@ -126,11 +129,11 @@ export const enableElement = (e) => {
     element = e;
   }
 
-  if (matches(element, linkDisableSelector)) {
+  if (element instanceof HTMLAnchorElement && (element.dataset.disable || element.dataset.disableWith)) {
     enableLinkElement(element);
   } else if (matches(element, buttonDisableSelector) || matches(element, formEnableSelector)) {
     enableFormElement(element);
-  } else if (matches(element, formSubmitSelector)) {
+  } else if (element instanceof HTMLFormElement) {
     enableFormElements(element);
   }
 };
@@ -139,11 +142,11 @@ export const enableElement = (e) => {
 export const disableElement = (e) => {
   const element = e instanceof Event ? e.target : e;
 
-  if (matches(element, linkDisableSelector)) {
+  if (element instanceof HTMLAnchorElement && (element.dataset.disable || element.dataset.disableWith)) {
     disableLinkElement(element);
   } else if (matches(element, buttonDisableSelector) || matches(element, formDisableSelector)) {
     disableFormElement(element);
-  } else if (matches(element, formSubmitSelector)) {
+  } else if (element instanceof HTMLFormElement) {
     disableFormElements(element);
   }
 };
@@ -154,13 +157,13 @@ export default () => {
   // See https://github.com/rails/jquery-ujs/issues/357
   // See https://developer.mozilla.org/en-US/docs/Using_Firefox_1.5_caching
   window.addEventListener('pageshow', () => {
-    $(formEnableSelector).forEach((el) => {
+    document.querySelectorAll<HTMLElement>(formEnableSelector).forEach((el) => {
       if (getData(el, 'ujs:disabled')) {
         enableElement(el);
       }
     });
 
-    $(linkDisableSelector).forEach((el) => {
+    document.querySelectorAll<HTMLElement>(linkDisableSelector).forEach((el) => {
       if (getData(el, 'ujs:disabled')) {
         enableElement(el);
       }

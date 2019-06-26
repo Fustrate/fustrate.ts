@@ -37,7 +37,7 @@ interface HTMLElement {
   _ujsData: { [s: string]: any };
 }
 
-export const getData: any = (element: HTMLElement, key: string) => (element[expando]
+export const getData = (element: HTMLElement, key: string): any => (element[expando]
   ? element[expando][key]
   : undefined);
 
@@ -48,7 +48,3 @@ export const setData = (element: HTMLElement, key: string, value: any): void => 
 
   element[expando][key] = value;
 };
-
-// a wrapper for document.querySelectorAll
-// returns an Array
-export const $ = (selector: string): any[] => Array.prototype.slice.call(document.querySelectorAll(selector));

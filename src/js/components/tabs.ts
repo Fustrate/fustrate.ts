@@ -5,7 +5,7 @@ export default class Tabs extends Component {
   private tabs: HTMLUListElement;
 
   public static initialize() {
-    Array.from(document.querySelectorAll('ul.tabs')).forEach((ul: HTMLUListElement) => new Tabs(ul));
+    Array.from(document.querySelectorAll<HTMLUListElement>('ul.tabs')).forEach((ul: HTMLUListElement) => new Tabs(ul));
   }
 
   constructor(tabs: HTMLUListElement) {
@@ -46,7 +46,7 @@ export default class Tabs extends Component {
       return;
     }
 
-    Array.from(this.tabs.querySelectorAll('.active')).forEach((sibling: HTMLElement) => {
+    Array.from(this.tabs.querySelectorAll<HTMLElement>('.active')).forEach((sibling) => {
       sibling.classList.remove('active');
     });
 

@@ -1,7 +1,7 @@
 // jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
 import $ from 'jquery';
 
-import { remove } from '../array';
+import { remove, compact } from '../array';
 import Component from '../component';
 import { deepExtend } from '../object';
 import { delegate, fire, stopEverything } from '../rails/utils/event';
@@ -14,21 +14,26 @@ import {
   isVisible,
 } from '../utilities';
 
-interface ModalSettings {
-  buttons?: any[];
-  content?: string;
-  css?: { [s: string]: any };
-  distanceFromTop?: number;
-  icon?: string;
-  size?: string;
-  title?: string;
-  type?: string;
+interface ModalSettingsCss {
+  close: { [s: string]: any };
+  open: { [s: string]: any };
 }
 
 interface ModalButton {
   text: string;
   type: string;
   name: string;
+}
+
+interface ModalSettings {
+  title: string;
+  buttons: (string | ModalButton)[];
+  content?: string;
+  css?: ModalSettingsCss;
+  distanceFromTop?: number;
+  icon?: string;
+  size?: string;
+  type?: string;
 }
 
 const defaultSettings: ModalSettings = {
@@ -56,13 +61,13 @@ const defaultSettings: ModalSettings = {
 const fadeSpeed = 250;
 
 const template = `
-  <div class='modal'>
-    <div class='modal-title'>
+  <div class="modal">
+    <div class="modal-title">
       <span></span>
-      <a href='#' class='modal-close'>&#215;</a>
+      <a href="#" class="modal-close">&#215;</a>
     </div>
-    <div class='modal-content'></div>
-    <div class='modal-buttons'></div>
+    <div class="modal-content"></div>
+    <div class="modal-buttons"></div>
   </div>`;
 
 // A stack of currently-open modals
@@ -71,7 +76,7 @@ let openModals: Modal[] = [];
 // We only want to add the global listeners once
 let addedGlobalListeners = false;
 
-let overlay;
+let overlay: HTMLDivElement;
 
 function createButton(options: string | ModalButton): HTMLButtonElement {
   const button = document.createElement('button');
@@ -89,14 +94,39 @@ function createButton(options: string | ModalButton): HTMLButtonElement {
   return button;
 }
 
+function toggleBackground(visible = true) {
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.classList.add('modal-overlay');
+  }
+
+  if (visible) {
+    if (!isVisible(overlay)) {
+      hide(overlay);
+
+      document.body.appendChild(overlay);
+
+      $(overlay).fadeIn(fadeSpeed);
+    }
+  } else {
+    $(overlay).fadeOut(fadeSpeed, () => {
+      $(overlay).detach();
+    });
+  }
+}
+
+function closeTopmostModalOnEsc(event) {
+  if (event.which === 27 && openModals.length > 0) {
+    openModals[openModals.length - 1].close();
+  }
+}
+
+type FormFields = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
 export default class Modal extends Component {
   public modal: HTMLElement;
 
   public settings: ModalSettings;
-
-  private deferred: Promise<any>;
-
-  private cachedHeight?: number;
 
   public locked: boolean = false;
 
@@ -104,7 +134,13 @@ export default class Modal extends Component {
 
   public buttons: { [s: string]: HTMLElement } = {};
 
-  public static icon?: string;
+  private deferred: Promise<any>;
+
+  private cachedHeight?: number;
+
+  private static closeOnBackgroundClick = true;
+
+  private static icon?: string;
 
   public static hideAllModals() {
     openModals.forEach((modal) => {
@@ -116,47 +152,16 @@ export default class Modal extends Component {
 
   public static get settings() { return {}; }
 
-  protected static toggleBackground(visible = true) {
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.classList.add('modal-overlay');
-    }
-
-    if (visible) {
-      if (!isVisible(overlay)) {
-        hide(overlay);
-
-        document.body.appendChild(overlay);
-
-        $(overlay).fadeIn(fadeSpeed);
-      }
-    } else {
-      $(overlay).fadeOut(fadeSpeed, () => {
-        $(overlay).detach();
-      });
-    }
-  }
-
-  protected static get closeOnBackgroundClick() {
-    return true;
-  }
-
   // Close the top-most modal if the background is clicked
   protected static backgroundClicked() {
     const modal = openModals[openModals.length - 1];
 
     // Don't continue to close if we're not supposed to
-    if (modal && !modal.locked && modal.constructor.closeOnBackgroundClick) {
+    if (modal && !modal.locked && (modal.constructor as typeof Modal).closeOnBackgroundClick) {
       modal.close();
     }
 
     return false;
-  }
-
-  protected static keyPressed(event) {
-    if (event.which === 27 && openModals.length > 0) {
-      openModals[openModals.length - 1].close();
-    }
   }
 
   constructor(settings: ModalSettings) {
@@ -187,12 +192,12 @@ export default class Modal extends Component {
     this.fields = {};
     this.buttons = {};
 
-    this.modal.querySelectorAll('[data-field]').forEach((element: HTMLElement) => {
-      this.fields[element.dataset.field] = element;
+    this.modal.querySelectorAll<HTMLElement>('[data-field]').forEach((element) => {
+      this.fields[element.dataset.field as string] = element;
     });
 
-    this.modal.querySelectorAll('[data-button]').forEach((element: HTMLElement) => {
-      this.buttons[element.dataset.button] = element;
+    this.modal.querySelectorAll<HTMLElement>('[data-button]').forEach((element) => {
+      this.buttons[element.dataset.button as string] = element;
     });
   }
 
@@ -222,12 +227,24 @@ export default class Modal extends Component {
   }
 
   public setButtons(buttons: (string | ModalButton)[], reload: boolean = true) {
-    const list = buttons.map(data => createButton(data));
+    const row = document.createElement('div');
+    row.classList.add('row');
 
-    const klass = `large-${12 / list.length}`;
-    const columns = list.map(element => `<div class='columns ${klass}'>${element}</div>`);
+    const klass = `large-${12 / buttons.length}`;
 
-    this.modal.querySelector('.modal-buttons').innerHTML = `<div class='row'>${columns.join('')}</div>`;
+    buttons.forEach((buttonData) => {
+      const columns = document.createElement('div');
+
+      columns.classList.add('columns', klass);
+      columns.append(createButton(buttonData));
+
+      row.append(columns);
+    });
+
+    const buttonsContainer: HTMLDivElement = this.modal.querySelector('.modal-buttons');
+
+    buttonsContainer.textContent = '';
+    buttonsContainer.append(row);
 
     this.cachedHeight = undefined;
 
@@ -242,7 +259,7 @@ export default class Modal extends Component {
     if (!addedGlobalListeners) {
       delegate(document.body, '.modal-overlay', 'click', (this.constructor as typeof Modal).backgroundClicked);
       delegate(document.body, '.modal-overlay', 'touchstart', (this.constructor as typeof Modal).backgroundClicked);
-      document.body.addEventListener('keyup', (this.constructor as typeof Modal).keyPressed);
+      document.body.addEventListener('keyup', closeTopmostModalOnEsc);
 
       addedGlobalListeners = true;
     }
@@ -258,8 +275,8 @@ export default class Modal extends Component {
       return;
     }
 
-    const [firstInput] = Array.from(this.modal.querySelectorAll('input, select, textarea'))
-      .filter((element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => isVisible(element)
+    const [firstInput] = Array.from(this.modal.querySelectorAll<FormFields>('input, select, textarea'))
+      .filter(element => isVisible(element)
         && !element.disabled
         && (element instanceof HTMLSelectElement || !element.readOnly));
 
@@ -283,20 +300,16 @@ export default class Modal extends Component {
 
     fire(this.modal, 'modal:opening');
 
-    if (typeof this.cachedHeight === 'undefined') {
-      this.cacheHeight();
-    }
-
     if (openModals.length > 1) {
       // Hide the modal immediately previous to this one.
       openModals[openModals.length - 2].hide();
     } else {
       // There are no open modals - show the background overlay
-      (this.constructor as typeof Modal).toggleBackground(true);
+      toggleBackground(true);
     }
 
     const css = this.settings.css.open;
-    css.top = `${$(window).scrollTop() - this.cachedHeight}px`;
+    css.top = `${$(window).scrollTop() - this.height}px`;
 
     const endCss = {
       opacity: 1,
@@ -324,7 +337,7 @@ export default class Modal extends Component {
     this.locked = true;
 
     if (!openPrevious || openModals.length === 1) {
-      (this.constructor as typeof Modal).toggleBackground(false);
+      toggleBackground(false);
     }
 
     // Remove the top-most modal (this one) from the stack
@@ -332,7 +345,7 @@ export default class Modal extends Component {
 
     const endCss = {
       opacity: 0,
-      top: `${-$(window).scrollTop() - this.cachedHeight}px`,
+      top: `${-$(window).scrollTop() - this.height}px`,
     };
 
     return new Promise((resolve) => {
@@ -375,23 +388,29 @@ export default class Modal extends Component {
     this.close();
   }
 
-  public openPreviousModal() {
+  public openPreviousModal(): void {
     if (openModals.length > 0) {
       openModals[openModals.length - 1].open();
     }
   }
 
-  protected cacheHeight() {
+  protected get height(): number {
+    if (this.cachedHeight) {
+      return this.cachedHeight;
+    }
+
     this.cachedHeight = $(this.modal).show().height();
 
     $(this.modal).hide();
+
+    return this.cachedHeight as number;
   }
 
-  protected createModal() {
+  protected createModal(): HTMLDivElement {
     // Join and split in case any of the classes include spaces
     const classes = this.defaultClasses().join(' ').split(' ');
 
-    const element = elementFromString(template);
+    const element: HTMLDivElement = elementFromString(template);
     element.classList.add(...classes);
 
     document.body.appendChild(element);
@@ -399,8 +418,8 @@ export default class Modal extends Component {
     return element;
   }
 
-  protected defaultClasses() {
-    return [this.settings.size, this.settings.type].filter(klass => klass !== null);
+  protected defaultClasses(): string[] {
+    return compact<string>([this.settings.size || '', this.settings.type || '']);
   }
 
   protected closeButtonClicked(event) {

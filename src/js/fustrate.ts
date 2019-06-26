@@ -23,7 +23,7 @@ export default class Fustrate {
   }
 
   public static initialize() {
-    document.querySelectorAll('table').forEach((table) => {
+    document.querySelectorAll<HTMLTableElement>('table').forEach((table) => {
       const wrapper = document.createElement('div');
       wrapper.classList.add('responsive-table');
 
