@@ -4,12 +4,18 @@ declare global {
   interface Window { CustomEvent: any; Event: any; }
 }
 
+interface CustomEventParameters {
+  bubbles?: boolean;
+  cancelable?: boolean;
+  detail?: any;
+}
+
 // Polyfill for CustomEvent in IE9+
 // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
 let { CustomEvent } = window;
 
 if (typeof CustomEvent !== 'function') {
-  CustomEvent = (event, params) => {
+  CustomEvent = (event: string, params: CustomEventParameters) => {
     const evt = document.createEvent('CustomEvent');
 
     evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
@@ -76,7 +82,7 @@ export const delegate = (
   element: EventTarget,
   selector: string,
   eventType: string,
-  handler: (...args: any) => void,
+  handler: (...args: any) => boolean | void,
 ): void => {
   element.addEventListener(eventType, (event) => {
     let { target } = event;

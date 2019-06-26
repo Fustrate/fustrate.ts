@@ -1,7 +1,7 @@
-let nonce = null;
+let nonce: string | null;
 
-export const loadCSPNonce = (): string | undefined => {
-  const meta: HTMLMetaElement = document.querySelector('meta[name=csp-nonce]');
+export const loadCSPNonce = (): string | null => {
+  const meta: HTMLMetaElement | null = document.querySelector('meta[name=csp-nonce]');
 
   nonce = meta && meta.content;
 
@@ -9,4 +9,4 @@ export const loadCSPNonce = (): string | undefined => {
 };
 
 // Returns the Content-Security-Policy nonce for inline scripts.
-export const cspNonce = (): string | undefined => nonce || loadCSPNonce();
+export const cspNonce = (): string | null => nonce || loadCSPNonce();

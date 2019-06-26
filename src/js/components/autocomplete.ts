@@ -5,7 +5,9 @@ import Component from '../component';
 import { debounce, triggerEvent } from '../utilities';
 
 export class AutocompleteSuggestion extends String {
-  constructor(datum, displayValue) {
+  public datum: any;
+
+  constructor(datum: any, displayValue?: string) {
     super(displayValue);
 
     this.datum = datum;
@@ -33,55 +35,69 @@ export class AutocompleteSuggestion extends String {
 }
 
 export class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
-  constructor(datum) {
+  constructor(datum: string) {
     super(datum, datum);
   }
 }
 
 export class AutocompleteSource {
-  public matches() {
+  public matches(datum: string) {
     return true;
   }
 
-  public filter() {
+  public filter(suggestion: string, userInput: string): boolean {
     return true;
   }
 
   public suggestion(datum) {
     return new AutocompleteSuggestion(datum);
   }
+
+  public matchingData(searchTerm: string) {
+    return [];
+  }
 }
 
 export class PlainAutocompleteSource extends AutocompleteSource {
-  constructor(list) {
+  public list: string[];
+
+  constructor(list: string[]) {
     super();
 
     this.list = list;
   }
 
-  public filter(suggestion, userInput) {
+  public filter(suggestion: string, userInput: string): boolean {
     return suggestion.toLowerCase().indexOf(userInput) >= 0;
   }
 
-  public suggestion(datum) { return new PlainAutocompleteSuggestion(datum); }
+  public suggestion(datum: string) { return new PlainAutocompleteSuggestion(datum); }
 
-  public matchingData(searchTerm) {
-    return this.list.filter(datum => this.filter(datum, searchTerm), this);
+  public matchingData(searchTerm: string): PlainAutocompleteSuggestion[] {
+    return this.list.filter(datum => this.filter(datum, searchTerm), this).map(datum => this.suggestion(datum));
   }
 }
 
+export class RemoteAutocompleteSource extends AutocompleteSource {
+  public url: (...args: any[]) => string;
+}
+
+interface AutocompleteOptions {
+  source?: AutocompleteSource;
+  sources?: AutocompleteSource[];
+  list?: string[];
+}
+
 export class Autocomplete extends Component {
-  public static addType(name, func) {
-    Autocomplete.types[name] = func;
-  }
+  public awesomplete: Awesomplete;
 
-  public static addTypes(types) {
-    Object.getOwnPropertyNames(types).forEach((name) => {
-      this.addType(name, types[name]);
-    }, this);
-  }
+  public input: HTMLInputElement;
 
-  public static create(input, options) {
+  public value: string;
+
+  public sources: AutocompleteSource[];
+
+  public static create(input: HTMLElement, options: AutocompleteOptions) {
     return new this(input, options);
   }
 
@@ -109,7 +125,7 @@ export class Autocomplete extends Component {
     this.input.addEventListener('focus', this.onFocus.bind(this));
   }
 
-  public extractOptions(options) {
+  public extractOptions(options: AutocompleteOptions) {
     if (options.source) {
       this.sources = [options.source];
     } else if (options.sources) {
@@ -156,7 +172,7 @@ export class Autocomplete extends Component {
 
     // If we have plain text sources, show them immediately
     this.sources
-      .filter(source => source.list)
+      .filter(source => source instanceof PlainAutocompleteSource)
       .forEach((source) => {
         list = list.concat(source.matchingData(searchTerm));
       }, this);
@@ -184,13 +200,13 @@ export class Autocomplete extends Component {
     let list = [];
 
     this.sources.forEach((source) => {
-      if (source.url) {
+      if (source instanceof RemoteAutocompleteSource) {
         get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
           list = list.concat(response.data);
 
           this.awesomplete.list = list;
         });
-      } else if (source.list) {
+      } else if (source instanceof PlainAutocompleteSource) {
         const searchTerm = value.toLowerCase();
 
         list = list.concat(source.matchingData(searchTerm));

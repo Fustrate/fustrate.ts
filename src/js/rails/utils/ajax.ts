@@ -1,7 +1,7 @@
 import { cspNonce } from './csp';
 import { CSRFProtection } from './csrf';
 
-const AcceptHeaders = {
+const AcceptHeaders: { [s: string]: string } = {
   '*': '*/*',
   html: 'text/html',
   json: 'application/json, text/javascript',
@@ -10,7 +10,21 @@ const AcceptHeaders = {
   xml: 'application/xml, text/xml',
 };
 
-const prepareOptions = (options) => {
+interface AjaxOptions {
+  url?: string;
+  type: string;
+  data?: any;
+  dataType?: string;
+  accept?: string;
+  beforeSend?: (xhr: XMLHttpRequest, options: AjaxOptions) => boolean;
+  complete?: (xhr: XMLHttpRequest, statusText: string) => void;
+  error?: (response: any, statusText: string, xhr: XMLHttpRequest) => void;
+  success?: (response: any, statusText: string, xhr: XMLHttpRequest) => void;
+  withCredentials?: boolean;
+  crossDomain?: boolean;
+}
+
+const prepareOptions = (options: AjaxOptions): AjaxOptions => {
   options.url = options.url || window.location.href;
   options.type = options.type.toUpperCase();
 
@@ -24,11 +38,7 @@ const prepareOptions = (options) => {
   }
 
   // Use '*' as default dataType
-  if (!AcceptHeaders[options.dataType]) {
-    options.dataType = '*';
-  }
-
-  options.accept = AcceptHeaders[options.dataType];
+  options.accept = AcceptHeaders[options.dataType || '*'] || AcceptHeaders['*'];
 
   if (options.dataType !== '*') {
     options.accept += ', */*; q=0.01';
@@ -37,12 +47,12 @@ const prepareOptions = (options) => {
   return options;
 };
 
-const createXHR = (options, done): XMLHttpRequest => {
+const createXHR = (options: AjaxOptions, done?: (xhr: XMLHttpRequest) => void): XMLHttpRequest => {
   const xhr = new XMLHttpRequest();
 
   // Open and setup xhr
-  xhr.open(options.type, options.url, true);
-  xhr.setRequestHeader('Accept', options.accept);
+  xhr.open(options.type, options.url as string, true);
+  xhr.setRequestHeader('Accept', options.accept as string);
 
   // Set Content-Type only when sending a string
   // Sending FormData will automatically set Content-Type to multipart/form-data
@@ -59,7 +69,7 @@ const createXHR = (options, done): XMLHttpRequest => {
 
   xhr.withCredentials = !!options.withCredentials;
   xhr.onreadystatechange = () => {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
+    if (xhr.readyState === XMLHttpRequest.DONE && done) {
       done(xhr);
     }
   };
@@ -67,7 +77,7 @@ const createXHR = (options, done): XMLHttpRequest => {
   return xhr;
 };
 
-const processResponse = (response, type: string) => {
+const processResponse = (response: any, type: string | null) => {
   if (typeof response === 'string' && typeof type === 'string') {
     if (type.match(/\bjson\b/)) {
       try {
@@ -78,10 +88,11 @@ const processResponse = (response, type: string) => {
     } else if (type.match(/\b(?:java|ecma)script\b/)) {
       const script = document.createElement('script');
 
-      script.setAttribute('nonce', cspNonce());
+      script.setAttribute('nonce', cspNonce() || '');
       script.text = response;
 
-      document.head.appendChild(script).parentNode.removeChild(script);
+      document.head.appendChild(script);
+      document.head.removeChild(script);
     } else if (type.match(/\bxml\b/)) {
       const parser = new DOMParser();
 
@@ -98,7 +109,7 @@ const processResponse = (response, type: string) => {
   return response;
 };
 
-export const ajax = (options) => {
+export const ajax = (options: AjaxOptions) => {
   options = prepareOptions(options);
 
   const xhr = createXHR(options, () => {

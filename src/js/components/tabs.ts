@@ -2,11 +2,13 @@ import Component from '../component';
 import { delegate, stopEverything } from '../rails/utils/event';
 
 export default class Tabs extends Component {
+  private tabs: HTMLUListElement;
+
   public static initialize() {
-    Array.from(document.querySelectorAll('ul.tabs')).forEach(ul => new Tabs(ul));
+    Array.from(document.querySelectorAll('ul.tabs')).forEach((ul: HTMLUListElement) => new Tabs(ul));
   }
 
-  constructor(tabs) {
+  constructor(tabs: HTMLUListElement) {
     super();
 
     this.tabs = tabs;
@@ -20,8 +22,6 @@ export default class Tabs extends Component {
     });
 
     if (window.location.hash) {
-      this.tabs.querySelector(`li > a[href='${window.location.hash}']`);
-
       this.activateTab(this.tabs.querySelector(`li > a[href='${window.location.hash}']`), false);
     } else {
       const tabWithActiveClass = this.tabs.querySelector('li > a.active');
@@ -42,7 +42,7 @@ export default class Tabs extends Component {
 
     const link = tab.closest('a');
 
-    Array.from(this.tabs.querySelectorAll('.active')).forEach((sibling) => {
+    Array.from(this.tabs.querySelectorAll('.active')).forEach((sibling: HTMLElement) => {
       sibling.classList.remove('active');
     });
 
@@ -57,7 +57,7 @@ export default class Tabs extends Component {
 
     tabContent.classList.add('active');
 
-    Array.from(tabContent.parentElement.children).forEach((sibling) => {
+    Array.from(tabContent.parentElement.children).forEach((sibling: HTMLElement) => {
       if (sibling !== tabContent) {
         sibling.classList.remove('active');
       }

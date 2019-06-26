@@ -14,7 +14,18 @@ import {
   isVisible,
 } from '../utilities';
 
-const defaultSettings = {
+interface ModalSettings {
+  buttons?: any[];
+  content?: string;
+  css?: { [s: string]: any };
+  distanceFromTop?: number;
+  icon?: string;
+  size?: string;
+  title?: string;
+  type?: string;
+}
+
+const defaultSettings: ModalSettings = {
   buttons: [],
   content: undefined,
   css: {
@@ -57,6 +68,22 @@ let addedGlobalListeners = false;
 let overlay;
 
 export default class Modal extends Component {
+  public modal: HTMLElement;
+
+  public settings: ModalSettings;
+
+  private deferred: Promise<any>;
+
+  private cachedHeight: number;
+
+  public locked: boolean = false;
+
+  public fields: { [s: string]: HTMLElement };
+
+  public buttons: { [s: string]: HTMLElement };
+
+  public static icon?: string;
+
   public static hideAllModals() {
     openModals.forEach((modal) => {
       modal.hide();
@@ -126,19 +153,19 @@ export default class Modal extends Component {
     }
   }
 
-  constructor({ settings } = {}) {
+  constructor(settings: ModalSettings) {
     super();
 
     this.settings = deepExtend(
       {},
       defaultSettings,
-      this.constructor.settings != null ? this.constructor.settings : {},
+      (this.constructor as typeof Modal).settings || {},
       settings != null ? settings : {},
     );
 
     this.modal = this.createModal();
 
-    this.setTitle(this.settings.title, { icon: this.settings.icon });
+    this.setTitle(this.settings.title, this.settings.icon);
     this.setContent(this.settings.content, false);
     this.setButtons(this.settings.buttons, false);
     this.reloadUIElements();
@@ -154,39 +181,41 @@ export default class Modal extends Component {
     this.fields = {};
     this.buttons = {};
 
-    this.modal.querySelectorAll('[data-field]').forEach((element) => {
+    this.modal.querySelectorAll('[data-field]').forEach((element: HTMLElement) => {
       this.fields[element.dataset.field] = element;
     });
 
-    this.modal.querySelectorAll('[data-button]').forEach((element) => {
+    this.modal.querySelectorAll('[data-button]').forEach((element: HTMLElement) => {
       this.buttons[element.dataset.button] = element;
     });
   }
 
-  public setTitle(title, { icon } = {}) {
-    const iconToUse = icon !== false && icon == null ? this.constructor.icon : icon;
+  public setTitle(title: string, icon?: string | false) {
+    const iconToUse = icon !== false && icon == null ? (this.constructor as typeof Modal).icon : icon;
 
     this.modal.querySelector('.modal-title span')
       .innerHTML = iconToUse ? `${createIcon(iconToUse)} ${title}` : title;
   }
 
-  public setContent(content, reload = true) {
+  public setContent(content: string | (() => string), reload: boolean = true) {
     let modalContent = content;
 
-    if (typeof content === 'function') {
-      modalContent = modalContent();
+    if (typeof content === 'string') {
+      modalContent = content;
+    } else {
+      modalContent = content();
     }
 
     this.modal.querySelector('.modal-content').innerHTML = modalContent;
 
-    this.settings.cachedHeight = undefined;
+    this.cachedHeight = undefined;
 
     if (reload) {
       this.reloadUIElements();
     }
   }
 
-  public setButtons(buttons, reload = true) {
+  public setButtons(buttons, reload: boolean = true) {
     if (buttons == null || buttons.length < 1) {
       this.modal.querySelector('.modal-buttons').innerHTML = '';
 
@@ -203,7 +232,7 @@ export default class Modal extends Component {
           </button>`);
       } else if (typeof button === 'object') {
         Object.keys(button).forEach((name) => {
-          list.push(this.constructor.createButton(name, button[name]));
+          list.push((this.constructor as typeof Modal).createButton(name, button[name]));
         }, this);
       }
     }, this);
@@ -213,7 +242,7 @@ export default class Modal extends Component {
 
     this.modal.querySelector('.modal-buttons').innerHTML = `<div class='row'>${columns.join('')}</div>`;
 
-    this.settings.cachedHeight = undefined;
+    this.cachedHeight = undefined;
 
     if (reload) {
       this.reloadUIElements();
@@ -224,9 +253,9 @@ export default class Modal extends Component {
     this.modal.querySelector('.modal-close').addEventListener('click', this.closeButtonClicked.bind(this));
 
     if (!addedGlobalListeners) {
-      delegate(document.body, '.modal-overlay', 'click', this.constructor.backgroundClicked);
-      delegate(document.body, '.modal-overlay', 'touchstart', this.constructor.backgroundClicked);
-      document.body.addEventListener('keyup', this.constructor.keyPressed);
+      delegate(document.body, '.modal-overlay', 'click', (this.constructor as typeof Modal).backgroundClicked);
+      delegate(document.body, '.modal-overlay', 'touchstart', (this.constructor as typeof Modal).backgroundClicked);
+      document.body.addEventListener('keyup', (this.constructor as typeof Modal).keyPressed);
 
       addedGlobalListeners = true;
     }
@@ -243,10 +272,12 @@ export default class Modal extends Component {
     }
 
     const [firstInput] = Array.from(this.modal.querySelectorAll('input, select, textarea'))
-      .filter(element => isVisible(element) && !element.disabled && !element.readOnly);
+      .filter((element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => isVisible(element)
+        && !element.disabled
+        && (element instanceof HTMLSelectElement || !element.readOnly));
 
     if (firstInput) {
-      firstInput.focus();
+      (firstInput as HTMLElement).focus();
     }
   }
 
@@ -265,7 +296,7 @@ export default class Modal extends Component {
 
     fire(this.modal, 'modal:opening');
 
-    if (typeof this.settings.cachedHeight === 'undefined') {
+    if (typeof this.cachedHeight === 'undefined') {
       this.cacheHeight();
     }
 
@@ -274,11 +305,11 @@ export default class Modal extends Component {
       openModals[openModals.length - 2].hide();
     } else {
       // There are no open modals - show the background overlay
-      this.constructor.toggleBackground(true);
+      (this.constructor as typeof Modal).toggleBackground(true);
     }
 
     const css = this.settings.css.open;
-    css.top = `${$(window).scrollTop() - this.settings.cachedHeight}px`;
+    css.top = `${$(window).scrollTop() - this.cachedHeight}px`;
 
     const endCss = {
       opacity: 1,
@@ -306,7 +337,7 @@ export default class Modal extends Component {
     this.locked = true;
 
     if (!openPrevious || openModals.length === 1) {
-      this.constructor.toggleBackground(false);
+      (this.constructor as typeof Modal).toggleBackground(false);
     }
 
     // Remove the top-most modal (this one) from the stack
@@ -314,7 +345,7 @@ export default class Modal extends Component {
 
     const endCss = {
       opacity: 0,
-      top: `${-$(window).scrollTop() - this.settings.cachedHeight}px`,
+      top: `${-$(window).scrollTop() - this.cachedHeight}px`,
     };
 
     return new Promise((resolve) => {
@@ -330,7 +361,7 @@ export default class Modal extends Component {
           if (openPrevious) {
             this.openPreviousModal();
           } else {
-            this.constructor.hideAllModals();
+            (this.constructor as typeof Modal).hideAllModals();
           }
         });
 
@@ -364,7 +395,7 @@ export default class Modal extends Component {
   }
 
   protected cacheHeight() {
-    this.settings.cachedHeight = $(this.modal).show().height();
+    this.cachedHeight = $(this.modal).show().height();
 
     $(this.modal).hide();
   }

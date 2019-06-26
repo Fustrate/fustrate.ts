@@ -13,13 +13,13 @@ export default class Record extends BasicObject {
 
   private isLoaded: boolean = false;
 
-  public id: number;
+  public id?: number;
 
   public static get paramKey(): string {
     return this.classname.replace(/::/g, '').replace(/^[A-Z]/, match => match.toLowerCase());
   }
 
-  public static create(attributes): Promise<any> {
+  public static create(attributes: object): Promise<any> {
     return (new this()).update(attributes);
   }
 

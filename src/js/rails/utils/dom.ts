@@ -33,6 +33,10 @@ export const matches = (element: Element, selector: string, exclude?: string): b
 // See: https://developer.mozilla.org/en-US/docs/Glossary/Expando
 const expando = '_ujsData';
 
+interface HTMLElement {
+  _ujsData: { [s: string]: any };
+}
+
 export const getData: any = (element: HTMLElement, key: string) => (element[expando]
   ? element[expando][key]
   : undefined);

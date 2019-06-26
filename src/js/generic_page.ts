@@ -29,13 +29,13 @@ export default class GenericPage {
 
     Array.from(this.root.querySelectorAll('[data-field]'))
       .filter(element => !element.matches('.modal [data-field]'))
-      .forEach((element) => {
+      .forEach((element: HTMLElement) => {
         this.fields[element.dataset.field] = element;
       });
 
     Array.from(this.root.querySelectorAll('[data-button]'))
       .filter(element => !element.matches('.modal [data-button]'))
-      .forEach((element) => {
+      .forEach((element: HTMLElement) => {
         this.buttons[element.dataset.button] = element;
       });
   }

@@ -41,7 +41,9 @@ export const pluralize = (str: string): string => {
   return `${str}s`;
 };
 
-export const presence = (str: string | null | undefined): string | undefined => (isBlank(str) ? undefined : str);
+export const presence = (str: string | null | undefined): string | undefined => (isBlank(str)
+  ? undefined
+  : str as string);
 
 export const strip = (str: string): string => (str.replace(/^\s+|\s+$/g, ''));
 

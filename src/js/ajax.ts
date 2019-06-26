@@ -4,12 +4,14 @@ import { ErrorFlash } from './components/flash';
 // IE11 Polyfill
 require('es6-promise').polyfill();
 
-const token = document.querySelector('[name=\'csrf-token\']') || { content: 'no-csrf-token' };
+const metaElement: HTMLMetaElement = document.querySelector('[name="csrf-token"]');
+
+const token = metaElement && metaElement.content ? metaElement.content : 'no-csrf-token';
 
 const instance = axios.create({
   headers: {
     common: {
-      'X-CSRF-Token': token.content,
+      'X-CSRF-Token': token,
     },
   },
   responseType: 'json',
@@ -36,43 +38,37 @@ instance.interceptors.response.use(response => response, (error) => {
 });
 
 // A wrapper to allow us to ignore boring errors
-export const get = (url, config = {}): Promise => {
-  if (config.raise) {
-    delete config.raise;
-
+export const get = (url, config = {}, raise: boolean = false): Promise<any> => {
+  if (raise) {
     return instance.get(url, config);
   }
 
   return instance.get(url, config).catch(() => {});
 };
 
-export const post = (url, data, config = {}): Promise => {
-  if (config.raise) {
-    delete config.raise;
-
+export const post = (url, data, config = {}, raise: boolean = false): Promise<any> => {
+  if (raise) {
     return instance.post(url, data, config);
   }
 
   return instance.post(url, data, config).catch(() => {});
 };
 
-export const patch = (url, data, config = {}): Promise => {
-  if (config.raise) {
-    delete config.raise;
-
+export const patch = (url, data, config = {}, raise: boolean = false): Promise<any> => {
+  if (raise) {
     return instance.patch(url, data, config);
   }
 
   return instance.patch(url, data, config).catch(() => {});
 };
 
-export const when = (...requests): Promise => new Promise((resolve) => {
+export const when = (...requests): Promise<any> => new Promise((resolve) => {
   axios.all(requests).then(axios.spread((...responses) => {
     resolve(...responses);
   }));
 });
 
-export const getCurrentPageJson = (): Promise => {
+export const getCurrentPageJson = (): Promise<any> => {
   const pathname = window.location.pathname.replace(/\/+$/, '');
 
   return get(`${pathname}.json${window.location.search}`);

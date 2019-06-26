@@ -19,7 +19,7 @@ const entityMap: { [s: string]: string } = {
   '`': '&#x60;',
 };
 
-const hrefFor = (href) => {
+const hrefFor = (href: any) => {
   if (href === undefined) {
     return '#';
   }
@@ -89,6 +89,7 @@ export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
   // eslint-disable-next-line new-cap
   const instance = new mixin();
   const prototype = Object.getPrototypeOf(instance);
+  const targetPrototype = Object.getPrototypeOf(target);
 
   if (options) {
     Object.getOwnPropertyNames(options).forEach((key) => {
@@ -102,8 +103,8 @@ export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
     // added with their mixin name appended, and called at the same time as the original methods.
     const newKey = ['initialize', 'addEventListeners'].includes(key) ? `${key}${mixin.name}` : key;
 
-    if (!target.prototype[newKey]) {
-      target.prototype[newKey] = prototype[key];
+    if (!targetPrototype[newKey]) {
+      targetPrototype[newKey] = prototype[key];
     }
   });
 
@@ -141,12 +142,12 @@ export const debounce = (func: (...args: any[]) => void, delay: number = 250): (
   };
 };
 
-export const elementFromString = (str: string): ChildNode | null => {
+export const elementFromString = <T extends HTMLElement = HTMLElement>(str: string): T => {
   const template = document.createElement('template');
 
   template.innerHTML = str.trim();
 
-  return template.content.firstChild;
+  return template.content.firstChild as T;
 };
 
 export const escapeHTML = (str: string): string => {
@@ -172,7 +173,9 @@ export function hms(seconds: number, zero?: string): string {
   return `${seconds < 0 ? '-' : ''}${parts.join(':')}`;
 }
 
-export const icon = (types: string, style = 'regular'): string => {
+type FontAwesomeStyles = 'regular' | 'thin' | 'solid' | 'brands';
+
+export const icon = (types: string, style: FontAwesomeStyles = 'regular'): string => {
   const classes = types.split(' ')
     .map(thing => `fa-${thing}`)
     .join(' ');

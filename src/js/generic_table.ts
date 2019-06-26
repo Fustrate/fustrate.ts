@@ -16,11 +16,13 @@ const sortRows = (
     return x[0] > y[0] ? 1 : -1;
   });
 
-  return rowsWithSortOrder.map(row => row[1]);
+  return rowsWithSortOrder.map(row => row[1]) as HTMLTableRowElement[];
 };
 
 export default class GenericTable extends GenericPage {
   private static noRecordsMessage = 'No records found.';
+
+  private static blankRow: string;
 
   public table: HTMLTableElement;
 
@@ -29,8 +31,6 @@ export default class GenericTable extends GenericPage {
   public loadingRow?: HTMLTableRowElement;
 
   public noRecordsRow?: HTMLTableRowElement;
-
-  private blankRow: string;
 
   constructor(root, table) {
     super(root);
@@ -47,7 +47,7 @@ export default class GenericTable extends GenericPage {
   }
 
   public createRow(item): HTMLTableRowElement {
-    const row: HTMLTableRowElement = elementFromString(this.constructor.blankRow);
+    const row: HTMLTableRowElement = elementFromString((this.constructor as typeof GenericTable).blankRow);
 
     this.updateRow(row, item);
 
@@ -92,7 +92,7 @@ export default class GenericTable extends GenericPage {
       tr.classList.add('no-records');
 
       td.colSpan = 16;
-      td.textContent = this.constructor.noRecordsMessage;
+      td.textContent = (this.constructor as typeof GenericTable).noRecordsMessage;
 
       tr.appendChild(td);
       this.tbody.appendChild(tr);

@@ -28,7 +28,7 @@ export default class Rails {
     const param = Rails.csrfParam;
 
     if (token != null && param != null) {
-      document.querySelectorAll(`form input[name="${param}"]`).forEach((input) => {
+      document.querySelectorAll(`form input[name="${param}"]`).forEach((input: HTMLInputElement) => {
         input.value = token;
       });
     }

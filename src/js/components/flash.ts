@@ -10,28 +10,28 @@ const settings = {
   fadeOutSpeed: 2000,
 };
 
+const createFlashBar = (message: string, type?: string, icon?: string): HTMLDivElement => {
+  const bar = document.createElement('div');
+
+  bar.classList.add('flash', type || 'info');
+  bar.innerHTML = icon ? `${createIcon(icon)} ${message}` : message;
+
+  const flashes = document.getElementById('flashes');
+
+  flashes.insertBefore(bar, flashes.firstChild);
+
+  return bar;
+}
+
 export class Flash extends Component {
-  public static show(message, { type, icon } = {}) {
-    return new this(message, { type, icon });
+  public static show(message: string, type?: string, icon?: string) {
+    return new this(message, type, icon);
   }
 
-  public static createFlashBar(message, { type, icon } = {}) {
-    const bar = document.createElement('div');
-
-    bar.classList.add('flash', type || 'info');
-    bar.innerHTML = icon ? `${createIcon(icon)} ${message}` : message;
-
-    const flashes = document.getElementById('flashes');
-
-    flashes.insertBefore(bar, flashes.firstChild);
-
-    return bar;
-  }
-
-  constructor(message: string, { type, icon } = {}) {
+  constructor(message: string, type?: string, icon?: string) {
     super();
 
-    const bar = this.constructor.createFlashBar(message, { type, icon });
+    const bar = createFlashBar(message, type, icon);
 
     $(bar)
       .hide()
@@ -42,19 +42,19 @@ export class Flash extends Component {
 }
 
 export class InfoFlash extends Flash {
-  constructor(message: string, { icon } = {}) {
-    super(message, { type: 'info', icon });
+  constructor(message: string, icon?: string) {
+    super(message, 'info', icon);
   }
 }
 
 export class SuccessFlash extends Flash {
-  constructor(message: string, { icon } = {}) {
-    super(message, { type: 'success', icon });
+  constructor(message: string, icon?: string) {
+    super(message, 'success', icon);
   }
 }
 
 export class ErrorFlash extends Flash {
-  constructor(message: string, { icon } = {}) {
-    super(message, { type: 'error', icon });
+  constructor(message: string, icon?: string) {
+    super(message, 'error', icon);
   }
 }

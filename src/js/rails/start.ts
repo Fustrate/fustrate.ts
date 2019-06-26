@@ -5,10 +5,12 @@ import startConfirmFeature from './features/confirm';
 import startDisableFeature from './features/disable';
 import startMethodFeature from './features/method';
 
+let railsLoaded = false;
+
 export default (): void => {
   // Cut down on the number of issues from people inadvertently including
   // rails-ujs twice by detecting and raising an error when it happens.
-  if (window.rails_loaded) {
+  if (railsLoaded) {
     throw new Error('rails-ujs has already been loaded!');
   }
 
@@ -19,5 +21,5 @@ export default (): void => {
   document.addEventListener('DOMContentLoaded', refreshCSRFTokens);
   document.addEventListener('DOMContentLoaded', loadCSPNonce);
 
-  window.rails_loaded = true;
+  railsLoaded = true;
 };

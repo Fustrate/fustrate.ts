@@ -1,22 +1,22 @@
 import { $ } from './dom';
 
 // Up-to-date Cross-Site Request Forgery token
-export const csrfToken = (): string | undefined => {
-  const meta: HTMLMetaElement = document.querySelector('meta[name=csrf-token]');
+export const csrfToken = (): string | null => {
+  const meta: HTMLMetaElement | null = document.querySelector('meta[name=csrf-token]');
 
-  return meta ? meta.content : undefined;
+  return meta ? meta.content : null;
 };
 
 // URL param that must contain the CSRF token
-export const csrfParam = (): string | undefined => {
-  const meta: HTMLMetaElement = document.querySelector('meta[name=csrf-param]');
+export const csrfParam = (): string | null => {
+  const meta: HTMLMetaElement | null = document.querySelector('meta[name=csrf-param]');
 
-  return meta ? meta.content : undefined;
+  return meta ? meta.content : null;
 };
 
 // Make sure that every Ajax request sends the CSRF token
 export const CSRFProtection = (xhr: XMLHttpRequest) => {
-  const token: string = csrfToken();
+  const token = csrfToken();
 
   if (token) {
     xhr.setRequestHeader('X-CSRF-Token', token);

@@ -4,10 +4,10 @@ import Component from '../component';
 import { delegate } from '../rails/utils/event';
 
 export default class Dropdown extends Component {
+  private static popper: Popper;
+
   public static initialize() {
     delegate(document.body, '.has-dropdown', 'click', this.open.bind(this));
-
-    this.boundHide = this.hide.bind(this);
   }
 
   public static open(event) {
@@ -23,7 +23,7 @@ export default class Dropdown extends Component {
       placement: 'bottom-start',
     });
 
-    document.body.addEventListener('click', this.boundHide);
+    document.body.addEventListener('click', this.hide.bind(this));
 
     return false;
   }
@@ -33,6 +33,6 @@ export default class Dropdown extends Component {
       this.popper.destroy();
     }
 
-    document.body.removeEventListener('click', this.boundHide);
+    document.body.removeEventListener('click', this.hide.bind(this));
   }
 }

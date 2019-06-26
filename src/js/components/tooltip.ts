@@ -1,12 +1,16 @@
-import TooltipJS from 'tooltip.js';
+import TooltipJS, { Options } from 'tooltip.js';
 import Component from '../component';
 
 export default class Tooltip extends Component {
-  public static create(node: HTMLElement, title: string, { placement, container } = {}): TooltipJS {
-    return new TooltipJS(node, {
-      container: container === undefined ? document.body : container,
-      placement: placement || 'bottom',
-      title,
-    });
+  public static create(reference: HTMLElement, options: Options = {}): TooltipJS {
+    if (options.container === undefined) {
+      options.container = document.body;
+    }
+
+    if (!options.placement) {
+      options.placement = 'bottom';
+    }
+
+    return new TooltipJS(reference, options);
   }
 }

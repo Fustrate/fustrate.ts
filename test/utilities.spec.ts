@@ -35,11 +35,11 @@ describe('debounce', () => {
 
 describe('elementFromString', () => {
   it('creates a bare element', () => {
-    assert(elementFromString('<input>') instanceof HTMLInputElement);
+    assert(elementFromString<HTMLInputElement>('<input type="color">') instanceof HTMLInputElement);
   });
 
   it('creates an element with attributes', () => {
-    const element = elementFromString('<input type="datetime-local" class="date">');
+    const element = elementFromString<HTMLInputElement>('<input type="datetime-local" class="date">');
 
     assert(element instanceof HTMLInputElement);
     assert.strictEqual(element.type, 'datetime-local');

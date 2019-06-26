@@ -1,3 +1,8 @@
+interface Array<T> {
+  flat(depth: any): Array<T>;
+  flatMap(func: (x: T) => T): Array<T>;
+}
+
 if (!Array.prototype.flat) {
   Array.prototype.flat = function flatPolyfill(depth) {
     const flattened = [];

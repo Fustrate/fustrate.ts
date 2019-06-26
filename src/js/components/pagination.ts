@@ -6,26 +6,26 @@ const settings = {
   previousText: '← Previous',
 };
 
+// Just add 'page='
+const getPreppedPaginationURL = (): string => {
+  const url = window.location.search.replace(/[?&]page=\d+/, '');
+
+  if (url[0] === '?') {
+    return `${window.location.pathname}${url}&`;
+  }
+
+  if (url[0] === '&') {
+    return `${window.location.pathname}?${url.slice(1, url.length)}&`;
+  }
+
+  return `${window.location.pathname}?`;
+};
+
 export default class Pagination extends Component {
   protected static getCurrentPage(): number {
     const matchData = window.location.search.match(/[?&]page=(\d+)/);
 
     return matchData ? parseInt(matchData[0], 10) : 1;
-  }
-
-  // Just add 'page='
-  protected static getPreppedPaginationURL(): string {
-    const url = window.location.search.replace(/[?&]page=\d+/, '');
-
-    if (url[0] === '?') {
-      return `${window.location.pathname}${url}&`;
-    }
-
-    if (url[0] === '&') {
-      return `${window.location.pathname}?${url.slice(1, url.length)}&`;
-    }
-
-    return `${window.location.pathname}?`;
   }
 
   public currentPage: number;
@@ -35,6 +35,8 @@ export default class Pagination extends Component {
   public totalEntries: number;
 
   public perPage: number;
+
+  private base: string;
 
   constructor({
     currentPage, totalPages, totalEntries, perPage,
@@ -46,7 +48,7 @@ export default class Pagination extends Component {
     this.totalEntries = totalEntries;
     this.perPage = perPage;
 
-    this.base = this.constructor.getPreppedPaginationURL();
+    this.base = getPreppedPaginationURL();
   }
 
   public generate(): HTMLUListElement {
@@ -62,12 +64,12 @@ export default class Pagination extends Component {
     this.windowedPageNumbers().forEach((page) => {
       const li = document.createElement('li');
 
-      if (page === this.currentPage) {
-        li.classList.add('current');
-        li.innerHTML = linkTo(page, '#');
-      } else if (page === 'gap') {
+      if (typeof page === 'string') {
         li.classList.add('unavailable');
         li.innerHTML = '<span class=\'gap\'>…</span>';
+      } else if (page === this.currentPage) {
+        li.classList.add('current');
+        li.innerHTML = linkTo(String(page), '#');
       } else {
         li.innerHTML = this.link(page, page);
       }
@@ -80,8 +82,8 @@ export default class Pagination extends Component {
     return ul;
   }
 
-  protected link(text: string, page: number, ...args): string {
-    return linkTo(text, `${this.base}page=${page}`, ...args);
+  protected link(text: string | number, page: string | number, ...args): string {
+    return linkTo(String(text), `${this.base}page=${page}`, ...args);
   }
 
   protected previousLink(): HTMLLIElement {

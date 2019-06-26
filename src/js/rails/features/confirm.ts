@@ -20,8 +20,8 @@ import {
 //   this function
 // return false. The `confirm:complete` event is fired whether or not the user answered true or
 //   false to the dialog.
-const allowAction = (element) => {
-  const message = element.getAttribute('data-confirm');
+const allowAction = (element: HTMLElement) => {
+  const message = element.dataset.confirm;
 
   if (!message) {
     return true;
@@ -43,8 +43,8 @@ const allowAction = (element) => {
   return answer && callback;
 };
 
-export const handleConfirm = (e) => {
-  if (!allowAction(this)) {
+export const handleConfirm = (e: Event) => {
+  if (e.target instanceof HTMLElement && !allowAction(e.target)) {
     stopEverything(e);
   }
 };
