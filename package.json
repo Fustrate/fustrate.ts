@@ -8,7 +8,7 @@
     "url": "https://github.com/Fustrate/fustrate-rails.js"
   },
   "bugs": "https://github.com/Fustrate/fustrate-rails.js/issues",
-  "files": ["lib"],
+  "files": ["dist/js"],
   "dependencies": {
     "@rails/ujs": "^6.0.0-rc1",
     "@rails/webpacker": "^4.0.7",
