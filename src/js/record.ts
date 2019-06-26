@@ -2,7 +2,7 @@ import ajax, { get } from './ajax';
 import { fire } from './rails/utils/event';
 
 import BasicObject from './basic_object';
-import toFormData from './form_data_builder';
+import FormDataBuilder from './form_data_builder';
 
 interface PathParameters {
   format?: string;
@@ -76,7 +76,7 @@ export default class Record extends BasicObject {
     }
 
     return ajax({
-      data: toFormData(new FormData(), attributes, (this.constructor as typeof Record).paramKey),
+      data: FormDataBuilder.build(attributes, (this.constructor as typeof Record).paramKey),
       method: this.id ? 'patch' : 'post',
       onUploadProgress: (event) => {
         fire(this, 'upload:progress', event);

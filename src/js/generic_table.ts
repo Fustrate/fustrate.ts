@@ -2,11 +2,10 @@ import Pagination from './components/pagination';
 import GenericPage from './generic_page';
 import { elementFromString } from './utilities';
 
-const sortRows = (
-  rows: HTMLTableRowElement[],
-  sortFunction?: (row: HTMLTableRowElement) => string,
-): HTMLTableRowElement[] => {
-  const rowsWithSortOrder = rows.map(row => [sortFunction ? sortFunction(row) : '', row]);
+type RowSortFunction = (row: HTMLTableRowElement) => string;
+
+const sortRows = (rows: HTMLTableRowElement[], sortFunction: RowSortFunction): HTMLTableRowElement[] => {
+  const rowsWithSortOrder = rows.map(row => [sortFunction(row), row]);
 
   rowsWithSortOrder.sort((x, y) => {
     if (x[0] === y[0]) {
@@ -28,16 +27,14 @@ export default class GenericTable extends GenericPage {
 
   public tbody: HTMLTableSectionElement;
 
-  public loadingRow?: HTMLTableRowElement;
+  public loadingRow: HTMLTableRowElement | null;
 
-  public noRecordsRow?: HTMLTableRowElement;
-
-  constructor(root, table) {
-    super(root);
+  constructor(table: HTMLTableElement) {
+    super();
 
     this.table = table;
     [this.tbody] = this.table.tBodies;
-    this.loadingRow = this.tbody.querySelector('tr.loading');
+    this.loadingRow = this.tbody.querySelector<HTMLTableRowElement>('tr.loading');
   }
 
   public initialize() {
@@ -46,7 +43,7 @@ export default class GenericTable extends GenericPage {
     this.reloadTable();
   }
 
-  public createRow(item): HTMLTableRowElement {
+  public createRow(item: any): HTMLTableRowElement {
     const row: HTMLTableRowElement = elementFromString((this.constructor as typeof GenericTable).blankRow);
 
     this.updateRow(row, item);
@@ -54,17 +51,17 @@ export default class GenericTable extends GenericPage {
     return row;
   }
 
-  public reloadRows(rows: HTMLTableRowElement[], { sort } = { sort: null }): void {
+  public reloadRows(rows: HTMLTableRowElement[], sort?: RowSortFunction): void {
     if (this.loadingRow) {
       this.loadingRow.style.display = 'none';
     }
 
     if (rows) {
-      this.tbody.querySelectorAll('tr:not(.no-records):not(.loading)').forEach((row) => {
-        row.parentNode.removeChild(row);
+      this.tbody.querySelectorAll<HTMLTableRowElement>('tr:not(.no-records):not(.loading)').forEach((row) => {
+        row.remove();
       });
 
-      (sort ? sortRows(rows, sort) : rows).forEach((row) => {
+      (sort ? sortRows(rows, sort) : rows).forEach((row: HTMLTableRowElement) => {
         this.tbody.appendChild(row);
       });
     }
@@ -79,7 +76,7 @@ export default class GenericTable extends GenericPage {
   }
 
   public removeRow(row: HTMLTableRowElement): void {
-    row.parentNode.removeChild(row);
+    row.remove();
 
     this.updated();
   }
@@ -100,20 +97,19 @@ export default class GenericTable extends GenericPage {
   }
 
   public getCheckedIds(): number[] {
-    return Array.from(this.tbody.querySelectorAll('td:first-child input:checked'))
-      .map(element => parseInt((element as HTMLInputElement).value, 10));
+    return Array.from(this.tbody.querySelectorAll<HTMLInputElement>('td:first-child input:checked'))
+      .map(element => parseInt(element.value, 10));
   }
 
-  // This should be fed a response from a JSON request for a paginated
-  // collection.
-  public updatePagination(response): void {
+  // This should be fed a response from a JSON request for a paginated collection.
+  public updatePagination(response: any): void {
     if (!response.totalPages) {
       return;
     }
 
     const ul = (new Pagination(response)).generate();
 
-    this.root.querySelectorAll('.pagination').forEach((pagination) => {
+    document.querySelectorAll<HTMLDivElement>('.pagination').forEach((pagination) => {
       pagination.parentNode.replaceChild(ul.cloneNode(true), pagination);
     });
   }
@@ -121,14 +117,14 @@ export default class GenericTable extends GenericPage {
   public checkAll(event?: Event): void {
     const check = event ? (event.target as HTMLInputElement).checked : true;
 
-    this.table.querySelectorAll('td:first-child input[type=\'checkbox\']').forEach((checkbox) => {
-      (checkbox as HTMLInputElement).checked = check;
+    this.table.querySelectorAll<HTMLInputElement>('td:first-child input[type=\'checkbox\']').forEach((checkbox) => {
+      checkbox.checked = check;
     });
   }
 
   public uncheckAll(): void {
-    this.table.querySelectorAll('td:first-child input:checked').forEach((input) => {
-      (input as HTMLInputElement).checked = false;
+    this.table.querySelectorAll<HTMLInputElement>('td:first-child input:checked').forEach((input) => {
+      input.checked = false;
     });
   }
 
@@ -137,7 +133,7 @@ export default class GenericTable extends GenericPage {
   }
 
   // eslint-disable-next-line no-unused-vars
-  public updateRow(row: HTMLTableRowElement, item): void {
+  public updateRow(row: HTMLTableRowElement, item: any): void {
     // Hook point
   }
 }

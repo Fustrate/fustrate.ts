@@ -8,11 +8,14 @@
     "url": "https://github.com/Fustrate/fustrate-rails.js"
   },
   "bugs": "https://github.com/Fustrate/fustrate-rails.js/issues",
-  "files": ["dist/js"],
+  "files": [
+    "dist/js"
+  ],
   "dependencies": {
     "@rails/ujs": "^6.0.0-rc1",
     "@rails/webpacker": "^4.0.7",
     "animate.css": "^3.7.2",
+    "array-flat-polyfill": "^1.0.1",
     "awesomplete": "git+https://github.com/Fustrate/awesomplete.git",
     "axios": "^0.18.1",
     "color": "^3.1.2",

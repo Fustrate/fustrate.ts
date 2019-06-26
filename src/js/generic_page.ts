@@ -1,15 +1,11 @@
-export default class GenericPage {
-  public root: HTMLElement;
+import Page from './page';
 
-  public fields: { [s: string]: HTMLElement };
+export default class GenericPage extends Page {
+  public fields: { [s: string]: HTMLElement } = {};
 
-  public buttons: { [s: string]: HTMLElement };
+  public buttons: { [s: string]: HTMLElement } = {};
 
   private allMethodNamesList?: string[];
-
-  constructor(root) {
-    this.root = root || document.body;
-  }
 
   public initialize() {
     this.reloadUIElements();
@@ -27,21 +23,21 @@ export default class GenericPage {
     this.fields = {};
     this.buttons = {};
 
-    Array.from(this.root.querySelectorAll('[data-field]'))
+    Array.from(document.querySelectorAll<HTMLElement>('[data-field]'))
       .filter(element => !element.matches('.modal [data-field]'))
-      .forEach((element: HTMLElement) => {
-        this.fields[element.dataset.field] = element;
+      .forEach((element) => {
+        this.fields[element.dataset.field as string] = element;
       });
 
-    Array.from(this.root.querySelectorAll('[data-button]'))
+    Array.from(document.querySelectorAll<HTMLElement>('[data-button]'))
       .filter(element => !element.matches('.modal [data-button]'))
-      .forEach((element: HTMLElement) => {
-        this.buttons[element.dataset.button] = element;
+      .forEach((element) => {
+        this.buttons[element.dataset.button as string] = element;
       });
   }
 
   public setHeader(text: string): void {
-    this.root.querySelector('.header > span').textContent = text;
+    document.querySelector<HTMLSpanElement>('.header > span').textContent = text;
   }
 
   public refresh(): void {
@@ -55,7 +51,7 @@ export default class GenericPage {
 
     this.allMethodNamesList.forEach((name) => {
       if (name !== prefix && name.indexOf(prefix) === 0) {
-        this[name].apply(this);
+        (this[name] as () => void).apply(this);
       }
     });
   }

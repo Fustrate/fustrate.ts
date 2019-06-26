@@ -8,7 +8,7 @@ export const isPlainObject = (obj: any): boolean => {
   return !(obj as any).isBasicObject;
 };
 
-export const deepExtend = (out: object, ...rest): object => {
+export const deepExtend = (out: { [s: string]: any }, ...rest: { [s: string]: any }[]): object => {
   rest.filter(obj => obj).forEach((obj) => {
     Object.getOwnPropertyNames(obj).forEach((key) => {
       out[key] = isPlainObject(obj[key]) ? deepExtend(out[key] || {}, obj[key]) : obj[key];

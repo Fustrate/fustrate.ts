@@ -4,6 +4,10 @@ import { get } from '../ajax';
 import Component from '../component';
 import { debounce, triggerEvent } from '../utilities';
 
+interface AutocompleteSelectEvent extends Event {
+  text: string;
+}
+
 export class AutocompleteSuggestion extends String {
   public datum: any;
 
@@ -13,7 +17,7 @@ export class AutocompleteSuggestion extends String {
     this.datum = datum;
   }
 
-  public highlight(input, text) {
+  public highlight(input: string, text: string) {
     if (input.trim() === '') {
       return text;
     }
@@ -21,7 +25,7 @@ export class AutocompleteSuggestion extends String {
     return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
   }
 
-  public item(text) {
+  public item(text: string) {
     return Awesomplete.$.create('li', {
       'aria-selected': 'false',
       innerHTML: this.highlightedHTML(text),
@@ -49,7 +53,7 @@ export class AutocompleteSource {
     return true;
   }
 
-  public suggestion(datum) {
+  public suggestion(datum: any) {
     return new AutocompleteSuggestion(datum);
   }
 
@@ -101,7 +105,7 @@ export class Autocomplete extends Component {
     return new this(input, options);
   }
 
-  constructor(input, options = {}) {
+  constructor(input: HTMLInputElement, options: AutocompleteOptions) {
     super();
 
     this.input = input;
@@ -157,7 +161,7 @@ export class Autocomplete extends Component {
     triggerEvent(this.input, 'blanked.autocomplete');
   }
 
-  public onSelect(event) {
+  public onSelect(event: AutocompleteSelectEvent) {
     triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text });
 
     // It's obviously not still an error if we just selected a value from the dropdown.
@@ -230,11 +234,11 @@ export class Autocomplete extends Component {
 }
 
 export class PlainAutocomplete extends Autocomplete {
-  public static create(input, options) {
+  public static create(input: HTMLInputElement, options: AutocompleteOptions) {
     return super.create(input, options);
   }
 
-  public onSelect(event) {
+  public onSelect(event: AutocompleteSelectEvent) {
     super.onSelect(event);
 
     this.input.value = event.text.toString();

@@ -1,14 +1,14 @@
 // @rails/ujs isn't working for me right now. Check back later.
 export default class Rails {
   public static get csrfToken(): string | null {
-    const meta: HTMLMetaElement = document.querySelector('meta[name=csrf-token]');
+    const meta = document.querySelector<HTMLMetaElement>('meta[name=csrf-token]');
 
     return meta ? meta.content : null;
   }
 
   // URL param that must contain the CSRF token
   public static get csrfParam(): string | null {
-    const meta: HTMLMetaElement = document.querySelector('meta[name=csrf-param]');
+    const meta = document.querySelector<HTMLMetaElement>('meta[name=csrf-param]');
 
     return meta ? meta.content : null;
   }
@@ -28,7 +28,7 @@ export default class Rails {
     const param = Rails.csrfParam;
 
     if (token != null && param != null) {
-      document.querySelectorAll(`form input[name="${param}"]`).forEach((input: HTMLInputElement) => {
+      document.querySelectorAll<HTMLInputElement>(`form input[name="${param}"]`).forEach((input) => {
         input.value = token;
       });
     }

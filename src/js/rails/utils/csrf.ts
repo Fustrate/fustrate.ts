@@ -1,15 +1,13 @@
-import { $ } from './dom';
-
 // Up-to-date Cross-Site Request Forgery token
 export const csrfToken = (): string | null => {
-  const meta: HTMLMetaElement | null = document.querySelector('meta[name=csrf-token]');
+  const meta = document.querySelector<HTMLMetaElement>('meta[name=csrf-token]');
 
   return meta ? meta.content : null;
 };
 
 // URL param that must contain the CSRF token
 export const csrfParam = (): string | null => {
-  const meta: HTMLMetaElement | null = document.querySelector('meta[name=csrf-param]');
+  const meta = document.querySelector<HTMLMetaElement>('meta[name=csrf-param]');
 
   return meta ? meta.content : null;
 };
@@ -29,7 +27,7 @@ export const refreshCSRFTokens = (): void => {
   const param = csrfParam();
 
   if (token && param) {
-    $(`form input[name="${param}"]`).forEach((input) => {
+    document.querySelectorAll<HTMLInputElement>(`form input[name="${param}"]`).forEach((input) => {
       (input as HTMLInputElement).value = token;
     });
   }

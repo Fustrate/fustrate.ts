@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { ErrorFlash } from './components/flash';
 
-// IE11 Polyfill
-require('es6-promise').polyfill();
-
-const metaElement: HTMLMetaElement = document.querySelector('[name="csrf-token"]');
+const metaElement = document.querySelector<HTMLMetaElement>('[name="csrf-token"]');
 
 const token = metaElement && metaElement.content ? metaElement.content : 'no-csrf-token';
 

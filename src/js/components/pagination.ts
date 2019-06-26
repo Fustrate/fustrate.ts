@@ -21,6 +21,13 @@ const getPreppedPaginationURL = (): string => {
   return `${window.location.pathname}?`;
 };
 
+interface PaginationInformation {
+  currentPage: number;
+  totalPages: number;
+  totalEntries: number;
+  perPage: number;
+}
+
 export default class Pagination extends Component {
   protected static getCurrentPage(): number {
     const matchData = window.location.search.match(/[?&]page=(\d+)/);
@@ -38,15 +45,13 @@ export default class Pagination extends Component {
 
   private base: string;
 
-  constructor({
-    currentPage, totalPages, totalEntries, perPage,
-  }) {
+  constructor(info: PaginationInformation) {
     super();
 
-    this.currentPage = currentPage;
-    this.totalPages = totalPages;
-    this.totalEntries = totalEntries;
-    this.perPage = perPage;
+    this.currentPage = info.currentPage;
+    this.totalPages = info.totalPages;
+    this.totalEntries = info.totalEntries;
+    this.perPage = info.perPage;
 
     this.base = getPreppedPaginationURL();
   }
@@ -71,7 +76,7 @@ export default class Pagination extends Component {
         li.classList.add('current');
         li.innerHTML = linkTo(String(page), '#');
       } else {
-        li.innerHTML = this.link(page, page);
+        li.innerHTML = linkTo(String(page), `${this.base}page=${page}`);
       }
 
       ul.appendChild(li);
@@ -82,10 +87,6 @@ export default class Pagination extends Component {
     return ul;
   }
 
-  protected link(text: string | number, page: string | number, ...args): string {
-    return linkTo(String(text), `${this.base}page=${page}`, ...args);
-  }
-
   protected previousLink(): HTMLLIElement {
     const li = document.createElement('li');
     li.classList.add('previous_page');
@@ -94,7 +95,7 @@ export default class Pagination extends Component {
       li.classList.add('unavailable');
       li.innerHTML = `<a href='#'>${settings.previousText}</a>`;
     } else {
-      li.innerHTML = this.link(settings.previousText, this.currentPage - 1, { rel: 'prev' });
+      li.innerHTML = linkTo(settings.previousText, `${this.base}page=${this.currentPage - 1}`, { rel: 'prev' });
     }
 
     return li;
@@ -108,7 +109,7 @@ export default class Pagination extends Component {
       li.classList.add('unavailable');
       li.innerHTML = `<a href='#'>${settings.nextText}</a>`;
     } else {
-      li.innerHTML = this.link(settings.nextText, this.currentPage + 1, { rel: 'next' });
+      li.innerHTML = linkTo(settings.nextText, `${this.base}page=${this.currentPage + 1}`, { rel: 'next' });
     }
 
     return li;

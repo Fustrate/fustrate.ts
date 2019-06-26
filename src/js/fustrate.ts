@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+import Page from './page';
+
 const moment = require('moment');
 
 require('./polyfills');
@@ -5,7 +8,7 @@ require('./polyfills');
 // const Rails = require('@rails/ujs');
 
 export default class Fustrate {
-  public static start(Klass) {
+  public static start(Klass: typeof Page) {
     if (Klass) {
       this.instance = new Klass();
     }
@@ -30,7 +33,7 @@ export default class Fustrate {
     });
   }
 
-  protected static instance;
+  protected static instance: Page;
 
   constructor() {
     moment.updateLocale('en', {

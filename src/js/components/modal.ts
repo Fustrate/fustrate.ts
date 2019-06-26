@@ -25,6 +25,12 @@ interface ModalSettings {
   type?: string;
 }
 
+interface ModalButton {
+  text: string;
+  type: string;
+  name: string;
+}
+
 const defaultSettings: ModalSettings = {
   buttons: [],
   content: undefined,
@@ -60,12 +66,28 @@ const template = `
   </div>`;
 
 // A stack of currently-open modals
-let openModals = [];
+let openModals: Modal[] = [];
 
 // We only want to add the global listeners once
 let addedGlobalListeners = false;
 
 let overlay;
+
+function createButton(options: string | ModalButton): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.classList.add('expand');
+  button.setAttribute('data-button', options.name);
+
+  if (typeof options === 'string') {
+    button.classList.add(options.name);
+    button.textContent = escapeHTML(options);
+  } else {
+    button.classList.add(options.type);
+    button.textContent = escapeHTML(options.text || titleize(options.name));
+  }
+
+  return button;
+}
 
 export default class Modal extends Component {
   public modal: HTMLElement;
@@ -74,13 +96,13 @@ export default class Modal extends Component {
 
   private deferred: Promise<any>;
 
-  private cachedHeight: number;
+  private cachedHeight?: number;
 
   public locked: boolean = false;
 
-  public fields: { [s: string]: HTMLElement };
+  public fields: { [s: string]: HTMLElement } = {};
 
-  public buttons: { [s: string]: HTMLElement };
+  public buttons: { [s: string]: HTMLElement } = {};
 
   public static icon?: string;
 
@@ -131,22 +153,6 @@ export default class Modal extends Component {
     return false;
   }
 
-  protected static createButton(name, options) {
-    let text;
-    let type;
-
-    if (typeof options === 'object') {
-      ({ text, type } = options);
-    } else if (typeof options === 'string') {
-      text = options;
-    }
-
-    return `
-      <button data-button='${name}' class='expand ${type || name}'>
-        ${escapeHTML(text || titleize(name))}
-      </button>`;
-  }
-
   protected static keyPressed(event) {
     if (event.which === 27 && openModals.length > 0) {
       openModals[openModals.length - 1].close();
@@ -193,7 +199,7 @@ export default class Modal extends Component {
   public setTitle(title: string, icon?: string | false) {
     const iconToUse = icon !== false && icon == null ? (this.constructor as typeof Modal).icon : icon;
 
-    this.modal.querySelector('.modal-title span')
+    this.modal.querySelector<HTMLSpanElement>('.modal-title span')
       .innerHTML = iconToUse ? `${createIcon(iconToUse)} ${title}` : title;
   }
 
@@ -206,7 +212,7 @@ export default class Modal extends Component {
       modalContent = content();
     }
 
-    this.modal.querySelector('.modal-content').innerHTML = modalContent;
+    this.modal.querySelector<HTMLSpanElement>('.modal-content').innerHTML = modalContent;
 
     this.cachedHeight = undefined;
 
@@ -215,27 +221,8 @@ export default class Modal extends Component {
     }
   }
 
-  public setButtons(buttons, reload: boolean = true) {
-    if (buttons == null || buttons.length < 1) {
-      this.modal.querySelector('.modal-buttons').innerHTML = '';
-
-      return;
-    }
-
-    const list = [];
-
-    buttons.forEach((button) => {
-      if (typeof button === 'string') {
-        list.push(`
-          <button data-button='${button}' class='${button} expand'>
-            ${titleize(button)}
-          </button>`);
-      } else if (typeof button === 'object') {
-        Object.keys(button).forEach((name) => {
-          list.push((this.constructor as typeof Modal).createButton(name, button[name]));
-        }, this);
-      }
-    }, this);
+  public setButtons(buttons: (string | ModalButton)[], reload: boolean = true) {
+    const list = buttons.map(data => createButton(data));
 
     const klass = `large-${12 / list.length}`;
     const columns = list.map(element => `<div class='columns ${klass}'>${element}</div>`);
