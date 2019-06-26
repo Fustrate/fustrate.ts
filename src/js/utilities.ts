@@ -277,3 +277,5 @@ export const toHumanDate = (momentObject, time: boolean = false) => {
 
   return momentObject.format(`M/D${year}${(time ? ' h:mm A' : '')}`);
 };
+
+export { delegate } from './rails/utils/event';

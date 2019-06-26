@@ -52,6 +52,7 @@
   "scripts": {
     "lint": "eslint . --ext js,ts",
     "precommit": "eslint . --ext js,ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   }
 }
