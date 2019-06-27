@@ -1,5 +1,5 @@
 import assert from 'assert';
-import BasicObject from '../src/js/basic_object';
+import BasicObject from '../src/js/BasicObject';
 
 class Record extends BasicObject {
 }

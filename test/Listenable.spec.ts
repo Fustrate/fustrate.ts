@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Listenable from '../src/js/listenable';
+import Listenable from '../src/js/Listenable';
 
 class Thing extends Listenable {
 }

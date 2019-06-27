@@ -1,7 +1,6 @@
 import assert from 'assert';
-// import { applyMixin } from '../../src/js/utilities';
-import Page from '../src/js/page';
-import Mixin from '../src/js/mixin';
+import Page from '../src/js/Page';
+import Mixin from '../src/js/Mixin';
 
 class Countable extends Mixin {
   public static useComparisonModal: boolean = false;
