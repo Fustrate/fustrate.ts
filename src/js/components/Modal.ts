@@ -132,7 +132,10 @@ export default class Modal extends Component {
 
   public buttons: { [s: string]: HTMLElement } = {};
 
-  private deferred?: Promise<any>;
+  // A modal's open method can return a promise, such as when it's a form.
+  private promise?: Promise<any>;
+  private resolve?: (value?: any) => void;
+  private reject?: (reason?: any) => void;
 
   private cachedHeight?: number;
 
@@ -385,8 +388,8 @@ export default class Modal extends Component {
 
   public cancel() {
     // Reject any deferrals
-    if (this.deferred) {
-      this.deferred.reject();
+    if (this.reject) {
+      this.reject.call();
     }
 
     this.close();
