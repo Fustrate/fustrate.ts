@@ -1,44 +1,33 @@
-import { matches } from './dom';
-
 declare global {
-  interface Window { CustomEvent: any; Event: any; }
+  interface Element {
+    matchesSelector: (selectors: string) => boolean;
+    mozMatchesSelector: (selectors: string) => boolean;
+    msMatchesSelector: (selectors: string) => boolean;
+    oMatchesSelector: (selectors: string) => boolean;
+  }
 }
 
-interface CustomEventParameters {
-  bubbles?: boolean;
-  cancelable?: boolean;
-  detail?: any;
-}
+const m = Element.prototype.matches
+  || Element.prototype.matchesSelector
+  || Element.prototype.mozMatchesSelector
+  || Element.prototype.msMatchesSelector
+  || Element.prototype.oMatchesSelector
+  || Element.prototype.webkitMatchesSelector;
 
-// Polyfill for CustomEvent in IE9+
-// https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
-let { CustomEvent } = window;
+// Checks if the given native dom element matches the selector
+// element::
+//   native DOM element
+// selector::
+//   css selector string or
+//   a javascript object with `selector` and `exclude` properties
+//   Examples: 'form', { selector: 'form', exclude: 'form[data-remote='true']'}
+const matches = (element: Element, selector: string, exclude?: string): boolean => {
+  if (exclude) {
+    return m.call(element, selector) && !m.call(element, exclude);
+  }
 
-if (typeof CustomEvent !== 'function') {
-  CustomEvent = (event: string, params: CustomEventParameters) => {
-    const evt = document.createEvent('CustomEvent');
-
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-
-    return evt;
-  };
-
-  CustomEvent.prototype = window.Event.prototype;
-
-  // Fix setting `defaultPrevented` when `preventDefault()` is called
-  // http://stackoverflow.com/questions/23349191/event-preventdefault-is-not-working-in-ie-11-for-custom-events
-  const { preventDefault } = CustomEvent.prototype;
-
-  CustomEvent.prototype.preventDefault = () => {
-    const result = preventDefault.call(this);
-
-    if (this.cancelable && !this.defaultPrevented) {
-      Object.defineProperty(this, 'defaultPrevented', { get: () => true });
-    }
-
-    return result;
-  };
-}
+  return m.call(element, selector);
+};
 
 // Triggers a custom event on an element and returns false if the event result is false
 // obj::

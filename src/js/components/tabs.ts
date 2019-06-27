@@ -51,7 +51,13 @@ export default class Tabs extends Component {
     });
 
     link.classList.add('active');
-    const hash = link.getAttribute('href').split('#')[1];
+    const href = link.getAttribute('href');
+
+    if (!href) {
+      return;
+    }
+
+    const hash = href.split('#')[1];
 
     if (changeHash) {
       window.location.hash = hash;
@@ -59,13 +65,11 @@ export default class Tabs extends Component {
 
     const tabContent = document.getElementById(hash);
 
-    if (tabContent) {
+    if (tabContent && tabContent.parentElement) {
       tabContent.classList.add('active');
 
-      Array.from(tabContent.parentElement.children).forEach((sibling: HTMLElement) => {
-        if (sibling !== tabContent) {
-          sibling.classList.remove('active');
-        }
+      tabContent.parentElement.querySelectorAll('> *').forEach((sibling: Element) => {
+        sibling.classList.toggle('active', sibling === tabContent);
       });
     }
   }

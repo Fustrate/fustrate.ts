@@ -27,7 +27,9 @@ export default class Fustrate {
       const wrapper = document.createElement('div');
       wrapper.classList.add('responsive-table');
 
-      table.parentNode.insertBefore(wrapper, table);
+      if (table.parentNode) {
+        table.parentNode.insertBefore(wrapper, table);
+      }
 
       wrapper.appendChild(table);
     });

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { ErrorFlash } from './components/flash';
 
 const metaElement = document.querySelector<HTMLMetaElement>('[name="csrf-token"]');
@@ -23,7 +23,7 @@ instance.interceptors.response.use(response => response, (error) => {
       You are not currently logged in. Please refresh the page and try performing this action again.
       To prevent this in the future, check the 'Remember Me' box when logging in.`);
   } else if (data && data.errors) {
-    data.errors.forEach((message) => {
+    data.errors.forEach((message: string) => {
       ErrorFlash.show(message);
     });
   } else {
@@ -35,7 +35,7 @@ instance.interceptors.response.use(response => response, (error) => {
 });
 
 // A wrapper to allow us to ignore boring errors
-export const get = (url, config = {}, raise: boolean = false): Promise<any> => {
+export const get = (url: string, config?: AxiosRequestConfig, raise?: boolean): Promise<any> => {
   if (raise) {
     return instance.get(url, config);
   }
@@ -43,7 +43,7 @@ export const get = (url, config = {}, raise: boolean = false): Promise<any> => {
   return instance.get(url, config).catch(() => {});
 };
 
-export const post = (url, data, config = {}, raise: boolean = false): Promise<any> => {
+export const post = (url: string, data: any, config?: AxiosRequestConfig, raise?: boolean): Promise<any> => {
   if (raise) {
     return instance.post(url, data, config);
   }
@@ -51,7 +51,7 @@ export const post = (url, data, config = {}, raise: boolean = false): Promise<an
   return instance.post(url, data, config).catch(() => {});
 };
 
-export const patch = (url, data, config = {}, raise: boolean = false): Promise<any> => {
+export const patch = (url: string, data: any, config?: AxiosRequestConfig, raise?: boolean): Promise<any> => {
   if (raise) {
     return instance.patch(url, data, config);
   }
@@ -59,8 +59,8 @@ export const patch = (url, data, config = {}, raise: boolean = false): Promise<a
   return instance.patch(url, data, config).catch(() => {});
 };
 
-export const when = (...requests): Promise<any> => new Promise((resolve) => {
-  axios.all(requests).then(axios.spread((...responses) => {
+export const when = (...requests: Promise<any>[]): Promise<any> => new Promise((resolve: (value?: any) => void) => {
+  axios.all(requests).then(axios.spread((...responses: any[]) => {
     resolve(...responses);
   }));
 });

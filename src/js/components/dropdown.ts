@@ -10,9 +10,13 @@ export default class Dropdown extends Component {
     delegate(document.body, '.has-dropdown', 'click', this.open.bind(this));
   }
 
-  public static open(event) {
+  public static open(event: MouseEvent) {
     // Hide any visible dropdowns before showing this one
     this.hide();
+
+    if (!(event.target instanceof Element) || !event.target.nextElementSibling) {
+      return false;
+    }
 
     this.popper = new Popper(event.target, event.target.nextElementSibling, {
       modifiers: {

@@ -5,18 +5,16 @@ export default class GenericPage extends Page {
 
   public buttons: { [s: string]: HTMLElement } = {};
 
-  private allMethodNamesList?: string[];
-
   public initialize() {
     this.reloadUIElements();
 
-    this.callAllMethodsBeginningWith('initialize');
+    super.initialize();
 
     this.addEventListeners();
   }
 
   public addEventListeners() {
-    this.callAllMethodsBeginningWith('addEventListeners');
+    super.addEventListeners();
   }
 
   public reloadUIElements() {
@@ -37,7 +35,11 @@ export default class GenericPage extends Page {
   }
 
   public setHeader(text: string): void {
-    document.querySelector<HTMLSpanElement>('.header > span').textContent = text;
+    const headerSpan = document.querySelector<HTMLSpanElement>('.header > span');
+
+    if (headerSpan) {
+      headerSpan.textContent = text;
+    }
   }
 
   public refresh(): void {
@@ -45,27 +47,14 @@ export default class GenericPage extends Page {
   }
 
   public callAllMethodsBeginningWith(prefix: string): void {
-    if (!this.allMethodNamesList) {
-      this.allMethodNamesList = this.getAllMethodNames();
-    }
-
-    this.allMethodNamesList.forEach((name) => {
+    Object.getOwnPropertyNames(this).forEach((name) => {
       if (name !== prefix && name.indexOf(prefix) === 0) {
-        (this[name] as () => void).apply(this);
+        const descriptor = Object.getOwnPropertyDescriptor(this, name);
+
+        if (descriptor && typeof descriptor.value === 'function') {
+          (descriptor.value as () => void).call(this);
+        }
       }
     });
-  }
-
-  private getAllMethodNames(): string[] {
-    let props: string[] = [];
-    let klass = this;
-
-    while (klass) {
-      props = props.concat(Object.getOwnPropertyNames(klass));
-
-      klass = Object.getPrototypeOf(klass);
-    }
-
-    return props.sort().filter(name => typeof this[name] === 'function');
   }
 }

@@ -16,12 +16,12 @@ const createFlashBar = (message: string, type?: string, icon?: string): HTMLDivE
   bar.classList.add('flash', type || 'info');
   bar.innerHTML = icon ? `${createIcon(icon)} ${message}` : message;
 
-  const flashes = document.getElementById('flashes');
+  const flashes = document.getElementById('flashes') || document.body;
 
   flashes.insertBefore(bar, flashes.firstChild);
 
   return bar;
-}
+};
 
 export class Flash extends Component {
   public static show(message: string, type?: string, icon?: string) {

@@ -1,19 +1,14 @@
+// Supports: Edge (All), Internet Explorer (All)
 import 'array-flat-polyfill';
 
-// IE11 Polyfill
+// Supports: Internet Explorer (All)
+import 'custom-event-polyfill';
+import 'nodelist-foreach-polyfill';
+
+// Supports: Internet Explorer 11
 require('es6-promise').polyfill();
 
-
-if (window.NodeList && !NodeList.prototype.forEach) {
-  NodeList.prototype.forEach = function forEachPolyfill(callback, thisArg) {
-    thisArg = thisArg || window;
-
-    for (let i = 0; i < this.length; i += 1) {
-      callback.call(thisArg, this[i], i, this);
-    }
-  };
-}
-
+// Supports: Internet Explorer (All)
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.msMatchesSelector
     || Element.prototype.webkitMatchesSelector;

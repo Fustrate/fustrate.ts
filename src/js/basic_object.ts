@@ -1,11 +1,13 @@
-import * as moment from 'moment';
+import moment from 'moment';
 
 import Listenable from './listenable';
 import { deepExtend } from './object';
 
+type ObjectAttributes = { [s: string]: any };
+
 export default class BasicObject extends Listenable {
-  public static buildList<T extends BasicObject>(items, attributes = {}): T[] {
-    return items.map(item => new this(deepExtend({}, item, attributes)));
+  public static buildList<T extends BasicObject>(items: ObjectAttributes[], attributes: ObjectAttributes = {}): T[] {
+    return items.map(item => <T>(new this(deepExtend(item, attributes))));
   }
 
   public date?: string | moment.Moment;
@@ -24,14 +26,12 @@ export default class BasicObject extends Listenable {
 
   // Simple extractor to assign root keys as properties in the current object.
   // Formats a few common attributes as dates with moment.js
-  public extractFromData(data: object | null | undefined): object {
+  public extractFromData(data?: ObjectAttributes): ObjectAttributes {
     if (!data) {
       return {};
     }
 
-    Object.getOwnPropertyNames(data).forEach((key) => {
-      this[key] = data[key];
-    }, this);
+    Object.defineProperties(this, Object.getOwnPropertyDescriptors(data));
 
     if (typeof this.date === 'string') {
       this.date = moment(this.date);
@@ -48,5 +48,7 @@ export default class BasicObject extends Listenable {
     return data;
   }
 
-  public get isBasicObject(): boolean { return true; }
+  public get isBasicObject(): boolean {
+    return true;
+  }
 }

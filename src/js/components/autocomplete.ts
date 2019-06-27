@@ -25,7 +25,7 @@ export class AutocompleteSuggestion extends String {
     return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
   }
 
-  public item(text: string) {
+  public item(text: string, index: number) {
     return Awesomplete.$.create('li', {
       'aria-selected': 'false',
       innerHTML: this.highlightedHTML(text),
@@ -33,7 +33,7 @@ export class AutocompleteSuggestion extends String {
     });
   }
 
-  public highlightedHTML(value) {
+  public highlightedHTML(value: string) {
     return this.highlight(value, this.toString());
   }
 }
@@ -45,19 +45,22 @@ export class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
 }
 
 export class AutocompleteSource {
+  // eslint-disable-next-line no-unused-vars
   public matches(datum: string) {
     return true;
   }
 
+  // eslint-disable-next-line no-unused-vars
   public filter(suggestion: string, userInput: string): boolean {
     return true;
   }
 
-  public suggestion(datum: any) {
+  public suggestion(datum: any): AutocompleteSuggestion {
     return new AutocompleteSuggestion(datum);
   }
 
-  public matchingData(searchTerm: string) {
+  // eslint-disable-next-line no-unused-vars
+  public matchingData(searchTerm: string): AutocompleteSuggestion[] {
     return [];
   }
 }
@@ -75,7 +78,9 @@ export class PlainAutocompleteSource extends AutocompleteSource {
     return suggestion.toLowerCase().indexOf(userInput) >= 0;
   }
 
-  public suggestion(datum: string) { return new PlainAutocompleteSuggestion(datum); }
+  public suggestion(datum: string): PlainAutocompleteSuggestion {
+    return new PlainAutocompleteSuggestion(datum);
+  }
 
   public matchingData(searchTerm: string): PlainAutocompleteSuggestion[] {
     return this.list.filter(datum => this.filter(datum, searchTerm), this).map(datum => this.suggestion(datum));
@@ -97,11 +102,11 @@ export class Autocomplete extends Component {
 
   public input: HTMLInputElement;
 
-  public value: string;
+  public value: string = '';
 
-  public sources: AutocompleteSource[];
+  public sources: AutocompleteSource[] = [];
 
-  public static create(input: HTMLElement, options: AutocompleteOptions) {
+  public static create(input: HTMLInputElement, options: AutocompleteOptions) {
     return new this(input, options);
   }
 
@@ -113,7 +118,7 @@ export class Autocomplete extends Component {
 
     this.awesomplete = new Awesomplete(this.input, {
       filter: () => true,
-      item: (suggestion, value, index) => suggestion.item(value, index),
+      item: (suggestion: AutocompleteSuggestion, value: string, index: number) => suggestion.item(value, index),
       maxItems: 25,
       minChars: 0,
       replace: suggestion => suggestion.label,
@@ -139,7 +144,7 @@ export class Autocomplete extends Component {
     }
   }
 
-  public sourceForDatum(datum) {
+  public sourceForDatum(datum: string): AutocompleteSource | undefined {
     if (this.sources.length === 1) {
       return this.sources[0];
     }
@@ -147,8 +152,10 @@ export class Autocomplete extends Component {
     return this.sources.find(source => source.matches(datum));
   }
 
-  public suggestionForDatum(datum) {
-    return this.sourceForDatum(datum).suggestion(datum);
+  public suggestionForDatum(datum: string): AutocompleteSuggestion | undefined {
+    const source = this.sourceForDatum(datum);
+
+    return source ? source.suggestion(datum) : undefined;
   }
 
   public blanked() {
@@ -171,21 +178,21 @@ export class Autocomplete extends Component {
   public onFocus() {
     this.value = this.input.value ? this.input.value.trim() : '';
 
-    let list = [];
+    let suggestions: AutocompleteSuggestion[] = [];
     const searchTerm = this.value.toLowerCase();
 
     // If we have plain text sources, show them immediately
     this.sources
       .filter(source => source instanceof PlainAutocompleteSource)
       .forEach((source) => {
-        list = list.concat(source.matchingData(searchTerm));
+        suggestions = suggestions.concat(source.matchingData(searchTerm));
       }, this);
 
-    this.awesomplete.list = list;
+    this.awesomplete.list = suggestions.map(suggestion => String(suggestion));
   }
 
-  public onKeyup(e) {
-    const keyCode = e.which || e.keyCode;
+  public onKeyup(event: KeyboardEvent) {
+    const keyCode = event.which || event.keyCode;
     const value = this.input.value ? this.input.value.trim() : '';
 
     if (value === '' && this.value !== '') {
@@ -201,14 +208,14 @@ export class Autocomplete extends Component {
     }
 
     this.value = value;
-    let list = [];
+    let list: (string | AutocompleteSuggestion)[] = [];
 
     this.sources.forEach((source) => {
       if (source instanceof RemoteAutocompleteSource) {
         get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
           list = list.concat(response.data);
 
-          this.awesomplete.list = list;
+          this.awesomplete.list = list.map(item => String(item));
         });
       } else if (source instanceof PlainAutocompleteSource) {
         const searchTerm = value.toLowerCase();
@@ -217,10 +224,10 @@ export class Autocomplete extends Component {
       }
     }, this);
 
-    this.awesomplete.list = list;
+    this.awesomplete.list = list.map(item => String(item));
   }
 
-  public highlight(text) {
+  public highlight(text?: string) {
     if (!text) {
       return '';
     }
@@ -228,7 +235,7 @@ export class Autocomplete extends Component {
     return text.replace(RegExp(`(${this.value.split(/\s+/).join('|')})`, 'gi'), '<mark>$&</mark>');
   }
 
-  public replace(suggestion) {
+  public replace(suggestion: string) {
     this.awesomplete.replace(suggestion);
   }
 }

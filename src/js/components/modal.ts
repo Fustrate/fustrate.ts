@@ -38,7 +38,6 @@ interface ModalSettings {
 
 const defaultSettings: ModalSettings = {
   buttons: [],
-  content: undefined,
   css: {
     close: {
       display: 'none',
@@ -52,10 +51,8 @@ const defaultSettings: ModalSettings = {
     },
   },
   distanceFromTop: 25,
-  icon: undefined,
   size: 'tiny',
-  title: null,
-  type: null,
+  title: '',
 };
 
 const fadeSpeed = 250;
@@ -81,13 +78,14 @@ let overlay: HTMLDivElement;
 function createButton(options: string | ModalButton): HTMLButtonElement {
   const button = document.createElement('button');
   button.classList.add('expand');
-  button.setAttribute('data-button', options.name);
 
   if (typeof options === 'string') {
-    button.classList.add(options.name);
+    button.classList.add(options);
+    button.setAttribute('data-button', options);
     button.textContent = escapeHTML(options);
   } else {
     button.classList.add(options.type);
+    button.setAttribute('data-button', options.name);
     button.textContent = escapeHTML(options.text || titleize(options.name));
   }
 
@@ -115,7 +113,7 @@ function toggleBackground(visible = true) {
   }
 }
 
-function closeTopmostModalOnEsc(event) {
+function closeTopmostModalOnEsc(event: KeyboardEvent) {
   if (event.which === 27 && openModals.length > 0) {
     openModals[openModals.length - 1].close();
   }
@@ -134,7 +132,7 @@ export default class Modal extends Component {
 
   public buttons: { [s: string]: HTMLElement } = {};
 
-  private deferred: Promise<any>;
+  private deferred?: Promise<any>;
 
   private cachedHeight?: number;
 
@@ -150,7 +148,9 @@ export default class Modal extends Component {
     openModals = [];
   }
 
-  public static get settings() { return {}; }
+  public static get settings(): ModalSettings {
+    return { buttons: [], title: '' };
+  }
 
   // Close the top-most modal if the background is clicked
   protected static backgroundClicked() {
@@ -168,16 +168,15 @@ export default class Modal extends Component {
     super();
 
     this.settings = deepExtend(
-      {},
       defaultSettings,
-      (this.constructor as typeof Modal).settings || {},
-      settings != null ? settings : {},
-    );
+      (this.constructor as typeof Modal).settings,
+      settings,
+    ) as ModalSettings;
 
     this.modal = this.createModal();
 
     this.setTitle(this.settings.title, this.settings.icon);
-    this.setContent(this.settings.content, false);
+    this.setContent(this.settings.content || '', false);
     this.setButtons(this.settings.buttons, false);
     this.reloadUIElements();
     this.addEventListeners();
@@ -204,7 +203,7 @@ export default class Modal extends Component {
   public setTitle(title: string, icon?: string | false) {
     const iconToUse = icon !== false && icon == null ? (this.constructor as typeof Modal).icon : icon;
 
-    this.modal.querySelector<HTMLSpanElement>('.modal-title span')
+    this.modal.querySelector<HTMLSpanElement>('.modal-title span')!
       .innerHTML = iconToUse ? `${createIcon(iconToUse)} ${title}` : title;
   }
 
@@ -217,7 +216,7 @@ export default class Modal extends Component {
       modalContent = content();
     }
 
-    this.modal.querySelector<HTMLSpanElement>('.modal-content').innerHTML = modalContent;
+    this.modal.querySelector<HTMLSpanElement>('.modal-content')!.innerHTML = modalContent;
 
     this.cachedHeight = undefined;
 
@@ -241,7 +240,7 @@ export default class Modal extends Component {
       row.append(columns);
     });
 
-    const buttonsContainer: HTMLDivElement = this.modal.querySelector('.modal-buttons');
+    const buttonsContainer = this.modal.querySelector<HTMLDivElement>('.modal-buttons')!;
 
     buttonsContainer.textContent = '';
     buttonsContainer.append(row);
@@ -254,7 +253,8 @@ export default class Modal extends Component {
   }
 
   public addEventListeners() {
-    this.modal.querySelector('.modal-close').addEventListener('click', this.closeButtonClicked.bind(this));
+    this.modal.querySelector<HTMLAnchorElement>('.modal-close')!
+      .addEventListener('click', this.closeButtonClicked.bind(this));
 
     if (!addedGlobalListeners) {
       delegate(document.body, '.modal-overlay', 'click', (this.constructor as typeof Modal).backgroundClicked);
@@ -308,12 +308,14 @@ export default class Modal extends Component {
       toggleBackground(true);
     }
 
-    const css = this.settings.css.open;
-    css.top = `${$(window).scrollTop() - this.height}px`;
+    const windowScrollTop = $(window).scrollTop() || 0;
+
+    const css = this.settings.css!.open;
+    css.top = `${windowScrollTop - this.height}px`;
 
     const endCss = {
       opacity: 1,
-      top: `${$(window).scrollTop() + this.settings.distanceFromTop}px`,
+      top: `${windowScrollTop + this.settings.distanceFromTop}px`,
     };
 
     setTimeout((() => {
@@ -343,9 +345,11 @@ export default class Modal extends Component {
     // Remove the top-most modal (this one) from the stack
     openModals.pop();
 
+    const windowScrollTop = $(window).scrollTop() || 0;
+
     const endCss = {
       opacity: 0,
-      top: `${-$(window).scrollTop() - this.height}px`,
+      top: `${-windowScrollTop - this.height}px`,
     };
 
     return new Promise((resolve) => {
@@ -353,7 +357,7 @@ export default class Modal extends Component {
         $(this.modal).animate(endCss, 250, 'linear', () => {
           this.locked = false;
 
-          $(this.modal).css(this.settings.css.close);
+          $(this.modal).css(this.settings.css!.close);
           fire(this.modal, 'modal:closed');
 
           resolve();
@@ -376,12 +380,12 @@ export default class Modal extends Component {
 
     this.modal.classList.remove('open');
 
-    $(this.modal).css(this.settings.css.close);
+    $(this.modal).css(this.settings.css!.close);
   }
 
   public cancel() {
     // Reject any deferrals
-    if (this.deferred != null) {
+    if (this.deferred) {
       this.deferred.reject();
     }
 
@@ -422,7 +426,7 @@ export default class Modal extends Component {
     return compact<string>([this.settings.size || '', this.settings.type || '']);
   }
 
-  protected closeButtonClicked(event) {
+  protected closeButtonClicked(event: MouseEvent) {
     stopEverything(event);
 
     this.close();

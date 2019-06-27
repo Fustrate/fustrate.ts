@@ -11,10 +11,10 @@ export default class AlertBox extends Component {
     delegate(document.body, '.alert-box .close', 'click', this.closeAlertBox);
   }
 
-  public static closeAlertBox(event) {
-    const alertBox = event.target.closest('.alert-box');
+  public static closeAlertBox(event: MouseEvent) {
+    const alertBox = (event.target! as HTMLElement).closest('.alert-box')!;
 
-    $(alertBox).fadeOut(fadeSpeed, alertBox.remove);
+    $(alertBox as HTMLElement).fadeOut(fadeSpeed, alertBox.remove);
 
     return false;
   }

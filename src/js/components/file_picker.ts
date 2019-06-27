@@ -9,9 +9,19 @@ export default class FilePicker extends Component {
     input.setAttribute('type', 'file');
 
     input.addEventListener('change', () => {
-      callback(Array.from(input.files) as File[]);
+      const files: File[] = [];
 
-      input.parentNode.removeChild(input);
+      if (input.files) {
+        for (let i = 0, l = input.files.length; i < l; i += 1) {
+          if (input.files[i]) {
+            files.push(input.files[i]);
+          }
+        }
+      }
+
+      callback(files);
+
+      input.remove();
     });
 
     document.body.appendChild(input);
