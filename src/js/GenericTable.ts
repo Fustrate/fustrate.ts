@@ -19,9 +19,9 @@ const sortRows = (rows: HTMLTableRowElement[], sortFunction: RowSortFunction): H
 };
 
 export default class GenericTable extends GenericPage {
-  private static noRecordsMessage = 'No records found.';
+  protected static noRecordsMessage = 'No records found.';
 
-  private static blankRow: string;
+  protected static blankRow: string;
 
   public table: HTMLTableElement;
 
