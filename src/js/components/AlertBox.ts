@@ -1,7 +1,7 @@
 // jQuery: fadeOut
 import $ from 'jquery';
 
-import Component from '../component';
+import Component from '../Component';
 import { delegate } from '../rails/utils/event';
 
 const fadeSpeed = 300;

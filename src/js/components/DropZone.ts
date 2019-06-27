@@ -1,4 +1,4 @@
-import Component from '../component';
+import Component from '../Component';
 import { stopEverything } from '../rails/utils/event';
 
 // Allow files to be dropped onto an element

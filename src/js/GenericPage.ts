@@ -1,4 +1,4 @@
-import Page from './page';
+import Page from './Page';
 
 export default class GenericPage extends Page {
   public fields: { [s: string]: HTMLElement } = {};

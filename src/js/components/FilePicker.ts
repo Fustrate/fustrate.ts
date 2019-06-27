@@ -1,4 +1,4 @@
-import Component from '../component';
+import Component from '../Component';
 
 // Turn any element into a trigger for file selection.
 export default class FilePicker extends Component {

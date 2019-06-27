@@ -1,4 +1,4 @@
-import Component from '../component';
+import Component from '../Component';
 import { delegate, stopEverything } from '../rails/utils/event';
 
 export default class Tabs extends Component {

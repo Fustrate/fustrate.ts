@@ -1,5 +1,5 @@
-export { default as GenericPage } from './generic_page';
-export { default as GenericTable } from './generic_table';
-export { default as Record } from './record';
+export { default as GenericPage } from './GenericPage';
+export { default as GenericTable } from './GenericTable';
+export { default as Record } from './Record';
 
-export { default } from './fustrate';
+export { default } from './Fustrate';

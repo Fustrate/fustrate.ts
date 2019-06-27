@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import Listenable from './listenable';
+import Listenable from './Listenable';
 import { deepExtend } from './object';
 
 type ObjectAttributes = { [s: string]: any };

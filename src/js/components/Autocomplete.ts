@@ -1,7 +1,7 @@
 import Awesomplete from 'awesomplete';
 
 import { get } from '../ajax';
-import Component from '../component';
+import Component from '../Component';
 import { debounce, triggerEvent } from '../utilities';
 
 interface AutocompleteSelectEvent extends Event {

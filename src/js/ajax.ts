@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { ErrorFlash } from './components/flash';
+import { ErrorFlash } from './components/Flash';
 
 const metaElement = document.querySelector<HTMLMetaElement>('[name="csrf-token"]');
 

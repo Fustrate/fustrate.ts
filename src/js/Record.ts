@@ -1,8 +1,8 @@
 import ajax, { get } from './ajax';
 import { fire } from './rails/utils/event';
 
-import BasicObject from './basic_object';
-import FormDataBuilder from './form_data_builder';
+import BasicObject from './BasicObject';
+import FormDataBuilder from './FormDataBuilder';
 
 interface PathParameters {
   format?: string;

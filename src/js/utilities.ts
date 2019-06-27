@@ -3,8 +3,6 @@ import moment from 'moment';
 // Internal functions
 import { compact } from './array';
 import { underscore } from './string';
-import Page from './page';
-import Mixin from './mixin';
 
 declare global {
   interface Window { Honeybadger: any; CustomEvent: any; }

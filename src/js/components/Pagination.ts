@@ -1,4 +1,4 @@
-import Component from '../component';
+import Component from '../Component';
 import { linkTo } from '../utilities';
 
 const settings = {

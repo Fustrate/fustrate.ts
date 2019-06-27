@@ -2,7 +2,7 @@
 import $ from 'jquery';
 
 import { remove, compact } from '../array';
-import Component from '../component';
+import Component from '../Component';
 import { deepExtend } from '../object';
 import { delegate, fire, stopEverything } from '../rails/utils/event';
 import { titleize } from '../string';

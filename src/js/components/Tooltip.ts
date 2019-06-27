@@ -1,5 +1,5 @@
 import TooltipJS, { Options } from 'tooltip.js';
-import Component from '../component';
+import Component from '../Component';
 
 export default class Tooltip extends Component {
   public static create(reference: HTMLElement, options: Options = {}): TooltipJS {

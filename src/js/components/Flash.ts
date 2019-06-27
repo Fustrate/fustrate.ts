@@ -1,7 +1,7 @@
 // jQuery: hide, fadeIn, delay, fadeOut
 import $ from 'jquery';
 
-import Component from '../component';
+import Component from '../Component';
 import { icon as createIcon } from '../utilities';
 
 const settings = {

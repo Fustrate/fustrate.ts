@@ -1,5 +1,5 @@
-import Pagination from './components/pagination';
-import GenericPage from './generic_page';
+import Pagination from './components/Pagination';
+import GenericPage from './GenericPage';
 import { elementFromString } from './utilities';
 
 type RowSortFunction = (row: HTMLTableRowElement) => string;

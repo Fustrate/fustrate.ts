@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import Page from './page';
+import Page from './Page';
 
 const moment = require('moment');
 

@@ -1,4 +1,4 @@
-import Component from '../component';
+import Component from '../Component';
 import { delegate } from '../rails/utils/event';
 import { triggerEvent } from '../utilities';
 
