@@ -11,6 +11,7 @@
   "files": [
     "dist/js"
   ],
+  "main": "dist/js/index.js",
   "dependencies": {
     "@rails/ujs": "^6.0.0-rc1",
     "@rails/webpacker": "^4.0.7",
