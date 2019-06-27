@@ -30,4 +30,4 @@ class BasicObject extends Listenable_1.default {
         return true;
     }
 }
-exports.default = BasicObject;
+exports.BasicObject = BasicObject;

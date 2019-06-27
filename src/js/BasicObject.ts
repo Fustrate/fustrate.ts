@@ -1,9 +1,9 @@
 import Listenable from './Listenable';
 import { deepExtend } from './object';
 
-type JsonData = { [s: string]: any };
+export type JsonData = { [s: string]: any };
 
-export default class BasicObject extends Listenable {
+export class BasicObject extends Listenable {
   public static buildList<T extends BasicObject>(items: JsonData[], attributes: JsonData = {}): T[] {
     return items.map(item => <T>(new this(deepExtend(item, attributes))));
   }

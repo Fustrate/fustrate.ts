@@ -1,14 +1,14 @@
 import ajax, { get } from './ajax';
 import { fire } from './rails/utils/event';
 
-import BasicObject from './BasicObject';
+import { BasicObject } from './BasicObject';
 import FormDataBuilder from './FormDataBuilder';
 
-interface PathParameters {
+export interface PathParameters {
   format?: string;
 }
 
-export default class Record extends BasicObject {
+export class Record extends BasicObject {
   public static classname: string;
 
   private isLoaded: boolean = false;

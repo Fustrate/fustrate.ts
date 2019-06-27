@@ -1,4 +1,4 @@
-import BasicObject from './BasicObject';
+import { BasicObject } from './BasicObject';
 
 const moment = require('moment');
 

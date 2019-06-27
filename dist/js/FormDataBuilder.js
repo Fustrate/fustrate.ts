@@ -1,9 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const BasicObject_1 = __importDefault(require("./BasicObject"));
+const BasicObject_1 = require("./BasicObject");
 const moment = require('moment');
 class FormDataBuilder {
     static build(obj, namespace) {
@@ -21,7 +18,7 @@ class FormDataBuilder {
         else if (moment.isMoment(value)) {
             data.append(key, value.format());
         }
-        else if (!(value instanceof BasicObject_1.default)) {
+        else if (!(value instanceof BasicObject_1.BasicObject)) {
             this.toFormData(data, value, key);
         }
     }

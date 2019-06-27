@@ -1,5 +1,5 @@
 import assert from 'assert';
-import BasicObject from '../src/js/BasicObject';
+import { BasicObject } from '../src/js/BasicObject';
 
 interface EventJsonData {
   note: string;

@@ -1,8 +1,8 @@
-import BasicObject from './BasicObject';
-interface PathParameters {
+import { BasicObject } from './BasicObject';
+export interface PathParameters {
     format?: string;
 }
-export default class Record extends BasicObject {
+export declare class Record extends BasicObject {
     static classname: string;
     private isLoaded;
     id?: number;
@@ -16,4 +16,3 @@ export default class Record extends BasicObject {
     update(attributes?: {}): Promise<any>;
     delete(): Promise<any>;
 }
-export {};

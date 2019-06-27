@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { deepExtend, isPlainObject } from '../src/js/object';
-import BasicObject from '../src/js/BasicObject';
+import { BasicObject } from '../src/js/BasicObject';
 
 describe('#deepExtend()', () => {
   it('extends an object deeply', () => {

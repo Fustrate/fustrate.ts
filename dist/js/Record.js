@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ajax_1 = __importStar(require("./ajax"));
 const event_1 = require("./rails/utils/event");
-const BasicObject_1 = __importDefault(require("./BasicObject"));
+const BasicObject_1 = require("./BasicObject");
 const FormDataBuilder_1 = __importDefault(require("./FormDataBuilder"));
-class Record extends BasicObject_1.default {
+class Record extends BasicObject_1.BasicObject {
     constructor(data) {
         super(typeof data !== 'number' && typeof data !== 'string' ? data : undefined);
         this.isLoaded = false;
@@ -83,4 +83,4 @@ class Record extends BasicObject_1.default {
         return ajax_1.default.delete(this.path({ format: 'json' }));
     }
 }
-exports.default = Record;
+exports.Record = Record;
