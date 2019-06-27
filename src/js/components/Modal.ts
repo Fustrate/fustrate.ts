@@ -132,11 +132,6 @@ export default class Modal extends Component {
 
   public buttons: { [s: string]: HTMLElement } = {};
 
-  // A modal's open method can return a promise, such as when it's a form.
-  private promise?: Promise<any>;
-  private resolve?: (value?: any) => void;
-  private reject?: (reason?: any) => void;
-
   private cachedHeight?: number;
 
   private static closeOnBackgroundClick = true;
@@ -382,12 +377,8 @@ export default class Modal extends Component {
     $(this.modal).css(this.settings.css!.close);
   }
 
+  // User clicked the Cancel button, if one exists.
   public cancel() {
-    // Reject any deferrals
-    if (this.reject) {
-      this.reject();
-    }
-
     this.close();
   }
 
