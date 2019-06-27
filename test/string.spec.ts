@@ -2,7 +2,7 @@ import assert from 'assert';
 import {
   capitalize, dasherize, humanize, isBlank, isPresent, parameterize, phoneFormat, pluralize, presence, strip, titleize,
   underscore,
-} from '../string';
+} from '../src/js/string';
 
 describe('#capitalize()', () => {
   it('capitalizes a string', () => {

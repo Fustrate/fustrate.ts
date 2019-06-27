@@ -1,12 +1,11 @@
 import assert from 'assert';
 import {
   debounce, elementFromString, escapeHTML, hms, multilineEscapeHTML, redirectTo,
-  // animate, applyMixin, icon, label, linkTo, triggerEvent,
+  // animate, icon, label, linkTo, triggerEvent,
   // isVisible, toggle, show, hide, toHumanDate,
-} from '../utilities';
+} from '../src/js/utilities';
 
 describe('animate', () => {});
-describe('applyMixin', () => {});
 
 describe('debounce', () => {
   jest.useFakeTimers();

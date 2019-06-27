@@ -1,8 +1,10 @@
+import moment from 'moment';
+
 // Internal functions
 import { compact } from './array';
 import { underscore } from './string';
-
-type Mixin = new(...args: any[]) => any;
+import Page from './page';
+import Mixin from './mixin';
 
 declare global {
   interface Window { Honeybadger: any; CustomEvent: any; }
@@ -84,48 +86,53 @@ export const animate = (
   element.classList.add(...classes);
 };
 
-// eslint-disable-next-line arrow-parens
-export const applyMixin = <T>(target: T, mixin: Mixin, options?: object): T => {
-  // eslint-disable-next-line new-cap
-  const instance = new mixin();
-  const prototype = Object.getPrototypeOf(instance);
-  const targetPrototype = Object.getPrototypeOf(target);
+// export const applyMixin = (target: typeof Page, mixin: typeof Mixin, options?: { [s: string]: any }): void => {
+//   // eslint-disable-next-line new-cap
+//   const instance: Mixin = new mixin();
+//   const mixinPrototype = Object.getPrototypeOf(instance) as typeof Mixin;
 
-  if (options) {
-    Object.getOwnPropertyNames(options).forEach((key) => {
-      target[key] = options[key];
-    });
-  }
+//   const targetPrototype = Object.getPrototypeOf(target) as typeof Page;
 
-  // Assign properties to the prototype
-  Object.getOwnPropertyNames(prototype).forEach((key) => {
-    // Mixins can define their own `initialize` and `addEventListeners` methods, which will be
-    // added with their mixin name appended, and called at the same time as the original methods.
-    const newKey = ['initialize', 'addEventListeners'].includes(key) ? `${key}${mixin.name}` : key;
+//   if (options) {
+//     Object.keys(options).forEach((key) => {
+//       Object.defineProperty(target.constructor, key, { value: options[key] });
+//     });
+//   }
 
-    if (!targetPrototype[newKey]) {
-      targetPrototype[newKey] = prototype[key];
-    }
-  });
+//   const existingTargetPrototypePropertyNames = Object.getOwnPropertyNames(targetPrototype);
 
-  // Assign properties to the prototype
-  Object.getOwnPropertyNames(prototype.constructor).forEach((key) => {
-    if (['length', 'name', 'prototype'].includes(key)) {
-      return;
-    }
+//   // Assign properties to the prototype
+//   Object.getOwnPropertyNames(mixinPrototype).forEach((key) => {
+//     // Mixins can define their own `initialize` and `addEventListeners` methods, which will be
+//     // added with their mixin name appended, and called at the same time as the original methods.
+//     const newKey = ['initialize', 'addEventListeners'].includes(key) ? `${key}${mixin.name}` : key;
 
-    if (!target[key]) {
-      target[key] = prototype.constructor[key];
-    }
-  });
+//     if (!existingTargetPrototypePropertyNames.includes(newKey)) {
+//       Object.defineProperty(
+//         targetPrototype,
+//         newKey,
+//         Object.getOwnPropertyDescriptor(mixinPrototype, key) as PropertyDescriptor,
+//       );
+//     }
+//   });
 
-  return target;
-};
+//   // Assign properties to the prototype
+//   Object.getOwnPropertyNames(mixinPrototype.constructor).forEach((key) => {
+//     if (['length', 'name', 'prototype'].includes(key)) {
+//       return;
+//     }
+
+//     if (!target[key]) {
+//       target[key] = mixinPrototype.constructor[key];
+//     }
+//   });
+// };
 
 export const debounce = (func: (...args: any[]) => void, delay: number = 250): (...args: any[]) => void => {
   let timeout: number | null;
 
-  return (...args) => {
+  // eslint-disable-next-line func-names
+  return function (this: any, ...args: any[]) {
     const context = this;
 
     const delayedFunc = () => {
@@ -271,7 +278,7 @@ export const hide = (element: HTMLElement): void => {
   toggle(element, false);
 };
 
-export const toHumanDate = (momentObject, time: boolean = false) => {
+export const toHumanDate = (momentObject: moment.Moment, time: boolean = false) => {
   // use Date#getFullYear so that we don't have to pull in the moment library
   const year = momentObject.year() !== (new Date()).getFullYear() ? '/YY' : '';
 

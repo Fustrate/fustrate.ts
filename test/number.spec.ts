@@ -1,7 +1,7 @@
 import assert from 'assert';
 import {
   accountingFormat, bytesToString, ordinalize, truncate,
-} from '../number';
+} from '../src/js/number';
 
 describe('#accountingFormat()', () => {
   it('should format a positive integer', () => {
