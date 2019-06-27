@@ -9,7 +9,7 @@
   },
   "bugs": "https://github.com/Fustrate/fustrate-rails.js/issues",
   "files": [
-    "dist/js"
+    "dist/js/**/*.{j,t}s"
   ],
   "main": "dist/js/index.js",
   "dependencies": {
