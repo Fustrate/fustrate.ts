@@ -6,7 +6,7 @@
         // "lib": ["esnext"],
         "module": "commonjs",
         "noImplicitReturns": true,
-        // "noUnusedLocals": true,
+        "noUnusedLocals": true,
         "outDir": "./dist/js",
         "plugins": [
             {
