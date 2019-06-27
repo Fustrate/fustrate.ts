@@ -6,6 +6,7 @@ module.exports = {
     "no-extend-native": 0,
     "no-param-reassign": 0,
     "max-len": [1, 120],
+    "lines-between-class-members": 0,
   },
   env: {
     browser: true,

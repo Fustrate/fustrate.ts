@@ -110,7 +110,7 @@ export default class GenericTable extends GenericPage {
     const ul = (new Pagination(response)).generate();
 
     document.querySelectorAll<HTMLDivElement>('.pagination').forEach((pagination) => {
-      pagination.parentNode.replaceChild(ul.cloneNode(true), pagination);
+      pagination.parentNode!.replaceChild(ul.cloneNode(true), pagination);
     });
   }
 
