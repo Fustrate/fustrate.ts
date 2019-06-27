@@ -1,8 +1,8 @@
 import GenericPage from './GenericPage';
 declare type RowSortFunction = (row: HTMLTableRowElement) => string;
 export default class GenericTable extends GenericPage {
-    private static noRecordsMessage;
-    private static blankRow;
+    protected static noRecordsMessage: string;
+    protected static blankRow: string;
     table: HTMLTableElement;
     tbody: HTMLTableSectionElement;
     loadingRow: HTMLTableRowElement | null;
