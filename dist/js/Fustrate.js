@@ -4,18 +4,22 @@ const moment = require('moment');
 require('./polyfills');
 // const Rails = require('@rails/ujs');
 class Fustrate {
-    static start(Klass) {
-        if (Klass) {
-            this.instance = new Klass();
+    static start(instance) {
+        if (instance) {
+            this.instance = instance;
         }
         document.addEventListener('DOMContentLoaded', () => {
             this.initialize();
-            if (Klass) {
+            if (this.instance) {
                 this.instance.initialize();
             }
         });
     }
     static initialize() {
+        this.wrapTables();
+        this.updateMomentLocales();
+    }
+    static wrapTables() {
         document.querySelectorAll('table').forEach((table) => {
             const wrapper = document.createElement('div');
             wrapper.classList.add('responsive-table');
@@ -25,7 +29,7 @@ class Fustrate {
             wrapper.appendChild(table);
         });
     }
-    constructor() {
+    static updateMomentLocales() {
         moment.updateLocale('en', {
             calendar: {
                 lastDay: '[Yesterday at] LT',

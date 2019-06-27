@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Page {
+    constructor(...args) { }
     initialize() {
         this.constructor.initializeFns.forEach((fn) => { fn.call(this); });
     }

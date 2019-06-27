@@ -1,7 +1,8 @@
 import Page from './Page';
 export default class Fustrate {
-    static start(Klass: typeof Page): void;
-    static initialize(): void;
     protected static instance: Page;
-    constructor();
+    static start(instance?: Page): void;
+    protected static initialize(): void;
+    protected static wrapTables(): void;
+    protected static updateMomentLocales(): void;
 }

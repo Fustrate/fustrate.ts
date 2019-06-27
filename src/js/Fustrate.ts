@@ -8,21 +8,28 @@ require('./polyfills');
 // const Rails = require('@rails/ujs');
 
 export default class Fustrate {
-  public static start(Klass: typeof Page) {
-    if (Klass) {
-      this.instance = new Klass();
+  protected static instance: Page;
+
+  public static start(instance?: Page) {
+    if (instance) {
+      this.instance = instance;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       this.initialize();
 
-      if (Klass) {
+      if (this.instance) {
         this.instance.initialize();
       }
     });
   }
 
-  public static initialize() {
+  protected static initialize() {
+    this.wrapTables();
+    this.updateMomentLocales();
+  }
+
+  protected static wrapTables() {
     document.querySelectorAll<HTMLTableElement>('table').forEach((table) => {
       const wrapper = document.createElement('div');
       wrapper.classList.add('responsive-table');
@@ -35,9 +42,7 @@ export default class Fustrate {
     });
   }
 
-  protected static instance: Page;
-
-  constructor() {
+  protected static updateMomentLocales() {
     moment.updateLocale('en', {
       calendar: {
         lastDay: '[Yesterday at] LT',
