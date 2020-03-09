@@ -4,7 +4,7 @@ export default class Page {
   private static addEventListenersFns: (() => void)[] = [];
   private static initializeFns: (() => void)[] = [];
 
-  constructor(...args: any[]) {}
+  // constructor(...args: any[]) {}
 
   public initialize(): void {
     (this.constructor as typeof Page).initializeFns.forEach((fn) => { fn.call(this); });

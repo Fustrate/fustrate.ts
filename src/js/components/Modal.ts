@@ -1,11 +1,11 @@
 // jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
 import $ from 'jquery';
+import { pull, compact } from 'lodash/array';
+import { startCase } from 'lodash/string';
 
-import { remove, compact } from '../array';
 import Component from '../Component';
 import { deepExtend } from '../object';
 import { delegate, fire, stopEverything } from '../rails/utils/event';
-import { titleize } from '../string';
 import {
   elementFromString,
   escapeHTML,
@@ -86,7 +86,7 @@ function createButton(options: string | ModalButton): HTMLButtonElement {
   } else {
     button.classList.add(options.type);
     button.setAttribute('data-button', options.name);
-    button.textContent = escapeHTML(options.text || titleize(options.name));
+    button.textContent = escapeHTML(options.text || startCase(options.name));
   }
 
   return button;
@@ -291,7 +291,7 @@ export default class Modal extends Component {
     this.locked = true;
 
     if (openModals.includes(this)) {
-      remove(openModals, this);
+      pull(openModals, this);
     }
 
     openModals.push(this);

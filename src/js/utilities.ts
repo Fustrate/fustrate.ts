@@ -1,23 +1,16 @@
 import moment from 'moment';
 
 // Internal functions
-import { compact } from './array';
+import { compact } from 'lodash/array';
+import { escape } from 'lodash/string';
 import { underscore } from './string';
+
+// TODO: Remove this and use lodash directly in projects
+export const escapeHTML = escape;
 
 declare global {
   interface Window { Honeybadger: any; CustomEvent: any; }
 }
-
-const entityMap: { [s: string]: string } = {
-  '"': '&quot;',
-  '&': '&amp;',
-  '\'': '&#39;',
-  '/': '&#x2F;',
-  '<': '&lt;',
-  '=': '&#x3D;',
-  '>': '&gt;',
-  '`': '&#x60;',
-};
 
 const hrefFor = (href: any) => {
   if (href === undefined) {
@@ -147,21 +140,13 @@ export const debounce = (func: (...args: any[]) => void, delay: number = 250): (
   };
 };
 
-export const elementFromString = <T extends HTMLElement = HTMLElement>(str: string): T => {
+export function elementFromString(str: string): T {
   const template = document.createElement('template');
 
   template.innerHTML = str.trim();
 
   return template.content.firstChild as T;
-};
-
-export const escapeHTML = (str: string): string => {
-  if (str === null || str === undefined) {
-    return '';
-  }
-
-  return String(str).replace(/[&<>'"`=/\\]/g, entity => entityMap[entity]);
-};
+}
 
 export function hms(seconds: number, zero?: string): string {
   if (zero && seconds === 0) {
@@ -207,7 +192,7 @@ export const multilineEscapeHTML = (str?: string): string => {
 
   return str
     .split(/\r?\n/)
-    .map(line => escapeHTML(line))
+    .map(line => escape(line))
     .join('<br />');
 };
 

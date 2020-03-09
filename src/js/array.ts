@@ -1,21 +1,4 @@
-export const compact = <T>(arr: Array<T | string>, strings: boolean = true): Array<T | string> => arr
-  .filter(element => !(element === undefined || element === null || (strings && element === '')));
-
-export const first = <T>(arr: T[]): T | undefined => arr[0];
-
-export const last = <T>(arr: T[]): T | undefined => arr[arr.length - 1];
-
-// eslint-disable-next-line arrow-parens
-export const remove = <T>(arr: T[], object: T): T[] => {
-  const index = arr.indexOf(object);
-
-  if (index !== -1) {
-    arr.splice(index, 1);
-  }
-
-  return arr;
-};
-
+// eslint-disable-next-line import/prefer-default-export
 export const toSentence = (arr: string[]) => {
   switch (arr.length) {
     case 0:

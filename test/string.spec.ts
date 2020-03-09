@@ -1,21 +1,7 @@
 import assert from 'assert';
 import {
-  capitalize, dasherize, humanize, isBlank, isPresent, parameterize, phoneFormat, pluralize, presence, strip, titleize,
-  underscore,
+  humanize, isBlank, isPresent, parameterize, phoneFormat, pluralize, presence, underscore,
 } from '../src/js/string';
-
-describe('#capitalize()', () => {
-  it('capitalizes a string', () => {
-    assert.strictEqual(capitalize('hello world'), 'Hello world');
-    assert.strictEqual(capitalize('HELLO WORLD'), 'HELLO WORLD');
-  });
-});
-
-describe('#dasherize()', () => {
-  it('dasherizes a string', () => {
-    assert.strictEqual(dasherize('hello_world'), 'hello-world');
-  });
-});
 
 describe('#humanize()', () => {
   it('dasherizes a string', () => {
@@ -81,24 +67,6 @@ describe('#presence()', () => {
     assert.strictEqual(presence(''), undefined);
     assert.strictEqual(presence(null), undefined);
     assert.strictEqual(presence(undefined), undefined);
-  });
-});
-
-describe('#strip()', () => {
-  it('strips a string', () => {
-    assert.strictEqual(strip('hello world'), 'hello world');
-    assert.strictEqual(strip('   hello world'), 'hello world');
-    assert.strictEqual(strip('\thello world '), 'hello world');
-    assert.strictEqual(strip('hello world\t'), 'hello world');
-    assert.strictEqual(strip('\nhello\nworld'), 'hello\nworld');
-  });
-});
-
-describe('#titleize()', () => {
-  it('titleizes a string', () => {
-    assert.strictEqual(titleize('hello world'), 'Hello World');
-    assert.strictEqual(titleize('hello_world'), 'Hello World');
-    // assert.strictEqual(titleize('it's a surprise'), "It's A Surprise");
   });
 });
 

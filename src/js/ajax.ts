@@ -66,9 +66,16 @@ export const when = (...requests: Promise<any>[]): Promise<any> => new Promise((
 });
 
 export const getCurrentPageJson = (): Promise<any> => {
-  const pathname = window.location.pathname.replace(/\/+$/, '');
+  let pathname = window.location.pathname.replace(/\/+$/, '');
+  let { search } = window.location;
 
-  return get(`${pathname}.json${window.location.search}`);
+  if (pathname === '') {
+    search = search === '' ? '?format=json' : `${search}&format=json`;
+  } else {
+    pathname = `${pathname}.json`;
+  }
+
+  return instance.get(`${pathname}${search}`);
 };
 
 export default instance;

@@ -7,6 +7,7 @@ module.exports = {
     "no-param-reassign": 0,
     "max-len": [1, 120],
     "lines-between-class-members": 0,
+    "import/extensions": ["error", "always", { "ts": "never", "js": "never" }]
   },
   env: {
     browser: true,

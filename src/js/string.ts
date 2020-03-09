@@ -1,7 +1,3 @@
-export const capitalize = (str: string): string => `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
-
-export const dasherize = (str: string): string => str.replace(/_/g, '-');
-
 export const humanize = (str: string): string => (str
   .replace(/[a-z][A-Z]/, match => `${match[0]} ${match[1]}`)
   .replace(/_/g, ' ')
@@ -44,12 +40,6 @@ export const pluralize = (str: string): string => {
 export const presence = (str: string | null | undefined): string | undefined => (isBlank(str)
   ? undefined
   : str as string);
-
-export const strip = (str: string): string => (str.replace(/^\s+|\s+$/g, ''));
-
-export const titleize = (str: string): string => (str
-  .replace(/_/g, ' ')
-  .replace(/\b[a-z]/g, char => char.toUpperCase()));
 
 export const underscore = (str: string): string => (str
   .replace(/[a-z][A-Z]/, match => `${match[0]}_${match[1]}`)
