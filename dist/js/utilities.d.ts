@@ -1,4 +1,5 @@
 import moment from 'moment';
+export declare const escapeHTML: (string?: string | undefined) => string;
 declare global {
     interface Window {
         Honeybadger: any;
@@ -6,9 +7,8 @@ declare global {
     }
 }
 export declare const animate: (element: HTMLElement, animation: string, callback?: (() => void) | undefined, delay?: number | undefined, speed?: string | undefined) => void;
-export declare const debounce: (func: (...args: any[]) => void, delay?: number) => (...args: any[]) => void;
-export declare const elementFromString: <T extends HTMLElement = HTMLElement>(str: string) => T;
-export declare const escapeHTML: (str: string) => string;
+export declare function debounce(func: (...args: any[]) => void, delay?: number): (...args: any[]) => void;
+export declare function elementFromString<T extends HTMLElement>(str: string): T;
 export declare function hms(seconds: number, zero?: string): string;
 declare type FontAwesomeStyles = 'regular' | 'thin' | 'solid' | 'brands';
 export declare const icon: (types: string, style?: FontAwesomeStyles) => string;

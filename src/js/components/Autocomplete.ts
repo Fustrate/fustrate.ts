@@ -1,3 +1,4 @@
+// @ts-ignore
 import Awesomplete from 'awesomplete';
 
 import { get } from '../ajax';
@@ -5,7 +6,7 @@ import Component from '../Component';
 import { debounce, triggerEvent } from '../utilities';
 
 interface AutocompleteSelectEvent extends Event {
-  text: string;
+  text?: string;
 }
 
 export class AutocompleteSuggestion extends String {
@@ -25,7 +26,7 @@ export class AutocompleteSuggestion extends String {
     return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
   }
 
-  public item(text: string, index: number) {
+  public item(text: string, index: number): HTMLElement {
     return Awesomplete.$.create('li', {
       'aria-selected': 'false',
       innerHTML: this.highlightedHTML(text),
@@ -88,7 +89,10 @@ export class PlainAutocompleteSource extends AutocompleteSource {
 }
 
 export class RemoteAutocompleteSource extends AutocompleteSource {
-  public url: (...args: any[]) => string;
+  // eslint-disable-next-line no-unused-vars
+  public url(...args: any[]): string {
+    throw new Error('Invalid url constructor.');
+  }
 }
 
 interface AutocompleteOptions {
@@ -121,9 +125,8 @@ export class Autocomplete extends Component {
       item: (suggestion: AutocompleteSuggestion, value: string, index: number) => suggestion.item(value, index),
       maxItems: 25,
       minChars: 0,
-      replace: suggestion => suggestion.label,
       sort: false, // Items are fed in the intended order
-      suggestion: datum => this.suggestionForDatum(datum),
+      suggestion: (datum: string) => this.suggestionForDatum(datum),
     });
 
     // Fix for Chrome ignoring autocomplete='off', but does it break Firefox?
@@ -236,7 +239,9 @@ export class Autocomplete extends Component {
   }
 
   public replace(suggestion: string) {
-    this.awesomplete.replace(suggestion);
+    if (this.awesomplete.input instanceof HTMLInputElement) {
+      this.awesomplete.input.value = suggestion.toString();
+    }
   }
 }
 
@@ -248,6 +253,6 @@ export class PlainAutocomplete extends Autocomplete {
   public onSelect(event: AutocompleteSelectEvent) {
     super.onSelect(event);
 
-    this.input.value = event.text.toString();
+    this.input.value = (event.text || '').toString();
   }
 }

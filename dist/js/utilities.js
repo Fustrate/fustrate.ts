@@ -1,18 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // Internal functions
-const array_1 = require("./array");
+const lodash_1 = require("lodash");
 const string_1 = require("./string");
-const entityMap = {
-    '"': '&quot;',
-    '&': '&amp;',
-    '\'': '&#39;',
-    '/': '&#x2F;',
-    '<': '&lt;',
-    '=': '&#x3D;',
-    '>': '&gt;',
-    '`': '&#x60;',
-};
+// TODO: Remove this and use lodash directly in projects
+exports.escapeHTML = lodash_1.escape;
 const hrefFor = (href) => {
     if (href === undefined) {
         return '#';
@@ -91,7 +83,7 @@ exports.animate = (element, animation, callback, delay, speed) => {
 //     }
 //   });
 // };
-exports.debounce = (func, delay = 250) => {
+function debounce(func, delay = 250) {
     let timeout;
     // eslint-disable-next-line func-names
     return function (...args) {
@@ -105,18 +97,14 @@ exports.debounce = (func, delay = 250) => {
         }
         timeout = window.setTimeout(delayedFunc, delay);
     };
-};
-exports.elementFromString = (str) => {
+}
+exports.debounce = debounce;
+function elementFromString(str) {
     const template = document.createElement('template');
     template.innerHTML = str.trim();
     return template.content.firstChild;
-};
-exports.escapeHTML = (str) => {
-    if (str === null || str === undefined) {
-        return '';
-    }
-    return String(str).replace(/[&<>'"`=/\\]/g, entity => entityMap[entity]);
-};
+}
+exports.elementFromString = elementFromString;
 function hms(seconds, zero) {
     if (zero && seconds === 0) {
         return zero;
@@ -137,7 +125,7 @@ exports.icon = (types, style = 'regular') => {
     return `<i class='fa${style[0]} ${classes}'></i>`;
 };
 exports.label = (text, type) => {
-    const classes = string_1.underscore(array_1.compact(['label', type, text.replace(/\s+/g, '-')]).join(' '))
+    const classes = string_1.underscore(lodash_1.compact(['label', type, text.replace(/\s+/g, '-')]).join(' '))
         .toLowerCase()
         .split(' ');
     const span = document.createElement('span');
@@ -151,7 +139,7 @@ exports.multilineEscapeHTML = (str) => {
     }
     return str
         .split(/\r?\n/)
-        .map(line => exports.escapeHTML(line))
+        .map(line => lodash_1.escape(line))
         .join('<br />');
 };
 exports.linkTo = (text, href, options) => {

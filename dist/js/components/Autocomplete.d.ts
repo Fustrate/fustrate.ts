@@ -1,7 +1,7 @@
 import Awesomplete from 'awesomplete';
 import Component from '../Component';
 interface AutocompleteSelectEvent extends Event {
-    text: string;
+    text?: string;
 }
 export declare class AutocompleteSuggestion extends String {
     datum: any;
@@ -27,7 +27,7 @@ export declare class PlainAutocompleteSource extends AutocompleteSource {
     matchingData(searchTerm: string): PlainAutocompleteSuggestion[];
 }
 export declare class RemoteAutocompleteSource extends AutocompleteSource {
-    url: (...args: any[]) => string;
+    url(...args: any[]): string;
 }
 interface AutocompleteOptions {
     source?: AutocompleteSource;

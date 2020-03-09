@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const array_1 = require("./array");
+const lodash_1 = require("lodash");
 // A simple polyfill for objects that aren't DOM nodes to receive events.
 class Listenable {
     constructor() {
@@ -13,7 +13,7 @@ class Listenable {
         this.listeners[type].push(listener);
     }
     removeEventListener(type, listener) {
-        array_1.remove(this.listeners[type], listener);
+        lodash_1.pull(this.listeners[type], listener);
     }
     dispatchEvent(event) {
         if (!(event.type && this.listeners[event.type])) {

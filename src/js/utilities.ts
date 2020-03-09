@@ -1,8 +1,7 @@
 import moment from 'moment';
 
 // Internal functions
-import { compact } from 'lodash/array';
-import { escape } from 'lodash/string';
+import { compact, escape } from 'lodash';
 import { underscore } from './string';
 
 // TODO: Remove this and use lodash directly in projects
@@ -119,7 +118,7 @@ export const animate = (
 //   });
 // };
 
-export const debounce = (func: (...args: any[]) => void, delay: number = 250): (...args: any[]) => void => {
+export function debounce(func: (...args: any[]) => void, delay: number = 250): (...args: any[]) => void {
   let timeout: number | null;
 
   // eslint-disable-next-line func-names
@@ -138,9 +137,9 @@ export const debounce = (func: (...args: any[]) => void, delay: number = 250): (
 
     timeout = window.setTimeout(delayedFunc, delay);
   };
-};
+}
 
-export function elementFromString(str: string): T {
+export function elementFromString<T extends HTMLElement>(str: string): T {
   const template = document.createElement('template');
 
   template.innerHTML = str.trim();

@@ -113,9 +113,12 @@ class Pagination extends Component_1.default {
             pages.push(this.totalPages - 1);
             pages.push(this.totalPages);
         }
-        else if (pages[pages.length - 1] + 1 <= this.totalPages) {
-            for (let i = pages[pages.length - 1] + 1; i <= this.totalPages; i += 1) {
-                pages.push(i);
+        else {
+            const lastPage = pages[pages.length - 1];
+            if (typeof lastPage === 'number' && lastPage + 1 <= this.totalPages) {
+                for (let i = lastPage + 1; i <= this.totalPages; i += 1) {
+                    pages.push(i);
+                }
             }
         }
         return pages;

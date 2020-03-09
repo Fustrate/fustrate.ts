@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.capitalize = (str) => `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
-exports.dasherize = (str) => str.replace(/_/g, '-');
 exports.humanize = (str) => (str
     .replace(/[a-z][A-Z]/, match => `${match[0]} ${match[1]}`)
     .replace(/_/g, ' ')
@@ -35,10 +33,6 @@ exports.pluralize = (str) => {
 exports.presence = (str) => (exports.isBlank(str)
     ? undefined
     : str);
-exports.strip = (str) => (str.replace(/^\s+|\s+$/g, ''));
-exports.titleize = (str) => (str
-    .replace(/_/g, ' ')
-    .replace(/\b[a-z]/g, char => char.toUpperCase()));
 exports.underscore = (str) => (str
     .replace(/[a-z][A-Z]/, match => `${match[0]}_${match[1]}`)
     .replace('::', '/')

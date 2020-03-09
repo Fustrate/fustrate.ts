@@ -75,8 +75,14 @@ class GenericTable extends GenericPage_1.default {
             return;
         }
         const ul = (new Pagination_1.default(response)).generate();
-        document.querySelectorAll('.pagination').forEach((pagination) => {
-            pagination.parentNode.replaceChild(ul.cloneNode(true), pagination);
+        document.body.querySelectorAll('[data-pagination]').forEach((container) => {
+            const existingPagination = container.querySelector('.pagination');
+            if (existingPagination) {
+                container.replaceChild(ul.cloneNode(true), existingPagination);
+            }
+            else {
+                container.append(ul.cloneNode(true));
+            }
         });
     }
     checkAll(event) {

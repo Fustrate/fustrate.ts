@@ -1,17 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.compact = (arr, strings = true) => arr
-    .filter(element => !(element === undefined || element === null || (strings && element === '')));
-exports.first = (arr) => arr[0];
-exports.last = (arr) => arr[arr.length - 1];
-// eslint-disable-next-line arrow-parens
-exports.remove = (arr, object) => {
-    const index = arr.indexOf(object);
-    if (index !== -1) {
-        arr.splice(index, 1);
-    }
-    return arr;
-};
+// eslint-disable-next-line import/prefer-default-export
 exports.toSentence = (arr) => {
     switch (arr.length) {
         case 0:

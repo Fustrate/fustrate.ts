@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// @ts-ignore
 const awesomplete_1 = __importDefault(require("awesomplete"));
 const ajax_1 = require("../ajax");
 const Component_1 = __importDefault(require("../Component"));
@@ -71,6 +72,10 @@ class PlainAutocompleteSource extends AutocompleteSource {
 }
 exports.PlainAutocompleteSource = PlainAutocompleteSource;
 class RemoteAutocompleteSource extends AutocompleteSource {
+    // eslint-disable-next-line no-unused-vars
+    url(...args) {
+        throw new Error('Invalid url constructor.');
+    }
 }
 exports.RemoteAutocompleteSource = RemoteAutocompleteSource;
 class Autocomplete extends Component_1.default {
@@ -85,9 +90,8 @@ class Autocomplete extends Component_1.default {
             item: (suggestion, value, index) => suggestion.item(value, index),
             maxItems: 25,
             minChars: 0,
-            replace: suggestion => suggestion.label,
             sort: false,
-            suggestion: datum => this.suggestionForDatum(datum),
+            suggestion: (datum) => this.suggestionForDatum(datum),
         });
         // Fix for Chrome ignoring autocomplete='off', but does it break Firefox?
         this.input.setAttribute('autocomplete', 'awesomplete');
@@ -178,7 +182,9 @@ class Autocomplete extends Component_1.default {
         return text.replace(RegExp(`(${this.value.split(/\s+/).join('|')})`, 'gi'), '<mark>$&</mark>');
     }
     replace(suggestion) {
-        this.awesomplete.replace(suggestion);
+        if (this.awesomplete.input instanceof HTMLInputElement) {
+            this.awesomplete.input.value = suggestion.toString();
+        }
     }
 }
 exports.Autocomplete = Autocomplete;
@@ -188,7 +194,7 @@ class PlainAutocomplete extends Autocomplete {
     }
     onSelect(event) {
         super.onSelect(event);
-        this.input.value = event.text.toString();
+        this.input.value = (event.text || '').toString();
     }
 }
 exports.PlainAutocomplete = PlainAutocomplete;

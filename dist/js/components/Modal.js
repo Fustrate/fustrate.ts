@@ -5,11 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
 const jquery_1 = __importDefault(require("jquery"));
-const array_1 = require("../array");
+const lodash_1 = require("lodash");
 const Component_1 = __importDefault(require("../Component"));
 const object_1 = require("../object");
 const event_1 = require("../rails/utils/event");
-const string_1 = require("../string");
 const utilities_1 = require("../utilities");
 const defaultSettings = {
     buttons: [],
@@ -55,7 +54,7 @@ function createButton(options) {
     else {
         button.classList.add(options.type);
         button.setAttribute('data-button', options.name);
-        button.textContent = utilities_1.escapeHTML(options.text || string_1.titleize(options.name));
+        button.textContent = utilities_1.escapeHTML(options.text || lodash_1.startCase(options.name));
     }
     return button;
 }
@@ -197,7 +196,7 @@ class Modal extends Component_1.default {
         }
         this.locked = true;
         if (openModals.includes(this)) {
-            array_1.remove(openModals, this);
+            lodash_1.pull(openModals, this);
         }
         openModals.push(this);
         event_1.fire(this.modal, 'modal:opening');
@@ -214,7 +213,7 @@ class Modal extends Component_1.default {
         css.top = `${windowScrollTop - this.height}px`;
         const endCss = {
             opacity: 1,
-            top: `${windowScrollTop + this.settings.distanceFromTop}px`,
+            top: `${windowScrollTop + (this.settings.distanceFromTop || 25)}px`,
         };
         setTimeout((() => {
             this.modal.classList.add('open');
@@ -287,7 +286,7 @@ class Modal extends Component_1.default {
         return element;
     }
     defaultClasses() {
-        return array_1.compact([this.settings.size || '', this.settings.type || '']);
+        return lodash_1.compact([this.settings.size || '', this.settings.type || '']);
     }
     closeButtonClicked(event) {
         event_1.stopEverything(event);

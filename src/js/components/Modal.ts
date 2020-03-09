@@ -1,7 +1,6 @@
 // jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
 import $ from 'jquery';
-import { pull, compact } from 'lodash/array';
-import { startCase } from 'lodash/string';
+import { pull, compact, startCase } from 'lodash';
 
 import Component from '../Component';
 import { deepExtend } from '../object';
@@ -313,7 +312,7 @@ export default class Modal extends Component {
 
     const endCss = {
       opacity: 1,
-      top: `${windowScrollTop + this.settings.distanceFromTop}px`,
+      top: `${windowScrollTop + (this.settings.distanceFromTop || 25)}px`,
     };
 
     setTimeout((() => {
