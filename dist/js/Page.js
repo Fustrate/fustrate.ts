@@ -31,6 +31,6 @@ class Page {
         });
     }
 }
+exports.default = Page;
 Page.addEventListenersFns = [];
 Page.initializeFns = [];
-exports.default = Page;

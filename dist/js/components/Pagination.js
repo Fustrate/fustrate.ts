@@ -21,10 +21,6 @@ const getPreppedPaginationURL = () => {
     return `${window.location.pathname}?`;
 };
 class Pagination extends Component_1.default {
-    static getCurrentPage() {
-        const matchData = window.location.search.match(/[?&]page=(\d+)/);
-        return matchData ? parseInt(matchData[0], 10) : 1;
-    }
     constructor(info) {
         super();
         this.currentPage = info.currentPage;
@@ -32,6 +28,10 @@ class Pagination extends Component_1.default {
         this.totalEntries = info.totalEntries;
         this.perPage = info.perPage;
         this.base = getPreppedPaginationURL();
+    }
+    static getCurrentPage() {
+        const matchData = window.location.search.match(/[?&]page=(\d+)/);
+        return matchData ? parseInt(matchData[0], 10) : 1;
     }
     generate() {
         const ul = document.createElement('ul');

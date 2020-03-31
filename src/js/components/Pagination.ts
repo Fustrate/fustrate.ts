@@ -159,7 +159,6 @@ export default class Pagination extends Component {
           pages.push(i);
         }
       }
-
     }
 
     return pages;

@@ -36,7 +36,7 @@ export default class Modal extends Component {
     private static closeOnBackgroundClick;
     private static icon?;
     static hideAllModals(): void;
-    static readonly settings: ModalSettings;
+    static get settings(): ModalSettings;
     protected static backgroundClicked(): boolean;
     constructor(settings: ModalSettings);
     initialize(): void;
@@ -51,7 +51,7 @@ export default class Modal extends Component {
     hide(): void;
     cancel(): void;
     openPreviousModal(): void;
-    protected readonly height: number;
+    protected get height(): number;
     protected createModal(): HTMLDivElement;
     protected defaultClasses(): string[];
     protected closeButtonClicked(event: MouseEvent): boolean;

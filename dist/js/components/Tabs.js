@@ -6,9 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Component_1 = __importDefault(require("../Component"));
 const event_1 = require("../rails/utils/event");
 class Tabs extends Component_1.default {
-    static initialize() {
-        Array.from(document.querySelectorAll('ul.tabs')).forEach((ul) => new Tabs(ul));
-    }
     constructor(tabs) {
         super();
         this.tabs = tabs;
@@ -30,6 +27,9 @@ class Tabs extends Component_1.default {
                 this.activateTab(this.tabs.querySelector('li > a'), false);
             }
         }
+    }
+    static initialize() {
+        Array.from(document.querySelectorAll('ul.tabs')).forEach((ul) => new Tabs(ul));
     }
     activateTab(tab, changeHash = false) {
         if (!tab) {

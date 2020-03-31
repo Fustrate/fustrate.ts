@@ -7,5 +7,5 @@ export declare class BasicObject extends Listenable {
     id?: number;
     constructor(data?: number | string | JsonData);
     extractFromData(data?: JsonData): JsonData;
-    readonly isBasicObject: boolean;
+    get isBasicObject(): boolean;
 }

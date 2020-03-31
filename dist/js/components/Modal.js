@@ -294,5 +294,5 @@ class Modal extends Component_1.default {
         return false;
     }
 }
-Modal.closeOnBackgroundClick = true;
 exports.default = Modal;
+Modal.closeOnBackgroundClick = true;

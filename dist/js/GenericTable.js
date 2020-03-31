@@ -104,5 +104,5 @@ class GenericTable extends GenericPage_1.default {
         // Hook point
     }
 }
-GenericTable.noRecordsMessage = 'No records found.';
 exports.default = GenericTable;
+GenericTable.noRecordsMessage = 'No records found.';

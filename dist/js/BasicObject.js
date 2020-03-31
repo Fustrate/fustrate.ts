@@ -6,9 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Listenable_1 = __importDefault(require("./Listenable"));
 const object_1 = require("./object");
 class BasicObject extends Listenable_1.default {
-    static buildList(items, attributes = {}) {
-        return items.map(item => (new this(object_1.deepExtend(item, attributes))));
-    }
     constructor(data) {
         super();
         if (typeof data === 'number') {
@@ -20,6 +17,9 @@ class BasicObject extends Listenable_1.default {
         else if (data) {
             this.extractFromData(data);
         }
+    }
+    static buildList(items, attributes = {}) {
+        return items.map(item => (new this(object_1.deepExtend(item, attributes))));
     }
     // Simple extractor to assign root keys as properties in the current object.
     // Formats a few common attributes as dates with moment.js
