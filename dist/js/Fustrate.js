@@ -6,15 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const moment_1 = __importDefault(require("moment"));
 require('./polyfills');
 class Fustrate {
-    static start(instance) {
-        if (instance) {
-            this.instance = instance;
+    static start(Klass) {
+        if (Klass) {
+            this.instance = new Klass();
         }
         document.addEventListener('DOMContentLoaded', () => {
+            var _a;
             this.initialize();
-            if (this.instance) {
-                this.instance.initialize();
-            }
+            (_a = this.instance) === null || _a === void 0 ? void 0 : _a.initialize();
         });
     }
     static initialize() {
@@ -23,11 +22,10 @@ class Fustrate {
     }
     static wrapTables() {
         document.querySelectorAll('table').forEach((table) => {
+            var _a;
             const wrapper = document.createElement('div');
             wrapper.classList.add('responsive-table');
-            if (table.parentNode) {
-                table.parentNode.insertBefore(wrapper, table);
-            }
+            (_a = table.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(wrapper, table);
             wrapper.appendChild(table);
         });
     }

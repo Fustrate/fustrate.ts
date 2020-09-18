@@ -7,17 +7,15 @@ require('./polyfills');
 export default class Fustrate {
   protected static instance: Page;
 
-  public static start(instance?: Page): void {
-    if (instance) {
-      this.instance = instance;
+  public static start(Klass?: typeof Page): void {
+    if (Klass) {
+      this.instance = new Klass();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       this.initialize();
 
-      if (this.instance) {
-        this.instance.initialize();
-      }
+      this.instance?.initialize();
     });
   }
 
@@ -31,9 +29,7 @@ export default class Fustrate {
       const wrapper = document.createElement('div');
       wrapper.classList.add('responsive-table');
 
-      if (table.parentNode) {
-        table.parentNode.insertBefore(wrapper, table);
-      }
+      table.parentNode?.insertBefore(wrapper, table);
 
       wrapper.appendChild(table);
     });
