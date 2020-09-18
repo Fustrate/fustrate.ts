@@ -9,4 +9,3 @@ export { default as Modal } from './dist/js/components/Modal';
 export { default as Pagination } from './dist/js/components/Pagination';
 export { default as Rails } from './dist/js/components/Rails';
 export { default as Tabs } from './dist/js/components/Tabs';
-export { default as Tooltip } from './dist/js/components/Tooltip';

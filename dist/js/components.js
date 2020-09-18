@@ -23,5 +23,3 @@ var Rails_1 = require("./components/Rails");
 exports.Rails = Rails_1.default;
 var Tabs_1 = require("./components/Tabs");
 exports.Tabs = Tabs_1.default;
-var Tooltip_1 = require("./components/Tooltip");
-exports.Tooltip = Tooltip_1.default;
