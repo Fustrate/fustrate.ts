@@ -1,8 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const moment = require('moment');
+const moment_1 = __importDefault(require("moment"));
 require('./polyfills');
-// const Rails = require('@rails/ujs');
 class Fustrate {
     static start(instance) {
         if (instance) {
@@ -30,7 +32,7 @@ class Fustrate {
         });
     }
     static updateMomentLocales() {
-        moment.updateLocale('en', {
+        moment_1.default.updateLocale('en', {
             calendar: {
                 lastDay: '[Yesterday at] LT',
                 lastWeek: 'dddd [at] LT',

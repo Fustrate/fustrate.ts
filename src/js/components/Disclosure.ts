@@ -1,14 +1,14 @@
+import { delegate, fire } from '@rails/ujs';
+
 import Component from '../Component';
-import { delegate } from '../rails/utils/event';
-import { triggerEvent } from '../utilities';
 
 export default class Disclosure extends Component {
-  public static initialize() {
+  public static initialize(): void {
     delegate(document.body, '.disclosure-title', 'click', this.toggleDisclosure);
   }
 
-  public static toggleDisclosure(event: MouseEvent) {
-    const disclosure = (event.target! as HTMLElement).closest('.disclosure');
+  public static toggleDisclosure(event: MouseEvent): false {
+    const disclosure = (event.target as HTMLElement)?.closest('.disclosure');
 
     if (!disclosure) {
       return false;
@@ -18,7 +18,7 @@ export default class Disclosure extends Component {
 
     disclosure.classList.toggle('open');
 
-    triggerEvent(disclosure, `${(isOpen ? 'closed' : 'opened')}.disclosure`);
+    fire(disclosure, `${(isOpen ? 'closed' : 'opened')}.disclosure`);
 
     return false;
   }

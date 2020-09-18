@@ -3,28 +3,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BasicObject = void 0;
 const Listenable_1 = __importDefault(require("./Listenable"));
-const object_1 = require("./object");
 class BasicObject extends Listenable_1.default {
-    constructor(data) {
-        super();
-        if (typeof data === 'number') {
-            this.id = data;
+    static build(data, attributes) {
+        if (data instanceof this) {
+            return data;
         }
-        else if (typeof data === 'string') {
-            this.id = parseInt(data, 10);
+        if (typeof data === 'string' || typeof data === 'number') {
+            data = { id: data };
         }
-        else if (data) {
-            this.extractFromData(data);
+        const record = new this();
+        if (data) {
+            record.extractFromData(Object.assign(Object.assign({}, data), attributes));
         }
+        return record;
     }
-    static buildList(items, attributes = {}) {
-        return items.map(item => (new this(object_1.deepExtend(item, attributes))));
+    static buildList(items, attributes) {
+        return items.map((item) => this.build(item, attributes));
     }
     // Simple extractor to assign root keys as properties in the current object.
     // Formats a few common attributes as dates with moment.js
     extractFromData(data) {
-        return data || {};
+        if (!data) {
+            return {};
+        }
+        Object.assign(this, data);
+        // Object.getOwnPropertyNames(data).forEach((key) => {
+        //   this[key] = data[key];
+        // }, this);
+        return data;
     }
     get isBasicObject() {
         return true;

@@ -7,14 +7,14 @@ const Pagination_1 = __importDefault(require("./components/Pagination"));
 const GenericPage_1 = __importDefault(require("./GenericPage"));
 const utilities_1 = require("./utilities");
 const sortRows = (rows, sortFunction) => {
-    const rowsWithSortOrder = rows.map(row => [sortFunction(row), row]);
+    const rowsWithSortOrder = rows.map((row) => [sortFunction(row), row]);
     rowsWithSortOrder.sort((x, y) => {
         if (x[0] === y[0]) {
             return 0;
         }
         return x[0] > y[0] ? 1 : -1;
     });
-    return rowsWithSortOrder.map(row => row[1]);
+    return rowsWithSortOrder.map((row) => row[1]);
 };
 class GenericTable extends GenericPage_1.default {
     constructor(table) {
@@ -67,7 +67,7 @@ class GenericTable extends GenericPage_1.default {
     }
     getCheckedIds() {
         return Array.from(this.tbody.querySelectorAll('td:first-child input:checked'))
-            .map(element => parseInt(element.value, 10));
+            .map((element) => parseInt(element.value, 10));
     }
     // This should be fed a response from a JSON request for a paginated collection.
     updatePagination(response) {
@@ -99,7 +99,7 @@ class GenericTable extends GenericPage_1.default {
     reloadTable() {
         // Hook point
     }
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateRow(row, item) {
         // Hook point
     }

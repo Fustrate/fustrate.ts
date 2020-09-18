@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.toSentence = void 0;
 // eslint-disable-next-line import/prefer-default-export
-exports.toSentence = (arr) => {
+function toSentence(arr) {
     switch (arr.length) {
         case 0:
             return '';
@@ -12,4 +13,5 @@ exports.toSentence = (arr) => {
         default:
             return `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
     }
-};
+}
+exports.toSentence = toSentence;

@@ -1,36 +1,10 @@
 import assert from 'assert';
 import {
-  debounce, elementFromString, escapeHTML, hms, multilineEscapeHTML, redirectTo,
-  // animate, icon, label, linkTo, triggerEvent,
-  // isVisible, toggle, show, hide, toHumanDate,
+  elementFromString, hms, multilineEscapeHTML, redirectTo,
+  // animate, icon, label, linkTo, isVisible, toggle, show, hide, toHumanDate,
 } from '../src/js/utilities';
 
 describe('animate', () => {});
-
-describe('debounce', () => {
-  jest.useFakeTimers();
-
-  it('waits to run a function', () => {
-    const callback = jest.fn();
-    const debounced = debounce(callback, 2500);
-
-    debounced.call();
-    expect(callback).not.toBeCalled();
-
-    // Wait for 1 second and then run again
-    jest.runTimersToTime(1000);
-    expect(callback).not.toBeCalled();
-    debounced.call();
-
-    // Wait for 2.499 seconds
-    jest.runTimersToTime(2499);
-    expect(callback).not.toBeCalled();
-
-    // 1 more ms and it should run
-    jest.runTimersToTime(1);
-    expect(callback).toBeCalled();
-  });
-});
 
 describe('elementFromString', () => {
   it('creates a bare element', () => {
@@ -51,20 +25,6 @@ describe('elementFromString', () => {
     assert(element instanceof HTMLTableRowElement);
     assert.strictEqual(element.children.length, 3);
     assert(element.querySelector('input') instanceof HTMLInputElement);
-  });
-});
-
-describe('escapeHTML', () => {
-  it('escapes null and undefined', () => {
-    assert.strictEqual(escapeHTML(null), '');
-    assert.strictEqual(escapeHTML(undefined), '');
-  });
-
-  it('escapes entities in a string', () => {
-    assert.strictEqual(
-      escapeHTML('<strong>\'Bob\' `&` "Bill"</strong> =/'),
-      '&lt;strong&gt;&#39;Bob&#39; &#x60;&amp;&#x60; &quot;Bill&quot;&lt;&#x2F;strong&gt; &#x3D;&#x2F;',
-    );
   });
 });
 
@@ -108,7 +68,7 @@ describe('multilineEscapeHTML', () => {
   it('escapes entities in a string', () => {
     assert.strictEqual(
       multilineEscapeHTML('<strong>\'Bob\' `&` "Bill"</strong>\n=/'),
-      '&lt;strong&gt;&#39;Bob&#39; &#x60;&amp;&#x60; &quot;Bill&quot;&lt;&#x2F;strong&gt;<br />&#x3D;&#x2F;',
+      '&lt;strong&gt;&#39;Bob&#39; `&amp;` &quot;Bill&quot;&lt;/strong&gt;<br />=/',
     );
   });
 });
@@ -140,7 +100,6 @@ describe('redirectTo', () => {
   });
 });
 
-describe('triggerEvent', () => {});
 describe('isVisible', () => {});
 describe('toggle', () => {});
 describe('show', () => {});

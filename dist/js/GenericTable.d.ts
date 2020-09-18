@@ -1,4 +1,5 @@
 import GenericPage from './GenericPage';
+import type { PaginationInformation } from './components/Pagination';
 declare type RowSortFunction = (row: HTMLTableRowElement) => string;
 export default class GenericTable extends GenericPage {
     protected static noRecordsMessage: string;
@@ -14,7 +15,9 @@ export default class GenericTable extends GenericPage {
     removeRow(row: HTMLTableRowElement): void;
     updated(): void;
     getCheckedIds(): number[];
-    updatePagination(response: any): void;
+    updatePagination(response: PaginationInformation & {
+        [s: string]: any;
+    }): void;
     checkAll(event?: Event): void;
     uncheckAll(): void;
     reloadTable(): void;

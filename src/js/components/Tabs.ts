@@ -1,10 +1,11 @@
+import { delegate, stopEverything } from '@rails/ujs';
+
 import Component from '../Component';
-import { delegate, stopEverything } from '../rails/utils/event';
 
 export default class Tabs extends Component {
   private tabs: HTMLUListElement;
 
-  public static initialize() {
+  public static initialize(): void {
     Array.from(document.querySelectorAll<HTMLUListElement>('ul.tabs')).forEach((ul: HTMLUListElement) => new Tabs(ul));
   }
 
@@ -35,7 +36,7 @@ export default class Tabs extends Component {
     }
   }
 
-  public activateTab(tab: HTMLElement | null, changeHash: boolean = false) {
+  public activateTab(tab: HTMLElement | null, changeHash = false): void {
     if (!tab) {
       return;
     }

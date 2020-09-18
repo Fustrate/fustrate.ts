@@ -1,16 +1,13 @@
-// eslint-disable-next-line no-unused-vars
-import Page from './Page';
+import moment from 'moment';
 
-const moment = require('moment');
+import type Page from './Page';
 
 require('./polyfills');
-
-// const Rails = require('@rails/ujs');
 
 export default class Fustrate {
   protected static instance: Page;
 
-  public static start(instance?: Page) {
+  public static start(instance?: Page): void {
     if (instance) {
       this.instance = instance;
     }
@@ -24,12 +21,12 @@ export default class Fustrate {
     });
   }
 
-  protected static initialize() {
+  protected static initialize(): void {
     this.wrapTables();
     this.updateMomentLocales();
   }
 
-  protected static wrapTables() {
+  protected static wrapTables(): void {
     document.querySelectorAll<HTMLTableElement>('table').forEach((table) => {
       const wrapper = document.createElement('div');
       wrapper.classList.add('responsive-table');
@@ -42,7 +39,7 @@ export default class Fustrate {
     });
   }
 
-  protected static updateMomentLocales() {
+  protected static updateMomentLocales(): void {
     moment.updateLocale('en', {
       calendar: {
         lastDay: '[Yesterday at] LT',

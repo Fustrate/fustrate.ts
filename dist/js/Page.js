@@ -12,7 +12,7 @@ class Page {
         mixins.forEach((mixin) => {
             // Don't do anything with methods that are already implemented on the Page subclass.
             Object.getOwnPropertyNames(mixin.prototype)
-                .filter(name => !Object.getOwnPropertyDescriptor(this.prototype, name))
+                .filter((name) => !Object.getOwnPropertyDescriptor(this.prototype, name))
                 .forEach((name) => {
                 const descriptor = Object.getOwnPropertyDescriptor(mixin.prototype, name);
                 if (!descriptor) {

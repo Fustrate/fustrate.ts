@@ -21,7 +21,7 @@ const getPreppedPaginationURL = (): string => {
   return `${window.location.pathname}?`;
 };
 
-interface PaginationInformation {
+export interface PaginationInformation {
   currentPage: number;
   totalPages: number;
   totalEntries: number;

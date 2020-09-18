@@ -1,6 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const lodash_1 = require("lodash");
+const pull_1 = __importDefault(require("lodash/pull"));
 // A simple polyfill for objects that aren't DOM nodes to receive events.
 class Listenable {
     constructor() {
@@ -13,7 +16,7 @@ class Listenable {
         this.listeners[type].push(listener);
     }
     removeEventListener(type, listener) {
-        lodash_1.pull(this.listeners[type], listener);
+        pull_1.default(this.listeners[type], listener);
     }
     dispatchEvent(event) {
         if (!(event.type && this.listeners[event.type])) {

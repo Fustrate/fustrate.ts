@@ -1,7 +1,9 @@
 export default class Mixin {
-  public initialize() {
+  public initialize(): void {
+    // Run initialization code
   }
 
-  public addEventListeners() {
+  public addEventListeners(): void {
+    // Add event listeners
   }
 }

@@ -17,13 +17,13 @@ interface ModalSettings {
     buttons: (string | ModalButton)[];
     content?: string;
     css?: ModalSettingsCss;
-    distanceFromTop?: number;
     icon?: string;
     size?: string;
     type?: string;
 }
 export default class Modal extends Component {
     modal: HTMLElement;
+    modalId: number;
     settings: ModalSettings;
     locked: boolean;
     fields: {
@@ -32,28 +32,31 @@ export default class Modal extends Component {
     buttons: {
         [s: string]: HTMLElement;
     };
-    private cachedHeight?;
     private static closeOnBackgroundClick;
-    private static icon?;
+    private promise?;
+    private resolve?;
+    private reject?;
     static hideAllModals(): void;
     static get settings(): ModalSettings;
     protected static backgroundClicked(): boolean;
-    constructor(settings: ModalSettings);
+    constructor(settings?: ModalSettings);
+    setup(): void;
+    static build<T extends typeof Modal>(this: T): InstanceType<T>;
     initialize(): void;
     reloadUIElements(): void;
-    setTitle(title: string, icon?: string | false): void;
+    setTitle(title: string, icon?: string): void;
     setContent(content: string | (() => string), reload?: boolean): void;
     setButtons(buttons: (string | ModalButton)[], reload?: boolean): void;
     addEventListeners(): void;
     focusFirstInput(): void;
-    open(): void;
+    open(reopening?: boolean): Promise<any>;
     close(openPrevious?: boolean): void;
     hide(): void;
     cancel(): void;
     openPreviousModal(): void;
-    protected get height(): number;
     protected createModal(): HTMLDivElement;
     protected defaultClasses(): string[];
-    protected closeButtonClicked(event: MouseEvent): boolean;
+    protected closeButtonClicked(event: MouseEvent): false;
+    static keyPressed(event: KeyboardEvent): void;
 }
 export {};

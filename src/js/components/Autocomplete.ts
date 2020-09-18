@@ -1,9 +1,12 @@
-// @ts-ignore
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Awesomplete from 'awesomplete';
 
-import { get } from '../ajax';
+import { fire } from '@rails/ujs';
+import debounce from 'lodash/debounce';
+import includes from 'lodash/includes';
+
+import ajax from '../ajax';
 import Component from '../Component';
-import { debounce, triggerEvent } from '../utilities';
 
 interface AutocompleteSelectEvent extends Event {
   text?: string;
@@ -18,7 +21,7 @@ export class AutocompleteSuggestion extends String {
     this.datum = datum;
   }
 
-  public highlight(input: string, text: string) {
+  public highlight(input: string, text: string): string {
     if (input.trim() === '') {
       return text;
     }
@@ -26,7 +29,7 @@ export class AutocompleteSuggestion extends String {
     return text.replace(RegExp(Awesomplete.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
   }
 
-  public item(text: string, index: number): HTMLElement {
+  public item(text: string): HTMLElement {
     return Awesomplete.$.create('li', {
       'aria-selected': 'false',
       innerHTML: this.highlightedHTML(text),
@@ -34,7 +37,7 @@ export class AutocompleteSuggestion extends String {
     });
   }
 
-  public highlightedHTML(value: string) {
+  public highlightedHTML(value: string): string {
     return this.highlight(value, this.toString());
   }
 }
@@ -46,12 +49,10 @@ export class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
 }
 
 export class AutocompleteSource {
-  // eslint-disable-next-line no-unused-vars
-  public matches(datum: string) {
+  public matches(datum: string): boolean {
     return true;
   }
 
-  // eslint-disable-next-line no-unused-vars
   public filter(suggestion: string, userInput: string): boolean {
     return true;
   }
@@ -60,7 +61,6 @@ export class AutocompleteSource {
     return new AutocompleteSuggestion(datum);
   }
 
-  // eslint-disable-next-line no-unused-vars
   public matchingData(searchTerm: string): AutocompleteSuggestion[] {
     return [];
   }
@@ -76,7 +76,7 @@ export class PlainAutocompleteSource extends AutocompleteSource {
   }
 
   public filter(suggestion: string, userInput: string): boolean {
-    return suggestion.toLowerCase().indexOf(userInput) >= 0;
+    return includes(suggestion, userInput);
   }
 
   public suggestion(datum: string): PlainAutocompleteSuggestion {
@@ -84,12 +84,11 @@ export class PlainAutocompleteSource extends AutocompleteSource {
   }
 
   public matchingData(searchTerm: string): PlainAutocompleteSuggestion[] {
-    return this.list.filter(datum => this.filter(datum, searchTerm), this).map(datum => this.suggestion(datum));
+    return this.list.filter((datum) => this.filter(datum, searchTerm), this).map((datum) => this.suggestion(datum));
   }
 }
 
 export class RemoteAutocompleteSource extends AutocompleteSource {
-  // eslint-disable-next-line no-unused-vars
   public url(...args: any[]): string {
     throw new Error('Invalid url constructor.');
   }
@@ -106,12 +105,15 @@ export class Autocomplete extends Component {
 
   public input: HTMLInputElement;
 
-  public value: string = '';
+  public value = '';
 
   public sources: AutocompleteSource[] = [];
 
-  public static create(input: HTMLInputElement, options: AutocompleteOptions) {
-    return new this(input, options);
+  public static create<T extends typeof Autocomplete>(
+    input: HTMLInputElement,
+    options: AutocompleteOptions,
+  ): InstanceType<T> {
+    return new this(input, options) as InstanceType<T>;
   }
 
   constructor(input: HTMLInputElement, options: AutocompleteOptions) {
@@ -122,7 +124,7 @@ export class Autocomplete extends Component {
 
     this.awesomplete = new Awesomplete(this.input, {
       filter: () => true,
-      item: (suggestion: AutocompleteSuggestion, value: string, index: number) => suggestion.item(value, index),
+      item: (suggestion: AutocompleteSuggestion, value: string) => suggestion.item(value),
       maxItems: 25,
       minChars: 0,
       sort: false, // Items are fed in the intended order
@@ -133,11 +135,11 @@ export class Autocomplete extends Component {
     this.input.setAttribute('autocomplete', 'awesomplete');
 
     this.input.addEventListener('awesomplete-selectcomplete', this.onSelect.bind(this));
-    this.input.addEventListener('keyup', debounce(this.onKeyup.bind(this)));
+    this.input.addEventListener('keyup', debounce(this.onKeyup.bind(this), 250));
     this.input.addEventListener('focus', this.onFocus.bind(this));
   }
 
-  public extractOptions(options: AutocompleteOptions) {
+  public extractOptions(options: AutocompleteOptions): void {
     if (options.source) {
       this.sources = [options.source];
     } else if (options.sources) {
@@ -152,7 +154,7 @@ export class Autocomplete extends Component {
       return this.sources[0];
     }
 
-    return this.sources.find(source => source.matches(datum));
+    return this.sources.find((source) => source.matches(datum));
   }
 
   public suggestionForDatum(datum: string): AutocompleteSuggestion | undefined {
@@ -161,24 +163,24 @@ export class Autocomplete extends Component {
     return source ? source.suggestion(datum) : undefined;
   }
 
-  public blanked() {
+  public blanked(): void {
     if (this.input.value && this.input.value.trim() !== '') {
       return;
     }
 
     this.awesomplete.close();
 
-    triggerEvent(this.input, 'blanked.autocomplete');
+    fire(this.input, 'blanked.autocomplete');
   }
 
-  public onSelect(event: AutocompleteSelectEvent) {
-    triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text });
+  public onSelect(event: AutocompleteSelectEvent): void {
+    fire(this.input, 'selected.autocomplete', { suggestion: event.text });
 
     // It's obviously not still an error if we just selected a value from the dropdown.
     this.input.classList.remove('error');
   }
 
-  public onFocus() {
+  public onFocus(): void {
     this.value = this.input.value ? this.input.value.trim() : '';
 
     let suggestions: AutocompleteSuggestion[] = [];
@@ -186,15 +188,15 @@ export class Autocomplete extends Component {
 
     // If we have plain text sources, show them immediately
     this.sources
-      .filter(source => source instanceof PlainAutocompleteSource)
+      .filter((source) => source instanceof PlainAutocompleteSource)
       .forEach((source) => {
         suggestions = suggestions.concat(source.matchingData(searchTerm));
       }, this);
 
-    this.awesomplete.list = suggestions.map(suggestion => String(suggestion));
+    this.awesomplete.list = suggestions.map((suggestion) => String(suggestion));
   }
 
-  public onKeyup(event: KeyboardEvent) {
+  public onKeyup(event: KeyboardEvent): void {
     const keyCode = event.which || event.keyCode;
     const value = this.input.value ? this.input.value.trim() : '';
 
@@ -215,10 +217,10 @@ export class Autocomplete extends Component {
 
     this.sources.forEach((source) => {
       if (source instanceof RemoteAutocompleteSource) {
-        get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
+        ajax.get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
           list = list.concat(response.data);
 
-          this.awesomplete.list = list.map(item => String(item));
+          this.awesomplete.list = list.map((item) => String(item));
         });
       } else if (source instanceof PlainAutocompleteSource) {
         const searchTerm = value.toLowerCase();
@@ -227,10 +229,10 @@ export class Autocomplete extends Component {
       }
     }, this);
 
-    this.awesomplete.list = list.map(item => String(item));
+    this.awesomplete.list = list.map((item) => String(item));
   }
 
-  public highlight(text?: string) {
+  public highlight(text?: string): string {
     if (!text) {
       return '';
     }
@@ -238,7 +240,7 @@ export class Autocomplete extends Component {
     return text.replace(RegExp(`(${this.value.split(/\s+/).join('|')})`, 'gi'), '<mark>$&</mark>');
   }
 
-  public replace(suggestion: string) {
+  public replace(suggestion: string): void {
     if (this.awesomplete.input instanceof HTMLInputElement) {
       this.awesomplete.input.value = suggestion.toString();
     }
@@ -246,11 +248,14 @@ export class Autocomplete extends Component {
 }
 
 export class PlainAutocomplete extends Autocomplete {
-  public static create(input: HTMLInputElement, options: AutocompleteOptions) {
+  public static create<T extends typeof PlainAutocomplete>(
+    input: HTMLInputElement,
+    options: AutocompleteOptions,
+  ): InstanceType<T> {
     return super.create(input, options);
   }
 
-  public onSelect(event: AutocompleteSelectEvent) {
+  public onSelect(event: AutocompleteSelectEvent): void {
     super.onSelect(event);
 
     this.input.value = (event.text || '').toString();

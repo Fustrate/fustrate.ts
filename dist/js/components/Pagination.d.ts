@@ -1,5 +1,5 @@
 import Component from '../Component';
-interface PaginationInformation {
+export interface PaginationInformation {
     currentPage: number;
     totalPages: number;
     totalEntries: number;
@@ -18,4 +18,3 @@ export default class Pagination extends Component {
     protected nextLink(): HTMLLIElement;
     protected windowedPageNumbers(): Array<string | number>;
 }
-export {};

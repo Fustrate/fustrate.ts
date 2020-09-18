@@ -3,11 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// @ts-ignore
+exports.PlainAutocomplete = exports.Autocomplete = exports.RemoteAutocompleteSource = exports.PlainAutocompleteSource = exports.AutocompleteSource = exports.PlainAutocompleteSuggestion = exports.AutocompleteSuggestion = void 0;
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const awesomplete_1 = __importDefault(require("awesomplete"));
-const ajax_1 = require("../ajax");
+const ujs_1 = require("@rails/ujs");
+const debounce_1 = __importDefault(require("lodash/debounce"));
+const includes_1 = __importDefault(require("lodash/includes"));
+const ajax_1 = __importDefault(require("../ajax"));
 const Component_1 = __importDefault(require("../Component"));
-const utilities_1 = require("../utilities");
 class AutocompleteSuggestion extends String {
     constructor(datum, displayValue) {
         super(displayValue);
@@ -19,7 +22,7 @@ class AutocompleteSuggestion extends String {
         }
         return text.replace(RegExp(awesomplete_1.default.$.regExpEscape(input.trim()), 'gi'), '<mark>$&</mark>');
     }
-    item(text, index) {
+    item(text) {
         return awesomplete_1.default.$.create('li', {
             'aria-selected': 'false',
             innerHTML: this.highlightedHTML(text),
@@ -38,18 +41,15 @@ class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
 }
 exports.PlainAutocompleteSuggestion = PlainAutocompleteSuggestion;
 class AutocompleteSource {
-    // eslint-disable-next-line no-unused-vars
     matches(datum) {
         return true;
     }
-    // eslint-disable-next-line no-unused-vars
     filter(suggestion, userInput) {
         return true;
     }
     suggestion(datum) {
         return new AutocompleteSuggestion(datum);
     }
-    // eslint-disable-next-line no-unused-vars
     matchingData(searchTerm) {
         return [];
     }
@@ -61,18 +61,17 @@ class PlainAutocompleteSource extends AutocompleteSource {
         this.list = list;
     }
     filter(suggestion, userInput) {
-        return suggestion.toLowerCase().indexOf(userInput) >= 0;
+        return includes_1.default(suggestion, userInput);
     }
     suggestion(datum) {
         return new PlainAutocompleteSuggestion(datum);
     }
     matchingData(searchTerm) {
-        return this.list.filter(datum => this.filter(datum, searchTerm), this).map(datum => this.suggestion(datum));
+        return this.list.filter((datum) => this.filter(datum, searchTerm), this).map((datum) => this.suggestion(datum));
     }
 }
 exports.PlainAutocompleteSource = PlainAutocompleteSource;
 class RemoteAutocompleteSource extends AutocompleteSource {
-    // eslint-disable-next-line no-unused-vars
     url(...args) {
         throw new Error('Invalid url constructor.');
     }
@@ -87,7 +86,7 @@ class Autocomplete extends Component_1.default {
         this.extractOptions(options);
         this.awesomplete = new awesomplete_1.default(this.input, {
             filter: () => true,
-            item: (suggestion, value, index) => suggestion.item(value, index),
+            item: (suggestion, value) => suggestion.item(value),
             maxItems: 25,
             minChars: 0,
             sort: false,
@@ -96,7 +95,7 @@ class Autocomplete extends Component_1.default {
         // Fix for Chrome ignoring autocomplete='off', but does it break Firefox?
         this.input.setAttribute('autocomplete', 'awesomplete');
         this.input.addEventListener('awesomplete-selectcomplete', this.onSelect.bind(this));
-        this.input.addEventListener('keyup', utilities_1.debounce(this.onKeyup.bind(this)));
+        this.input.addEventListener('keyup', debounce_1.default(this.onKeyup.bind(this), 250));
         this.input.addEventListener('focus', this.onFocus.bind(this));
     }
     static create(input, options) {
@@ -117,7 +116,7 @@ class Autocomplete extends Component_1.default {
         if (this.sources.length === 1) {
             return this.sources[0];
         }
-        return this.sources.find(source => source.matches(datum));
+        return this.sources.find((source) => source.matches(datum));
     }
     suggestionForDatum(datum) {
         const source = this.sourceForDatum(datum);
@@ -128,10 +127,10 @@ class Autocomplete extends Component_1.default {
             return;
         }
         this.awesomplete.close();
-        utilities_1.triggerEvent(this.input, 'blanked.autocomplete');
+        ujs_1.fire(this.input, 'blanked.autocomplete');
     }
     onSelect(event) {
-        utilities_1.triggerEvent(this.input, 'selected.autocomplete', { suggestion: event.text });
+        ujs_1.fire(this.input, 'selected.autocomplete', { suggestion: event.text });
         // It's obviously not still an error if we just selected a value from the dropdown.
         this.input.classList.remove('error');
     }
@@ -141,11 +140,11 @@ class Autocomplete extends Component_1.default {
         const searchTerm = this.value.toLowerCase();
         // If we have plain text sources, show them immediately
         this.sources
-            .filter(source => source instanceof PlainAutocompleteSource)
+            .filter((source) => source instanceof PlainAutocompleteSource)
             .forEach((source) => {
             suggestions = suggestions.concat(source.matchingData(searchTerm));
         }, this);
-        this.awesomplete.list = suggestions.map(suggestion => String(suggestion));
+        this.awesomplete.list = suggestions.map((suggestion) => String(suggestion));
     }
     onKeyup(event) {
         const keyCode = event.which || event.keyCode;
@@ -163,9 +162,9 @@ class Autocomplete extends Component_1.default {
         let list = [];
         this.sources.forEach((source) => {
             if (source instanceof RemoteAutocompleteSource) {
-                ajax_1.get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
+                ajax_1.default.get(source.url({ search: value, commit: 1, format: 'json' })).then((response) => {
                     list = list.concat(response.data);
-                    this.awesomplete.list = list.map(item => String(item));
+                    this.awesomplete.list = list.map((item) => String(item));
                 });
             }
             else if (source instanceof PlainAutocompleteSource) {
@@ -173,7 +172,7 @@ class Autocomplete extends Component_1.default {
                 list = list.concat(source.matchingData(searchTerm));
             }
         }, this);
-        this.awesomplete.list = list.map(item => String(item));
+        this.awesomplete.list = list.map((item) => String(item));
     }
     highlight(text) {
         if (!text) {

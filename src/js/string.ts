@@ -1,16 +1,15 @@
 export const humanize = (str: string): string => (str
-  .replace(/[a-z][A-Z]/, match => `${match[0]} ${match[1]}`)
+  .replace(/[a-z][A-Z]/, (match) => `${match[0]} ${match[1]}`)
   .replace(/_/g, ' ')
   .toLowerCase());
 
-export const isBlank = (str: string | null | undefined): boolean => (typeof str === 'string' && str.trim() === '')
-  || str === null
-  || str === undefined;
+export const isBlank = (str: string): boolean => (typeof str === 'string' && str.trim() === '')
+  || str == null;
 
-export const isPresent = (str: string | null | undefined): boolean => !isBlank(str);
+export const isPresent = (str: string): boolean => !isBlank(str);
 
 export const parameterize = (str: string): string => (str
-  .replace(/[a-z][A-Z]/, match => `${match[0]}_${match[1]}`)
+  .replace(/[a-z][A-Z]/, (match) => `${match[0]}_${match[1]}`)
   .replace(/[^a-zA-Z0-9\-_]+/, '-') // Turn unwanted chars into the separator
   .replace(/-{2,}/, '-') // No more than one of the separator in a row
   .replace(/^-|-$/, '') // Remove leading/trailing separator.
@@ -37,11 +36,9 @@ export const pluralize = (str: string): string => {
   return `${str}s`;
 };
 
-export const presence = (str: string | null | undefined): string | undefined => (isBlank(str)
-  ? undefined
-  : str as string);
+export const presence = (str: string): string | undefined => (isBlank(str) ? undefined : str);
 
 export const underscore = (str: string): string => (str
-  .replace(/[a-z][A-Z]/, match => `${match[0]}_${match[1]}`)
+  .replace(/[a-z][A-Z]/, (match) => `${match[0]}_${match[1]}`)
   .replace('::', '/')
   .toLowerCase());

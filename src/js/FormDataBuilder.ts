@@ -1,6 +1,6 @@
-import { BasicObject } from './BasicObject';
+import { isMoment } from 'moment';
 
-const moment = require('moment');
+import { BasicObject } from './BasicObject';
 
 export default class FormDataBuilder {
   public static build(obj: { [s: string]: any }, namespace?: string): FormData {
@@ -14,7 +14,7 @@ export default class FormDataBuilder {
       });
     } else if (value instanceof File) {
       data.append(key, value);
-    } else if (moment.isMoment(value)) {
+    } else if (isMoment(value)) {
       data.append(key, value.format());
     } else if (!(value instanceof BasicObject)) {
       this.toFormData(data, value, key);

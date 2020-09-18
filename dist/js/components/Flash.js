@@ -3,15 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// jQuery: hide, fadeIn, delay, fadeOut
-const jquery_1 = __importDefault(require("jquery"));
+exports.ErrorFlash = exports.SuccessFlash = exports.InfoFlash = exports.Flash = void 0;
 const Component_1 = __importDefault(require("../Component"));
 const utilities_1 = require("../utilities");
-const settings = {
-    displayTime: 4000,
-    fadeInSpeed: 500,
-    fadeOutSpeed: 2000,
-};
 const createFlashBar = (message, type, icon) => {
     const bar = document.createElement('div');
     bar.classList.add('flash', type || 'info');
@@ -27,11 +21,11 @@ class Flash extends Component_1.default {
     constructor(message, type, icon) {
         super();
         const bar = createFlashBar(message, type, icon);
-        jquery_1.default(bar)
-            .hide()
-            .fadeIn(settings.fadeInSpeed)
-            .delay(settings.displayTime)
-            .fadeOut(settings.fadeOutSpeed, () => bar.remove());
+        utilities_1.animate(bar, 'fadeIn', () => {
+            utilities_1.animate(bar, 'fadeOut', () => {
+                bar.remove();
+            }, 4, 'slow');
+        }, undefined, 'faster');
     }
 }
 exports.Flash = Flash;

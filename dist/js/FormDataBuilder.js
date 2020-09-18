@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment_1 = require("moment");
 const BasicObject_1 = require("./BasicObject");
-const moment = require('moment');
 class FormDataBuilder {
     static build(obj, namespace) {
         return this.toFormData(new FormData(), obj, namespace);
@@ -15,7 +15,7 @@ class FormDataBuilder {
         else if (value instanceof File) {
             data.append(key, value);
         }
-        else if (moment.isMoment(value)) {
+        else if (moment_1.isMoment(value)) {
             data.append(key, value.format());
         }
         else if (!(value instanceof BasicObject_1.BasicObject)) {

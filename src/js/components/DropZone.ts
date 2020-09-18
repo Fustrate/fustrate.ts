@@ -1,10 +1,15 @@
+import { stopEverything } from '@rails/ujs';
+
 import Component from '../Component';
-import { stopEverything } from '../rails/utils/event';
 
 // Allow files to be dropped onto an element
 export default class DropZone extends Component {
-  public static create(target: HTMLElement, callback: (files: File[]) => void) {
-    return new DropZone(target, callback);
+  public static create<T extends typeof DropZone>(
+    this: T,
+    target: HTMLElement,
+    callback: (files: File[]) => void,
+  ): InstanceType<T> {
+    return new this(target, callback) as InstanceType<T>;
   }
 
   constructor(target: HTMLElement, callback: (files: File[]) => void) {

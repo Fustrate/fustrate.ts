@@ -7,5 +7,4 @@ export { default as FilePicker } from './dist/js/components/FilePicker';
 export * from './dist/js/components/Flash';
 export { default as Modal } from './dist/js/components/Modal';
 export { default as Pagination } from './dist/js/components/Pagination';
-export { default as Rails } from './dist/js/components/Rails';
 export { default as Tabs } from './dist/js/components/Tabs';

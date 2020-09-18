@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const startsWith_1 = __importDefault(require("lodash/startsWith"));
 const Page_1 = __importDefault(require("./Page"));
 class GenericPage extends Page_1.default {
     constructor() {
@@ -22,12 +23,12 @@ class GenericPage extends Page_1.default {
         this.fields = {};
         this.buttons = {};
         Array.from(document.querySelectorAll('[data-field]'))
-            .filter(element => !element.matches('.modal [data-field]'))
+            .filter((element) => !element.matches('.modal [data-field]'))
             .forEach((element) => {
             this.fields[element.dataset.field] = element;
         });
         Array.from(document.querySelectorAll('[data-button]'))
-            .filter(element => !element.matches('.modal [data-button]'))
+            .filter((element) => !element.matches('.modal [data-button]'))
             .forEach((element) => {
             this.buttons[element.dataset.button] = element;
         });
@@ -43,7 +44,7 @@ class GenericPage extends Page_1.default {
     }
     callAllMethodsBeginningWith(prefix) {
         Object.getOwnPropertyNames(this).forEach((name) => {
-            if (name !== prefix && name.indexOf(prefix) === 0) {
+            if (name !== prefix && startsWith_1.default(prefix, name)) {
                 const descriptor = Object.getOwnPropertyDescriptor(this, name);
                 if (descriptor && typeof descriptor.value === 'function') {
                     descriptor.value.call(this);

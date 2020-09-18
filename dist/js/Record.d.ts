@@ -7,12 +7,23 @@ export declare class Record extends BasicObject {
     private isLoaded;
     id?: number;
     static get paramKey(): string;
-    static create(attributes: object): Promise<any>;
-    constructor(data?: string | number | object);
+    static create(attributes: {
+        [s: string]: any;
+    }): Promise<any>;
+    constructor(data?: string | number);
     get classname(): string;
-    path(parameters: PathParameters): string;
+    path(parameters: {
+        [s: string]: any;
+    }): string;
     reload(force?: boolean): Promise<any>;
-    static createPath(parameters: PathParameters): string;
-    update(attributes?: {}): Promise<any>;
-    delete(): Promise<any>;
+    static createPath(parameters: {
+        [s: string]: any;
+    }): string;
+    update(attributes: {
+        [s: string]: any;
+    }, additionalParameters?: {
+        [s: string]: any;
+    }): Promise<any>;
+    delete(params?: {}): Promise<any>;
+    private receivedResponse;
 }

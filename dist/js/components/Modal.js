@@ -3,12 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// jQuery: scrollTop, css, animate, show, height, hide, fadeIn, fadeOut, detach
-const jquery_1 = __importDefault(require("jquery"));
-const lodash_1 = require("lodash");
+const escape_1 = __importDefault(require("lodash/escape"));
+const startCase_1 = __importDefault(require("lodash/startCase"));
+const compact_1 = __importDefault(require("lodash/compact"));
+const pull_1 = __importDefault(require("lodash/pull"));
+const ujs_1 = require("@rails/ujs");
 const Component_1 = __importDefault(require("../Component"));
-const object_1 = require("../object");
-const event_1 = require("../rails/utils/event");
+const show_hide_1 = require("../show_hide");
 const utilities_1 = require("../utilities");
 const defaultSettings = {
     buttons: [],
@@ -24,13 +25,11 @@ const defaultSettings = {
             visibility: 'visible',
         },
     },
-    distanceFromTop: 25,
     size: 'tiny',
     title: '',
 };
-const fadeSpeed = 250;
 const template = `
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-title">
       <span></span>
       <a href="#" class="modal-close">&#215;</a>
@@ -43,20 +42,21 @@ let openModals = [];
 // We only want to add the global listeners once
 let addedGlobalListeners = false;
 let overlay;
+let modalCount = 0;
 function createButton(options) {
     const button = document.createElement('button');
     button.classList.add('expand');
     if (typeof options === 'string') {
         button.classList.add(options);
         button.setAttribute('data-button', options);
-        button.textContent = utilities_1.escapeHTML(options);
+        button.textContent = escape_1.default(options);
     }
     else {
         button.classList.add(options.type);
         button.setAttribute('data-button', options.name);
-        button.textContent = utilities_1.escapeHTML(options.text || lodash_1.startCase(options.name));
+        button.textContent = escape_1.default(options.text || startCase_1.default(options.name));
     }
-    return button;
+    return button.outerHTML;
 }
 function toggleBackground(visible = true) {
     if (!overlay) {
@@ -64,21 +64,16 @@ function toggleBackground(visible = true) {
         overlay.classList.add('modal-overlay');
     }
     if (visible) {
-        if (!utilities_1.isVisible(overlay)) {
-            utilities_1.hide(overlay);
+        if (!show_hide_1.isVisible(overlay)) {
             document.body.appendChild(overlay);
-            jquery_1.default(overlay).fadeIn(fadeSpeed);
+            utilities_1.animate(overlay, 'fadeIn', undefined, undefined, 'fast');
         }
     }
     else {
-        jquery_1.default(overlay).fadeOut(fadeSpeed, () => {
-            jquery_1.default(overlay).detach();
-        });
-    }
-}
-function closeTopmostModalOnEsc(event) {
-    if (event.which === 27 && openModals.length > 0) {
-        openModals[openModals.length - 1].close();
+        utilities_1.animate(overlay, 'fadeOut', () => {
+            var _a;
+            (_a = overlay.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(overlay);
+        }, undefined, 'faster');
     }
 }
 class Modal extends Component_1.default {
@@ -87,14 +82,9 @@ class Modal extends Component_1.default {
         this.locked = false;
         this.fields = {};
         this.buttons = {};
-        this.settings = object_1.deepExtend(defaultSettings, this.constructor.settings, settings);
-        this.modal = this.createModal();
-        this.setTitle(this.settings.title, this.settings.icon);
-        this.setContent(this.settings.content || '', false);
-        this.setButtons(this.settings.buttons, false);
-        this.reloadUIElements();
-        this.addEventListeners();
-        this.initialize();
+        modalCount += 1;
+        this.modalId = modalCount;
+        this.settings = Object.assign(Object.assign({}, defaultSettings), (settings || {}));
     }
     static hideAllModals() {
         openModals.forEach((modal) => {
@@ -114,6 +104,20 @@ class Modal extends Component_1.default {
         }
         return false;
     }
+    setup() {
+        this.modal = this.createModal();
+        this.setTitle(this.settings.title, this.settings.icon);
+        this.setContent(this.settings.content || '', false);
+        this.setButtons(this.settings.buttons, false);
+        this.reloadUIElements();
+        this.addEventListeners();
+        this.initialize();
+    }
+    static build() {
+        const modal = new this();
+        modal.setup();
+        return modal;
+    }
     initialize() {
         // Perform setup
     }
@@ -128,54 +132,59 @@ class Modal extends Component_1.default {
         });
     }
     setTitle(title, icon) {
-        const iconToUse = icon !== false && icon == null ? this.constructor.icon : icon;
-        this.modal.querySelector('.modal-title span')
-            .innerHTML = iconToUse ? `${utilities_1.icon(iconToUse)} ${title}` : title;
+        const element = this.modal.querySelector('.modal-title span');
+        if (element) {
+            element.innerHTML = icon ? `${utilities_1.icon(icon)} ${title}` : title;
+        }
     }
     setContent(content, reload = true) {
-        let modalContent = content;
-        if (typeof content === 'string') {
-            modalContent = content;
+        const modalContent = typeof content === 'string' ? content : content();
+        const element = this.modal.querySelector('.modal-content');
+        if (element) {
+            element.innerHTML = modalContent;
         }
-        else {
-            modalContent = content();
-        }
-        this.modal.querySelector('.modal-content').innerHTML = modalContent;
-        this.cachedHeight = undefined;
         if (reload) {
             this.reloadUIElements();
         }
     }
     setButtons(buttons, reload = true) {
-        const row = document.createElement('div');
-        row.classList.add('row');
-        const klass = `large-${12 / buttons.length}`;
-        buttons.forEach((buttonData) => {
-            const columns = document.createElement('div');
-            columns.classList.add('columns', klass);
-            columns.append(createButton(buttonData));
-            row.append(columns);
-        });
         const buttonsContainer = this.modal.querySelector('.modal-buttons');
-        buttonsContainer.textContent = '';
-        buttonsContainer.append(row);
-        this.cachedHeight = undefined;
+        if (!buttonsContainer) {
+            return;
+        }
+        if (buttons.length < 1) {
+            buttonsContainer.innerHTML = '';
+            return;
+        }
+        const list = [];
+        buttons.forEach((button) => {
+            if (button === 'spacer') {
+                list.push('<div class="spacer"></div>');
+            }
+            else if (typeof button === 'string') {
+                list.push(`<button class="${button}" data-button="${button}">${startCase_1.default(button)}</button>`);
+            }
+            else {
+                Object.keys(button).forEach((name) => {
+                    list.push(createButton(name));
+                }, this);
+            }
+        });
+        buttonsContainer.innerHTML = list.join(' ');
         if (reload) {
             this.reloadUIElements();
         }
     }
     addEventListeners() {
-        this.modal.querySelector('.modal-close')
-            .addEventListener('click', this.closeButtonClicked.bind(this));
+        var _a, _b;
+        (_a = this.modal.querySelector('.modal-close')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', this.closeButtonClicked.bind(this));
         if (!addedGlobalListeners) {
-            event_1.delegate(document.body, '.modal-overlay', 'click', this.constructor.backgroundClicked);
-            event_1.delegate(document.body, '.modal-overlay', 'touchstart', this.constructor.backgroundClicked);
-            document.body.addEventListener('keyup', closeTopmostModalOnEsc);
+            ujs_1.delegate(document.body, '.modal-overlay', 'click', this.constructor.backgroundClicked);
+            ujs_1.delegate(document.body, '.modal-overlay', 'touchstart', this.constructor.backgroundClicked);
+            document.body.addEventListener('keyup', this.constructor.keyPressed);
             addedGlobalListeners = true;
         }
-        if (this.buttons.cancel) {
-            this.buttons.cancel.addEventListener('click', this.cancel.bind(this));
-        }
+        (_b = this.buttons.cancel) === null || _b === void 0 ? void 0 : _b.addEventListener('click', this.cancel.bind(this));
     }
     focusFirstInput() {
         if (/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
@@ -183,23 +192,21 @@ class Modal extends Component_1.default {
             return;
         }
         const [firstInput] = Array.from(this.modal.querySelectorAll('input, select, textarea'))
-            .filter(element => utilities_1.isVisible(element)
+            .filter((element) => show_hide_1.isVisible(element)
             && !element.disabled
             && (element instanceof HTMLSelectElement || !element.readOnly));
-        if (firstInput) {
-            firstInput.focus();
-        }
+        firstInput.focus();
     }
-    open() {
-        if (this.locked || this.modal.classList.contains('open')) {
-            return;
+    open(reopening) {
+        if (this.promise && (this.locked || this.modal.classList.contains('open'))) {
+            return this.promise;
         }
         this.locked = true;
         if (openModals.includes(this)) {
-            lodash_1.pull(openModals, this);
+            pull_1.default(openModals, this);
         }
         openModals.push(this);
-        event_1.fire(this.modal, 'modal:opening');
+        ujs_1.fire(this.modal, 'modal:opening');
         if (openModals.length > 1) {
             // Hide the modal immediately previous to this one.
             openModals[openModals.length - 2].hide();
@@ -208,21 +215,24 @@ class Modal extends Component_1.default {
             // There are no open modals - show the background overlay
             toggleBackground(true);
         }
-        const windowScrollTop = jquery_1.default(window).scrollTop() || 0;
-        const css = this.settings.css.open;
-        css.top = `${windowScrollTop - this.height}px`;
-        const endCss = {
-            opacity: 1,
-            top: `${windowScrollTop + (this.settings.distanceFromTop || 25)}px`,
-        };
-        setTimeout((() => {
+        const { top } = document.body.getBoundingClientRect();
+        this.modal.style.top = `${25 - top}px`;
+        setTimeout(() => {
             this.modal.classList.add('open');
-            jquery_1.default(this.modal).css(css).animate(endCss, 250, 'linear', () => {
+            utilities_1.animate(this.modal, 'fadeInDown', () => {
                 this.locked = false;
-                event_1.fire(this.modal, 'modal:opened');
+                ujs_1.fire(this.modal, 'modal:opened');
                 this.focusFirstInput();
             });
-        }), 125);
+        }, 125);
+        if (reopening && this.promise) {
+            return this.promise;
+        }
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+        return this.promise;
     }
     close(openPrevious = true) {
         if (this.locked || !this.modal.classList.contains('open')) {
@@ -234,31 +244,24 @@ class Modal extends Component_1.default {
         }
         // Remove the top-most modal (this one) from the stack
         openModals.pop();
-        const windowScrollTop = jquery_1.default(window).scrollTop() || 0;
-        const endCss = {
-            opacity: 0,
-            top: `${-windowScrollTop - this.height}px`,
-        };
-        setTimeout((() => {
-            jquery_1.default(this.modal).animate(endCss, 250, 'linear', () => {
+        setTimeout(() => {
+            utilities_1.animate(this.modal, 'fadeOutUp', () => {
+                ujs_1.fire(this.modal, 'modal:closed');
+                this.modal.classList.remove('open');
                 this.locked = false;
-                jquery_1.default(this.modal).css(this.settings.css.close);
-                event_1.fire(this.modal, 'modal:closed');
-                if (openPrevious) {
-                    this.openPreviousModal();
-                }
-                else {
-                    this.constructor.hideAllModals();
-                }
             });
-            this.modal.classList.remove('open');
-        }), 125);
+            if (openPrevious) {
+                this.openPreviousModal();
+            }
+            else {
+                this.constructor.hideAllModals();
+            }
+        }, 125);
     }
     // Just hide the modal immediately and don't bother with an overlay
     hide() {
         this.locked = false;
         this.modal.classList.remove('open');
-        jquery_1.default(this.modal).css(this.settings.css.close);
     }
     // User clicked the Cancel button, if one exists.
     cancel() {
@@ -266,32 +269,33 @@ class Modal extends Component_1.default {
     }
     openPreviousModal() {
         if (openModals.length > 0) {
-            openModals[openModals.length - 1].open();
+            openModals[openModals.length - 1].open(true);
         }
-    }
-    get height() {
-        if (this.cachedHeight) {
-            return this.cachedHeight;
-        }
-        this.cachedHeight = jquery_1.default(this.modal).show().height();
-        jquery_1.default(this.modal).hide();
-        return this.cachedHeight;
     }
     createModal() {
+        var _a;
         // Join and split in case any of the classes include spaces
         const classes = this.defaultClasses().join(' ').split(' ');
         const element = utilities_1.elementFromString(template);
         element.classList.add(...classes);
+        // Accessibility
+        element.setAttribute('aria-labelledby', `modal_${this.modalId}_title`);
+        (_a = element.querySelector('.modal-title span')) === null || _a === void 0 ? void 0 : _a.setAttribute('id', `modal_${this.modalId}_title`);
         document.body.appendChild(element);
         return element;
     }
     defaultClasses() {
-        return lodash_1.compact([this.settings.size || '', this.settings.type || '']);
+        return compact_1.default([this.settings.size, this.settings.type]);
     }
     closeButtonClicked(event) {
-        event_1.stopEverything(event);
+        ujs_1.stopEverything(event);
         this.close();
         return false;
+    }
+    static keyPressed(event) {
+        if (event.which === 27 && openModals.length > 0) {
+            openModals[openModals.length - 1].close();
+        }
     }
 }
 exports.default = Modal;

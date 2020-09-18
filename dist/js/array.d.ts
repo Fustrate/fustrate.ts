@@ -1,1 +1,1 @@
-export declare const toSentence: (arr: string[]) => string;
+export declare function toSentence(arr: string[]): string;

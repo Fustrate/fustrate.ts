@@ -2,10 +2,12 @@ import Pagination from './components/Pagination';
 import GenericPage from './GenericPage';
 import { elementFromString } from './utilities';
 
+import type { PaginationInformation } from './components/Pagination';
+
 type RowSortFunction = (row: HTMLTableRowElement) => string;
 
 const sortRows = (rows: HTMLTableRowElement[], sortFunction: RowSortFunction): HTMLTableRowElement[] => {
-  const rowsWithSortOrder = rows.map(row => [sortFunction(row), row]);
+  const rowsWithSortOrder = rows.map((row) => [sortFunction(row), row]);
 
   rowsWithSortOrder.sort((x, y) => {
     if (x[0] === y[0]) {
@@ -15,7 +17,7 @@ const sortRows = (rows: HTMLTableRowElement[], sortFunction: RowSortFunction): H
     return x[0] > y[0] ? 1 : -1;
   });
 
-  return rowsWithSortOrder.map(row => row[1]) as HTMLTableRowElement[];
+  return rowsWithSortOrder.map((row) => row[1]) as HTMLTableRowElement[];
 };
 
 export default class GenericTable extends GenericPage {
@@ -37,7 +39,7 @@ export default class GenericTable extends GenericPage {
     this.loadingRow = this.tbody.querySelector<HTMLTableRowElement>('tr.loading');
   }
 
-  public initialize() {
+  public initialize(): void {
     super.initialize();
 
     this.reloadTable();
@@ -98,11 +100,11 @@ export default class GenericTable extends GenericPage {
 
   public getCheckedIds(): number[] {
     return Array.from(this.tbody.querySelectorAll<HTMLInputElement>('td:first-child input:checked'))
-      .map(element => parseInt(element.value, 10));
+      .map((element) => parseInt(element.value, 10));
   }
 
   // This should be fed a response from a JSON request for a paginated collection.
-  public updatePagination(response: any): void {
+  public updatePagination(response: PaginationInformation & { [s: string]: any }): void {
     if (!response.totalPages) {
       return;
     }
@@ -138,7 +140,7 @@ export default class GenericTable extends GenericPage {
     // Hook point
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public updateRow(row: HTMLTableRowElement, item: any): void {
     // Hook point
   }

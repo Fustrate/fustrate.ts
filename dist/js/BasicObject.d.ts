@@ -3,9 +3,15 @@ export declare type JsonData = {
     [s: string]: any;
 };
 export declare class BasicObject extends Listenable {
-    static buildList<T extends BasicObject>(items: JsonData[], attributes?: JsonData): T[];
+    static build<T extends typeof BasicObject>(this: T, data?: {
+        [s: string]: any;
+    }, attributes?: {
+        [s: string]: any;
+    }): InstanceType<T>;
+    static buildList<T extends typeof BasicObject>(this: T, items: any[], attributes?: {
+        [s: string]: any;
+    }): InstanceType<T>[];
     id?: number;
-    constructor(data?: number | string | JsonData);
     extractFromData(data?: JsonData): JsonData;
     get isBasicObject(): boolean;
 }

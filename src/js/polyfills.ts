@@ -1,15 +1,25 @@
 // Supports: Edge (All), Internet Explorer (All)
-import 'array-flat-polyfill';
+require('core-js/features/array/flat');
+require('core-js/features/array/flat-map');
 
 // Supports: Internet Explorer (All)
-import 'custom-event-polyfill';
-import 'nodelist-foreach-polyfill';
+require('custom-event-polyfill');
+require('core-js/features/dom-collections/for-each');
+require('core-js/features/array/from');
 
 // Supports: Internet Explorer 11
-require('es6-promise').polyfill();
+require('core-js/features/promise');
+require('core-js/features/symbol');
+
+declare global {
+  interface Element {
+    msMatchesSelector?: (selectors: string) => boolean;
+  }
+}
 
 // Supports: Internet Explorer (All)
 if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector
-    || Element.prototype.webkitMatchesSelector;
+  Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 }
+
+export {};

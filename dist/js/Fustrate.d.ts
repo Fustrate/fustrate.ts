@@ -1,4 +1,4 @@
-import Page from './Page';
+import type Page from './Page';
 export default class Fustrate {
     protected static instance: Page;
     static start(instance?: Page): void;

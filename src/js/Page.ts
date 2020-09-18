@@ -14,13 +14,13 @@ export default class Page {
     (this.constructor as typeof Page).addEventListenersFns.forEach((fn) => { fn.call(this); });
   }
 
-  public static addMixins(...mixins: (typeof Mixin)[]) {
+  public static addMixins(...mixins: (typeof Mixin)[]): void {
     mixins.forEach((mixin) => {
       // Don't do anything with methods that are already implemented on the Page subclass.
       Object.getOwnPropertyNames(mixin.prototype)
-        .filter(name => !Object.getOwnPropertyDescriptor(this.prototype, name))
+        .filter((name) => !Object.getOwnPropertyDescriptor(this.prototype, name))
         .forEach((name) => {
-          const descriptor: PropertyDescriptor = Object.getOwnPropertyDescriptor(mixin.prototype, name)!;
+          const descriptor = Object.getOwnPropertyDescriptor(mixin.prototype, name);
 
           if (!descriptor) {
             return;

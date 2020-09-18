@@ -1,4 +1,4 @@
-import { pull } from 'lodash';
+import pull from 'lodash/pull';
 
 // A simple polyfill for objects that aren't DOM nodes to receive events.
 export default abstract class Listenable {

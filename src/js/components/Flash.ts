@@ -1,14 +1,5 @@
-// jQuery: hide, fadeIn, delay, fadeOut
-import $ from 'jquery';
-
 import Component from '../Component';
-import { icon as createIcon } from '../utilities';
-
-const settings = {
-  displayTime: 4000,
-  fadeInSpeed: 500,
-  fadeOutSpeed: 2000,
-};
+import { animate, icon as createIcon } from '../utilities';
 
 const createFlashBar = (message: string, type?: string, icon?: string): HTMLDivElement => {
   const bar = document.createElement('div');
@@ -24,8 +15,8 @@ const createFlashBar = (message: string, type?: string, icon?: string): HTMLDivE
 };
 
 export class Flash extends Component {
-  public static show(message: string, type?: string, icon?: string) {
-    return new this(message, type, icon);
+  public static show<T extends typeof Flash>(this: T, message: string, type?: string, icon?: string): InstanceType<T> {
+    return new this(message, type, icon) as InstanceType<T>;
   }
 
   constructor(message: string, type?: string, icon?: string) {
@@ -33,11 +24,11 @@ export class Flash extends Component {
 
     const bar = createFlashBar(message, type, icon);
 
-    $(bar)
-      .hide()
-      .fadeIn(settings.fadeInSpeed)
-      .delay(settings.displayTime)
-      .fadeOut(settings.fadeOutSpeed, () => bar.remove());
+    animate(bar, 'fadeIn', () => {
+      animate(bar, 'fadeOut', () => {
+        bar.remove();
+      }, 4, 'slow');
+    }, undefined, 'faster');
   }
 }
 

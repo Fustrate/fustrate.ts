@@ -7,7 +7,7 @@ export declare class AutocompleteSuggestion extends String {
     datum: any;
     constructor(datum: any, displayValue?: string);
     highlight(input: string, text: string): string;
-    item(text: string, index: number): HTMLElement;
+    item(text: string): HTMLElement;
     highlightedHTML(value: string): string;
 }
 export declare class PlainAutocompleteSuggestion extends AutocompleteSuggestion {
@@ -39,7 +39,7 @@ export declare class Autocomplete extends Component {
     input: HTMLInputElement;
     value: string;
     sources: AutocompleteSource[];
-    static create(input: HTMLInputElement, options: AutocompleteOptions): Autocomplete;
+    static create<T extends typeof Autocomplete>(input: HTMLInputElement, options: AutocompleteOptions): InstanceType<T>;
     constructor(input: HTMLInputElement, options: AutocompleteOptions);
     extractOptions(options: AutocompleteOptions): void;
     sourceForDatum(datum: string): AutocompleteSource | undefined;
@@ -52,7 +52,7 @@ export declare class Autocomplete extends Component {
     replace(suggestion: string): void;
 }
 export declare class PlainAutocomplete extends Autocomplete {
-    static create(input: HTMLInputElement, options: AutocompleteOptions): Autocomplete;
+    static create<T extends typeof PlainAutocomplete>(input: HTMLInputElement, options: AutocompleteOptions): InstanceType<T>;
     onSelect(event: AutocompleteSelectEvent): void;
 }
 export {};

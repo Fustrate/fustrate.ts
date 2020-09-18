@@ -1,15 +1,20 @@
-import moment from 'moment';
+import compact from 'lodash/compact';
+import escape from 'lodash/escape';
 
-// Internal functions
-import { compact, escape } from 'lodash';
+import type { Moment } from 'moment';
+
 import { underscore } from './string';
 
-// TODO: Remove this and use lodash directly in projects
-export const escapeHTML = escape;
+// Internal functions
 
 declare global {
-  interface Window { Honeybadger: any; CustomEvent: any; }
+  interface Window {
+    Honeybadger: any;
+    CustomEvent: any;
+  }
 }
+
+type FontAwesomeStyles = 'regular' | 'thin' | 'solid' | 'brands';
 
 const hrefFor = (href: any) => {
   if (href === undefined) {
@@ -34,14 +39,6 @@ const hrefFor = (href: any) => {
   throw new Error(`Invalid href: ${href}`);
 };
 
-const toggleElement = (element: HTMLElement, makeVisible: boolean): void => {
-  element.style.display = makeVisible ? '' : 'none';
-
-  if (makeVisible) {
-    element.classList.remove('js-hide');
-  }
-};
-
 // Exported functions
 
 export const animate = (
@@ -51,7 +48,7 @@ export const animate = (
   delay?: number,
   speed?: string,
 ): void => {
-  const classes = ['animated', animation];
+  const classes = ['animated', ...animation.split(' ')];
 
   if (delay) {
     classes.push(`delay-${delay}s`);
@@ -62,8 +59,10 @@ export const animate = (
     classes.push(speed);
   }
 
+  const scopedClasses = classes.map((name) => `animate__${name}`);
+
   function handleAnimationEnd() {
-    element.classList.remove('animated', animation);
+    element.classList.remove(...scopedClasses);
     element.removeEventListener('animationend', handleAnimationEnd);
 
     if (typeof callback === 'function') {
@@ -73,71 +72,8 @@ export const animate = (
 
   element.addEventListener('animationend', handleAnimationEnd);
 
-  element.classList.add(...classes);
+  element.classList.add(...scopedClasses);
 };
-
-// export const applyMixin = (target: typeof Page, mixin: typeof Mixin, options?: { [s: string]: any }): void => {
-//   // eslint-disable-next-line new-cap
-//   const instance: Mixin = new mixin();
-//   const mixinPrototype = Object.getPrototypeOf(instance) as typeof Mixin;
-
-//   const targetPrototype = Object.getPrototypeOf(target) as typeof Page;
-
-//   if (options) {
-//     Object.keys(options).forEach((key) => {
-//       Object.defineProperty(target.constructor, key, { value: options[key] });
-//     });
-//   }
-
-//   const existingTargetPrototypePropertyNames = Object.getOwnPropertyNames(targetPrototype);
-
-//   // Assign properties to the prototype
-//   Object.getOwnPropertyNames(mixinPrototype).forEach((key) => {
-//     // Mixins can define their own `initialize` and `addEventListeners` methods, which will be
-//     // added with their mixin name appended, and called at the same time as the original methods.
-//     const newKey = ['initialize', 'addEventListeners'].includes(key) ? `${key}${mixin.name}` : key;
-
-//     if (!existingTargetPrototypePropertyNames.includes(newKey)) {
-//       Object.defineProperty(
-//         targetPrototype,
-//         newKey,
-//         Object.getOwnPropertyDescriptor(mixinPrototype, key) as PropertyDescriptor,
-//       );
-//     }
-//   });
-
-//   // Assign properties to the prototype
-//   Object.getOwnPropertyNames(mixinPrototype.constructor).forEach((key) => {
-//     if (['length', 'name', 'prototype'].includes(key)) {
-//       return;
-//     }
-
-//     if (!target[key]) {
-//       target[key] = mixinPrototype.constructor[key];
-//     }
-//   });
-// };
-
-export function debounce(func: (...args: any[]) => void, delay: number = 250): (...args: any[]) => void {
-  let timeout: number | null;
-
-  // eslint-disable-next-line func-names
-  return function (this: any, ...args: any[]) {
-    const context = this;
-
-    const delayedFunc = () => {
-      func.apply(context, args);
-
-      timeout = null;
-    };
-
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-
-    timeout = window.setTimeout(delayedFunc, delay);
-  };
-}
 
 export function elementFromString<T extends HTMLElement>(str: string): T {
   const template = document.createElement('template');
@@ -162,12 +98,8 @@ export function hms(seconds: number, zero?: string): string {
   return `${seconds < 0 ? '-' : ''}${parts.join(':')}`;
 }
 
-type FontAwesomeStyles = 'regular' | 'thin' | 'solid' | 'brands';
-
 export const icon = (types: string, style: FontAwesomeStyles = 'regular'): string => {
-  const classes = types.split(' ')
-    .map(thing => `fa-${thing}`)
-    .join(' ');
+  const classes = types.split(' ').map((thing) => `fa-${thing}`).join(' ');
 
   return `<i class='fa${style[0]} ${classes}'></i>`;
 };
@@ -185,25 +117,18 @@ export const label = (text: string, type?: string): string => {
 };
 
 export const multilineEscapeHTML = (str?: string): string => {
-  if (typeof str !== 'string') {
+  if (str == null) {
     return '';
   }
 
   return str
     .split(/\r?\n/)
-    .map(line => escape(line))
+    .map((line) => escape(line))
     .join('<br />');
 };
 
 export const linkTo = (text: string, href: any, options?: { [s: string]: string }): string => {
   const element = document.createElement('a');
-
-  if (href === undefined && window.Honeybadger) {
-    window.Honeybadger.notify('Invalid href', {
-      context: { text, href, options },
-      fingerprint: 'undefinedHrefInHrefFor',
-    });
-  }
 
   element.href = hrefFor(href);
   element.innerHTML = text;
@@ -223,48 +148,9 @@ export const redirectTo = (href: any): void => {
   }, 750);
 };
 
-export const triggerEvent = (element: Element, name: string, data = {}): void => {
-  let event;
-
-  if (window.CustomEvent) {
-    event = new CustomEvent(name, { detail: data });
-  } else {
-    event = document.createEvent('CustomEvent');
-    event.initCustomEvent(name, true, true, data);
-  }
-
-  element.dispatchEvent(event);
-};
-
-export const isVisible = (elem: HTMLElement): boolean => !!(
-  elem.offsetWidth
-  || elem.offsetHeight
-  || elem.getClientRects().length
-);
-
-export const toggle = (element: NodeListOf<HTMLElement> | HTMLElement, showOrHide: boolean | undefined): void => {
-  if (element instanceof NodeList) {
-    element.forEach((elem) => {
-      toggleElement(elem, showOrHide !== undefined ? showOrHide : !isVisible(elem));
-    });
-  } else {
-    toggleElement(element, showOrHide !== undefined ? showOrHide : !isVisible(element));
-  }
-};
-
-export const show = (element: HTMLElement): void => {
-  toggle(element, true);
-};
-
-export const hide = (element: HTMLElement): void => {
-  toggle(element, false);
-};
-
-export const toHumanDate = (momentObject: moment.Moment, time: boolean = false) => {
+export const toHumanDate = (momentObject: Moment, time = false): string => {
   // use Date#getFullYear so that we don't have to pull in the moment library
   const year = momentObject.year() !== (new Date()).getFullYear() ? '/YY' : '';
 
   return momentObject.format(`M/D${year}${(time ? ' h:mm A' : '')}`);
 };
-
-export { delegate } from './rails/utils/event';

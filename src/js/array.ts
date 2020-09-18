@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/prefer-default-export
-export const toSentence = (arr: string[]) => {
+export function toSentence(arr: string[]): string {
   switch (arr.length) {
     case 0:
       return '';
@@ -10,4 +10,4 @@ export const toSentence = (arr: string[]) => {
     default:
       return `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
   }
-};
+}

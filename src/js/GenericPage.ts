@@ -1,3 +1,5 @@
+import startsWith from 'lodash/startsWith';
+
 import Page from './Page';
 
 export default class GenericPage extends Page {
@@ -5,7 +7,7 @@ export default class GenericPage extends Page {
 
   public buttons: { [s: string]: HTMLElement } = {};
 
-  public initialize() {
+  public initialize(): void {
     this.reloadUIElements();
 
     super.initialize();
@@ -13,22 +15,22 @@ export default class GenericPage extends Page {
     this.addEventListeners();
   }
 
-  public addEventListeners() {
+  public addEventListeners(): void {
     super.addEventListeners();
   }
 
-  public reloadUIElements() {
+  public reloadUIElements(): void {
     this.fields = {};
     this.buttons = {};
 
     Array.from(document.querySelectorAll<HTMLElement>('[data-field]'))
-      .filter(element => !element.matches('.modal [data-field]'))
+      .filter((element) => !element.matches('.modal [data-field]'))
       .forEach((element) => {
         this.fields[element.dataset.field as string] = element;
       });
 
     Array.from(document.querySelectorAll<HTMLElement>('[data-button]'))
-      .filter(element => !element.matches('.modal [data-button]'))
+      .filter((element) => !element.matches('.modal [data-button]'))
       .forEach((element) => {
         this.buttons[element.dataset.button as string] = element;
       });
@@ -48,7 +50,7 @@ export default class GenericPage extends Page {
 
   public callAllMethodsBeginningWith(prefix: string): void {
     Object.getOwnPropertyNames(this).forEach((name) => {
-      if (name !== prefix && name.indexOf(prefix) === 0) {
+      if (name !== prefix && startsWith(prefix, name)) {
         const descriptor = Object.getOwnPropertyDescriptor(this, name);
 
         if (descriptor && typeof descriptor.value === 'function') {

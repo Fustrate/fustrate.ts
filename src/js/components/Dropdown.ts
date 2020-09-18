@@ -1,16 +1,16 @@
 import Popper from 'popper.js';
+import { delegate } from '@rails/ujs';
 
 import Component from '../Component';
-import { delegate } from '../rails/utils/event';
 
 export default class Dropdown extends Component {
   private static popper: Popper;
 
-  public static initialize() {
+  public static initialize(): void {
     delegate(document.body, '.has-dropdown', 'click', this.open.bind(this));
   }
 
-  public static open(event: MouseEvent) {
+  public static open(event: MouseEvent): false {
     // Hide any visible dropdowns before showing this one
     this.hide();
 
@@ -32,7 +32,7 @@ export default class Dropdown extends Component {
     return false;
   }
 
-  public static hide() {
+  public static hide(): void {
     if (this.popper) {
       this.popper.destroy();
     }

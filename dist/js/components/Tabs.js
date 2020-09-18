@@ -3,14 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const ujs_1 = require("@rails/ujs");
 const Component_1 = __importDefault(require("../Component"));
-const event_1 = require("../rails/utils/event");
 class Tabs extends Component_1.default {
     constructor(tabs) {
         super();
         this.tabs = tabs;
-        event_1.delegate(this.tabs, 'li > a', 'click', (event) => {
-            event_1.stopEverything(event);
+        ujs_1.delegate(this.tabs, 'li > a', 'click', (event) => {
+            ujs_1.stopEverything(event);
             this.activateTab(event.target, true);
             return false;
         });
