@@ -13,7 +13,7 @@
     "@rails/ujs": "^6.0.3-3",
     "animate.css": "^4.1.1",
     "awesomplete": "git+https://github.com/Fustrate/awesomplete.git",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "custom-event-polyfill": "^1.0.7",
     "lodash": "^4.17.20",
