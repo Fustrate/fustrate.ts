@@ -7,13 +7,12 @@ module.exports = {
     'airbnb-base',
     'plugin:lodash/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:sonarjs/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     allowImportExportEverywhere: true,
   },
-  plugins: ['import', 'lodash', '@typescript-eslint', 'sonarjs'],
+  plugins: ['import', 'lodash', '@typescript-eslint'],
   rules: {
     'class-methods-use-this': 0,
 
@@ -39,8 +38,6 @@ module.exports = {
     'max-len': [1, 120],
     'no-extend-native': 0,
     'no-param-reassign': 0,
-
-    'sonarjs/no-duplicate-string': 0,
 
     // I'm just not there yet on types
     '@typescript-eslint/no-explicit-any': 0,

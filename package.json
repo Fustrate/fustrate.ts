@@ -44,7 +44,6 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^24.0.1",
     "eslint-plugin-lodash": "^7.1.0",
-    "eslint-plugin-sonarjs": "^0.5.0",
     "jest": "^26.4.2",
     "jest-mock-axios": "^4.2.1",
     "ts-node": "^9.0.0",
